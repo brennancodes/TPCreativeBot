@@ -1,5 +1,5 @@
 # TPCreativeBot
 
 ## SlashCommands
-submitmap
-removemap
+- submitmap
+- removemap
