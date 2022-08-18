@@ -1,0 +1,21 @@
+{
+    "prefix": "!",
+    "mongooseConnectionString": "",
+    "guildId":"429928606542725131",
+    "users": {
+        "bot": "1007052549737676913",
+        "botOwner": "235582523386757121"
+    },
+    "channels": {
+        "mtc": "1007474279698411570"
+    },
+    "roles":{
+        "mtc": "1007532970132914186"
+    },
+    "mtcSettings":{
+        "approveDenyThreshold": 2,
+        "qualityControlThreshold": 2,
+        "blockSelfVoting": false,
+        "pingDateTime": "55 23 23 * * *"
+    }
+}

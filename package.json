@@ -1,0 +1,24 @@
+{
+  "name": "creativebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^1.0.1",
+    "cheerio": "^1.0.0-rc.12",
+    "cron": "^2.1.0",
+    "discord.js": "^14.2.0",
+    "dotenv": "^16.0.1",
+    "node-fetch": "^3.2.10",
+    "request-promise": "^4.2.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
