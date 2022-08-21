@@ -16,6 +16,10 @@
         "approveDenyThreshold": 2,
         "qualityControlThreshold": 2,
         "blockSelfVoting": false,
-        "pingDateTime": "55 23 23 * * *"
+        "pingDateTime": "55 23 23 * * *",
+        "submitCooldownHours": 2,
+        "preventResubmit": true,
+        "awaitMTCAction": true,
+        "bypassAwaitHourThreshold":72
     }
 }

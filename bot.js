@@ -39,7 +39,6 @@ client.login(process.env.TOKEN).then(function(){
     console.log(`${client.user.tag} has logged in!`);
 });
 
-
 async function main() {
     const commands = [
         {
