@@ -72,7 +72,7 @@ module.exports = (client) => {
                 const description = reaction.message.embeds[0].data.description;
                 const descSplit = description.split('**');
                 const rootUrl = 'https://fortunatemaps.herokuapp.com/'
-                const mapByAuthorLinks = `[**${descSplit[1]}**](${rootUrl}map/${descSplit[3]}) by [**${descSplit[5]}**](${rootUrl}profile/${descSplit[5].replace(" ","_")})`
+                const mapByAuthorLinks = `[**${descSplit[1]}**](${rootUrl}map/${descSplit[3]}) by [**${descSplit[5]}**](${rootUrl}profile/${descSplit[5].replaceAll(" ","_")})`
                 const mapByAuthor = `${descSplit[3]}: *${descSplit[1]}* by ${descSplit[5]}`
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
                 //console.log(getDecision(), reaction.count);

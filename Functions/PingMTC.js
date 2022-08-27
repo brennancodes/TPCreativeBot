@@ -2,7 +2,7 @@ const config = require("../config.json")
 const cron = require("cron")
 
 module.exports = async (client) => {
-    let job = new cron.CronJob("20 43 23 * * *", ping)
+    let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
     job.start();
     //setInterval(()=>{ping()},5000)
     async function ping(){

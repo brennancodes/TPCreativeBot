@@ -43,22 +43,24 @@ module.exports = async (client, interaction) => {
             messages.forEach(async x=>{
                 if (x.content.includes(interaction.user.id)){
                     if (x.embeds[0] != null){
-                        const split1 = x.embeds[0].description.split("ID: **");
-                        const split2 = split1[1].split("**")
-                        if (split2[0] == mapId && config.mtcSettings.preventResubmit && isValid){
-                            isValid = false;
-                            await interaction.editReply({content:"This map has already been submitted.", ephemeral:true})
-                        }
-                        else if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.submitCooldownHours && isValid){
-                            isValid = false;
-                            await interaction.editReply({content: `You are submitting too frequently. Try again in ${(config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000).toFixed(2)} minutes.`,ephemeral:true})
+                        if (isValid){
+                            const split1 = x.embeds[0].description.split("ID: **");
+                            const split2 = split1[1].split("**")
+                            if (split2[0] == mapId && config.mtcSettings.preventResubmit){
+                                isValid = false;
+                                await interaction.editReply({content:"This map has already been submitted.", ephemeral:true})
+                            }
+                            else if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.submitCooldownHours){
+                                isValid = false;
+                                await interaction.editReply({content: `You are submitting too frequently. Try again in ${(config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000).toFixed(2)} minutes.`,ephemeral:true})
+                            }
                         }
                     }
                 }
             })
-            if (isValid){
-                return true;
-            }
         })
+        if (isValid){
+            return true;
+        }
     }
 }

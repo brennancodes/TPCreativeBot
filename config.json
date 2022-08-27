@@ -7,7 +7,8 @@
         "botOwner": "235582523386757121"
     },
     "channels": {
-        "mtc": "1007474279698411570"
+        "mtc": "1007474279698411570",
+        "mtcDiscussion": "1012920031748829294"
     },
     "roles":{
         "mtc": "1007532970132914186"
@@ -17,9 +18,10 @@
         "qualityControlThreshold": 2,
         "blockSelfVoting": false,
         "pingDateTime": "55 23 23 * * *",
-        "submitCooldownHours": 2,
-        "preventResubmit": true,
-        "awaitMTCAction": true,
-        "bypassAwaitHourThreshold":72
+        "submitCooldownHours": 0,
+        "preventResubmit": false,
+        "awaitMTCAction": false,
+        "bypassAwaitHourThreshold":72,
+        "useDiscussionChannel": true
     }
 }

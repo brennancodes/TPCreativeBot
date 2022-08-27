@@ -293,7 +293,7 @@ client.on('messageReactionAdd', async(reaction, user)=>{
             const description = reaction.message.embeds[0].data.description;
             const descSplit = description.split('**');
             const rootUrl = 'https://fortunatemaps.herokuapp.com/'
-            const mapByAuthorLinks = `[**${descSplit[1]}**](${rootUrl}map/${descSplit[3]}) by [**${descSplit[5]}**](${rootUrl}profile/${descSplit[5].replace(" ","_")})`
+            const mapByAuthorLinks = `[**${descSplit[1]}**](${rootUrl}map/${descSplit[3]}) by [**${descSplit[5]}**](${rootUrl}profile/${descSplit[5].replaceAll(" ","_")})`
             const mapByAuthor = `${descSplit[3]}: *${descSplit[1]}* by ${descSplit[5]}`
             const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
             //console.log(getDecision(), reaction.count);
@@ -357,3 +357,59 @@ client.on('messageReactionAdd', async(reaction, user)=>{
         }
     }
 })
+
+// OLD GETFEEDBACK.JS ===============================================================
+// OLD METHOD: KEEP FOR NOW IN CASE WE FIND A BUG WITH NEW METHOD
+        // const activeThreads = new Promise(async (resolve,reject)=>{
+        //     await mtcChannel.threads.fetchActive(true).then(x=>{
+        //         const array = x.threads.filter(q=>q.name === `${mapId} Feedback`);
+        //         if (array.size === 0){
+        //             resolve();
+        //         }
+        //         let i = 0;
+        //         array.forEach(async y=>{
+        //             const msgs = await y.messages.fetch();
+        //             msgs.map(z=>{
+        //                 feedbackArray.push(z.content)
+        //                 if (i + 1 === array.size){
+        //                     resolve();
+        //                 }
+        //             })
+        //             i++
+        //         })
+        //     })
+        // })
+        
+        // const archivedThreads = new Promise(async (resolve,reject)=>{
+        //     await mtcChannel.threads.fetchArchived(true).then(x=>{
+        //         const array = x.threads.filter(q=>q.name === `${mapId} Feedback`);
+        //         if (array.size === 0){
+        //             resolve();
+        //         }
+        //         let i = 0;
+        //         array.forEach(async y=>{
+        //             const msgs = await y.messages.fetch();
+        //             msgs.map(z=>{
+        //                 feedbackArray.push(z.content)
+        //                 if (i + 1 === array.size){
+        //                     resolve();
+        //                 }
+        //             })
+        //             i++
+        //         })
+        //     }) 
+        // }) 
+
+        // Promise.all([activeThreads, archivedThreads]).then(()=>{
+        //     for (var i = 0; i < feedbackArray.length; i++){
+        //         response += feedbackArray[i]+"\n"
+        //     }
+        //     interaction.reply({content:`${response}`,ephemeral:true})
+        // })
+        // activeThreads.then(()=>{
+        //     console.log(response);
+        //     archivedThreads.then(()=>{
+        //         //const activeThreads = mtcChannel.threads.cache.find(x=>x.name === `${mapId} Feedback`)
+        //         //console.log(response)
+        //     })
+        // })

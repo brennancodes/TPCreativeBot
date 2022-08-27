@@ -1,6 +1,6 @@
 require("dotenv").config();
 const config = require("./config.json");
-const { SubmitMap, RemoveMap } = require("./Interactions/SlashCommands")
+const { SubmitMap, RemoveMap, GetFeedback } = require("./Interactions/SlashCommands")
 const { ApproveDenyVote } = require("./EventListeners/MessageReactionAdd")
 const { ConfirmMapSubmission, CancelMapSubmission, MarkAsAdded } = require("./Interactions/Buttons")
 const { PingMTC } = require("./Functions");
@@ -29,7 +29,8 @@ client.once("ready", () => {
     SubmitMap(client);
     RemoveMap(client);
     ConfirmMapSubmission(client);
-    CancelMapSubmission(client)
+    CancelMapSubmission(client);
+    GetFeedback(client);
     MarkAsAdded(client);
     ApproveDenyVote(client);
     PingMTC(client);
@@ -56,6 +57,18 @@ async function main() {
         {
             name: 'removemap',
             description: 'Nominate a Rotation Map to be removed'
+        },
+        {
+            name: 'getfeedback',
+            description: 'Code from FortunateMaps',
+            options: [
+                {
+                    name: 'code',
+                    description: 'Code from FortunateMaps',
+                    type: 4,
+                    required: true,
+                }
+            ]
         }
     ];
     try {
