@@ -1,8 +1,9 @@
 require("dotenv").config();
 const config = require("./config.json");
 const { SubmitMap, RemoveMap, GetFeedback } = require("./Interactions/SlashCommands")
-const { ApproveDenyVote } = require("./EventListeners/MessageReactionAdd")
-const { ConfirmMapSubmission, CancelMapSubmission, MarkAsAdded } = require("./Interactions/Buttons")
+const { ApproveDenyVote, RemoveKeepVote } = require("./EventListeners/MessageReactionAdd")
+const { ConfirmMapSubmission, CancelMapSubmission, MarkAsAdded, MarkAsRemoved } = require("./Interactions/Buttons")
+const { RemoveRotationMap } = require("./Interactions/SelectMenus")
 const { PingMTC } = require("./Functions");
 const { Routes } = require("discord-api-types/v9");
 const { REST } = require("@discordjs/rest");
@@ -32,7 +33,10 @@ client.once("ready", () => {
     CancelMapSubmission(client);
     GetFeedback(client);
     MarkAsAdded(client);
+    MarkAsRemoved(client);
+    RemoveRotationMap(client);
     ApproveDenyVote(client);
+    RemoveKeepVote(client);
     PingMTC(client);
 });
 

@@ -7,7 +7,6 @@ async function pingMtc(){
     const pins = await channel.messages.fetchPinned(true);
     await guild.members.fetch();
     const mtcUsers = guild.roles.cache.get(config.roles.mtc).members.map(m=>m.user.id)
-    console.log(mtcUsers);
     if (pins.size > 0){
         const userArray = [];
         const getLazyPeople = new Promise((resolve, reject)=>{

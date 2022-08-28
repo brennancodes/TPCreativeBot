@@ -15,7 +15,7 @@ module.exports = (client) => {
                 let split = msg.embeds[0].data.description.split("ID: **");
                 let split2 = split[1].split("**");
                 let mapId = split2[0];
-                msg.content = `**ATTENTION <@&${config.roles.mtc}>:** New submission received from <@${interaction.user.id}>. \nPlease react ✅ to approve or ❌ to reject.`
+                msg.content = `**ATTENTION <@&${config.roles.mtc}>:** New map submission received from <@${interaction.user.id}>. \nPlease react ✅ to approve or ❌ to reject.`
                 msg.embeds[0].data.image = {url:msg.embeds[0].data.thumbnail.url};
                 msg.embeds[0].data.author = {name:`Vote to add map to rotation on trial basis`,iconURL: msg.embeds[0].data.author.iconUrl}
                 delete msg.embeds[0].data.thumbnail;

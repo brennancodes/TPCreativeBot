@@ -14,7 +14,6 @@ module.exports = (client) => {
             async function getMaps(){
                 const maps = await nfetch('https://tagpro.koalabeast.com/maps.json')
                 const body = await maps.json();
-                //console.log(body.rotation[0]);
                 body.rotation.sort(function(a,b){
                     return a.averageRating - b.averageRating;
                 })

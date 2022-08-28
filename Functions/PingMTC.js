@@ -44,7 +44,6 @@ module.exports = async (client) => {
             })
     
             getLazyPeople.then(()=>{
-                console.log("Users", userArray)
                 const naughtyPeople = [];
                 mtcUsers.forEach(u=>{
                     // If any member did not react and is not a bot, make them naughty

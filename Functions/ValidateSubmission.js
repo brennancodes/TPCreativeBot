@@ -13,14 +13,18 @@ module.exports = async (client, interaction) => {
             return b.createdAt-a.createdAt;
         })
         pins.forEach(async x=>{
-            if (x.content.includes(interaction.user.id) && isValid){
+            if (x.content.includes(interaction.user.id) && x.content.includes("New map submission received") && isValid){
                 if (((currentDate - x.createdAt)/3600000).toFixed(2) > config.mtcSettings.bypassAwaitHourThreshold){
                     if (config.mtcSettings.preventResubmit){
-                        const split1 = x.embeds[0].description.split("ID: **")
-                        const split2 = split1[1].split("**");
-                        if (split2[0] == mapId){
-                            isValid = false;
-                            await interaction.editReply({content:"This map has already been submitted.", ephemeral:true})
+                        if (x.embeds[0]){
+                            if (x.embeds[0].data){
+                                const split1 = x.embeds[0].description.split("ID: **")
+                                const split2 = split1[1].split("**");
+                                if (split2[0] == mapId){
+                                    isValid = false;
+                                    await interaction.editReply({content:"This map has already been submitted.", ephemeral:true})
+                                }
+                            }
                         }
                     }
                 }
@@ -36,15 +40,14 @@ module.exports = async (client, interaction) => {
     }
     else {
         await mtcChannel.messages.fetch({limit:100}).then(messages =>{
-            console.log(messages.size);
             messages.sort(function(a,b){
                 return b.createdAt-a.createdAt;
             })
             messages.forEach(async x=>{
-                if (x.content.includes(interaction.user.id)){
-                    if (x.embeds[0] != null){
-                        if (isValid){
-                            const split1 = x.embeds[0].description.split("ID: **");
+                if (x.content.includes(interaction.user.id) && x.content.includes("New map submission received") && isValid){
+                    if (x.embeds[0]){
+                        if (x.embeds[0].data.description){
+                            const split1 = x.embeds[0].data.description.split("ID: **");
                             const split2 = split1[1].split("**")
                             if (split2[0] == mapId && config.mtcSettings.preventResubmit){
                                 isValid = false;
