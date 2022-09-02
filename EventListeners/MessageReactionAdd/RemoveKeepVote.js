@@ -38,6 +38,7 @@ module.exports = (client) => {
                 async function Respond(){                    
                     const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
                     const mapByAuthor = reaction.message.embeds[0].data.description.split("Current Score:")[0];
+                    
                     if (decision === "Refresh"){
                         await reaction.users.remove(user.id);
                         return;
@@ -50,7 +51,15 @@ module.exports = (client) => {
                         else {
                             header = `KEPT IN ROTATION`
                         }
-                        reaction.message.unpin();                
+                        reaction.message.unpin();
+                        
+                        if (config.mtcSettings.useDiscussionChannel){
+                            const last = mapByAuthor.lastIndexOf(" by ");
+                            const mapName = mapByAuthor.slice(2,last);
+                            const channel = client.channels.cache.get(config.channels.mtcDiscussion);
+                            const thread = channel.threads.cache.find(x=>x.name === `${mapName} Removal Discussion`)  
+                            await thread.setArchived(true);              
+                        }
                         
                         var appr = reaction.message.reactions.cache.get('✅');
                         var deny = reaction.message.reactions.cache.get('❌');

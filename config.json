@@ -16,6 +16,7 @@
     "mtcSettings":{
         "approveDenyThreshold": 2,
         "qualityControlThreshold": 2,
+        "feedbackThreshold": 2,
         "blockSelfVoting": false,
         "pingDateTime": "55 23 23 * * *",
         "submitCooldownHours": 0,
