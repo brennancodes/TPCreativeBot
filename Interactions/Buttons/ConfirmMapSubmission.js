@@ -29,7 +29,7 @@ module.exports = (client) => {
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = client.channels.cache.get(config.channels.mtcDiscussion);
                     discussionChannel.send(msg).then(sent=>{
-                        sent.startThread({name:`${mapId} Discussion`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"})
+                        sent.startThread({name:`${mapId} Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
                     })
                 }
             }

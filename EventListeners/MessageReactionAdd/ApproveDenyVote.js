@@ -1,5 +1,7 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
 const config = require("../../config.json")
+const axios = require('axios');
+//const fetch = require('node-fetch')
 
 module.exports = (client) => {
     client.on('messageReactionAdd', async(reaction, user)=>{
@@ -161,19 +163,36 @@ module.exports = (client) => {
                         const embed = new EmbedBuilder().setColor(decision === 'Approved' ? '#7bcf5c' : '#da3e52')
                             .setAuthor({name:header,iconURL:iconUrl})
                             .setDescription(`${mapByAuthorLinks}\n\nID: **${descSplit[3]}**\n\n${approvalString}\n${denialString}${decision == "Denied" ? '' : '\n' + wireString}`)
-                            .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`)
-                        const row = new ActionRowBuilder();
-                        if (decision === "Approved"){
-                            row.addComponents(
-                                new ButtonBuilder().setCustomId('MarkAsAdded').setStyle(ButtonStyle.Primary).setLabel('Mark as Added'),
-                            )
-                        }
+                            .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`).setTimestamp()
+                        // const row = new ActionRowBuilder();
+                        // if (decision === "Approved"){
+                        //     row.addComponents(
+                        //         new ButtonBuilder().setCustomId('MarkAsAdded').setStyle(ButtonStyle.Primary).setLabel('Mark as Added'),
+                        //     )
+                        // }
                         reaction.message.reactions.removeAll();
             
-                        reaction.message.channel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]},components:decision==="Approved"?[row]:[]})
-                            .then(sent=>{
+                        reaction.message.channel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                            .then(async (sent)=>{
                                 if (decision === "Approved"){
-                                    sent.pin();
+                                    //sent.pin();
+                                    // TODO: ADD API CALL HERE
+                                    const headers = {
+                                        'x-mtc-api-key': config.keys["tagpro-secret-api-key"]
+                                    }
+                                    const url = `https://tagpro-secret.koalabeast.com/mtc/rest/addmap/${descSplit[3]}`
+                                    axios({method:'post',url:url,headers:headers}).then(function(resp){
+                                        if (resp.data && resp.data.includes("Inserted")){
+                                            console.log("Success!!!")
+                                            var mtcAdminChannel = client.channels.cache.get(config.channels.mtcAdmin);
+                                            mtcAdminChannel.send({embeds:[embed],content:`**Added to Rotation** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                                        }
+                                        else {
+                                            console.log("FAILURE! ABORT!")
+                                            var mtcAdminChannel = client.channels.cache.get(config.channels.mtcAdmin);
+                                            mtcAdminChannel.send({content:`**Potential API error.** URL:${url}\n Please investigate ${mapByAuthor}`})
+                                        }
+                                    })
                                 }
                             }).then(()=>{
                                 reaction.message.suppressEmbeds(true);
@@ -189,7 +208,7 @@ module.exports = (client) => {
                                 for (var i = 0; i < feedbackArray.length; i++){
                                     feedbackString += feedbackArray[i] + "\n"
                                 }
-                                feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time to review this.`
+                                feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
                                 embed.data.description = `${embed.data.description.split("Yes votes:")[0]} ${feedbackString}`;
                                 client.users.cache.get(`${submitterId}`).send({
                                     content: contentString,

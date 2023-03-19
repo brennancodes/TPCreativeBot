@@ -1,26 +1,26 @@
 const removeButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
 const {EmbedBuilder} = require("discord.js")
 const config = require("../../config.json")
+const getMapById = require("../../Functions/GetMapById")
 
 module.exports = (client) => {
     client.on("interactionCreate", async interaction => {
         try {
-            if (!interaction.isSelectMenu()){ return false; }
-            if (interaction.customId != "removerotationmap"){ return; }
-            if (interaction.values[0] === "Cancel"){
-                interaction.reply({content:"Action cancelled. Coward.",ephemeral:true})
-                removeButtonsFromOriginal(interaction);
-            }
+            if (!interaction.isButton()){ return false; }
+            if (!interaction.customId.includes("ConfirmMapRemoval")){ return false; }
             else {
                 const mtcChannel = client.channels.cache.get(config.channels.mtc);
-                const imgUrl = `https://static.koalabeast.com/images/maps/${interaction.values[0].replaceAll("_","%20").replaceAll(" ","%20")}-small.png`
+                const map = await getMapById(interaction.customId.split("---")[1]);
+
+                const imgUrl = `https://static.koalabeast.com/images/maps/${map.key.replaceAll("_","%20").replaceAll(" ","%20")}-small.png`
                 
                 const embed = new EmbedBuilder()
                 .setImage(imgUrl)
                 .setColor("#da3e52")
                 .setAuthor({name:`Vote to remove map from rotation`,iconURL:"https://yt3.ggpht.com/ytc/AKedOLR7zLQoUR66-HRRuQltkh8fGyrIENcSkRrDQWTw=s900-c-k-c0x00ffffff-no-rj"})
-                .setDescription("**"+interaction.message.components[0].components[0].data.options.filter(x=>x.value==interaction.values[0])[0].label+"**\n"
-                    + interaction.message.components[0].components[0].data.options.filter(x=>x.value==interaction.values[0])[0].description)
+                .setDescription(`**${map.name} by ${map.author}**\nCurrent Score: ${map.score}\nMap ID: ${map.id}`)
+                // .setDescription("**"+interaction.message.components[0].components[0].data.options.filter(x=>x.value==interaction.values[0])[0].label+"**\n"
+                //     + interaction.message.components[0].components[0].data.options.filter(x=>x.value==interaction.values[0])[0].description)
                 .setFooter({text:`Please react ✅ to remove or ❌ to keep.`})
                 
                 const msg = {
@@ -32,11 +32,11 @@ module.exports = (client) => {
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = client.channels.cache.get(config.channels.mtcDiscussion);
                     discussionChannel.send(msg).then(sent=>{
-                        sent.startThread({name:`${interaction.values[0].replaceAll("_"," ")} Removal Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss removal"})
+                        sent.startThread({name:`${map.name} Removal Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss removal"})
                     })
                 }
 
-                interaction.reply({content:"Get Pinged Nerd!",ephemeral:true})
+                interaction.reply({content:"Removal vote posted in MTC channel!",ephemeral:true})
                 mtcChannel.send(msg).then(sent => {sent.react("✅").then(()=>sent.react("❌")).then(()=>sent.pin())})
                 removeButtonsFromOriginal(interaction);
             }

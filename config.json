@@ -8,21 +8,26 @@
     },
     "channels": {
         "mtc": "1007474279698411570",
-        "mtcDiscussion": "1012920031748829294"
+        "mtcDiscussion": "1012920031748829294",
+        "mtcAdmin": "1041243484369211422"
     },
     "roles":{
-        "mtc": "1007532970132914186"
+        "mtc": "1007532970132914186",
+        "mtcAdmin": "1041243310888603680"
     },
     "mtcSettings":{
         "approveDenyThreshold": 2,
         "qualityControlThreshold": 2,
-        "feedbackThreshold": 2,
+        "feedbackThreshold": 0,
         "blockSelfVoting": false,
-        "pingDateTime": "55 23 23 * * *",
+        "pingDateTime": "55 24 23 * * *",
         "submitCooldownHours": 0,
         "preventResubmit": false,
         "awaitMTCAction": false,
         "bypassAwaitHourThreshold":72,
         "useDiscussionChannel": true
+    },
+    "keys":{
+        "tagpro-secret-api-key":"+HPqWaZtiozH/f9hxAbFlImLLH+aogZEm9IBe5nE34Y="
     }
 }

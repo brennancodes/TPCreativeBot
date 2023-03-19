@@ -3,9 +3,18 @@ const { REST } = require("@discordjs/rest");
 const config = require("../config.json");
 const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
-module.exports = async (interaction) => {
-    var newContent = {                    
-        components: []
+module.exports = async (interaction, removeEmbeds = false) => {
+    var newContent = {};
+    if (removeEmbeds == true){
+        newContent = {
+            components: [],
+            embeds: []
+        }
+    }
+    else {
+        newContent = {                    
+            components: []
+        }
     }
 
     var header = {

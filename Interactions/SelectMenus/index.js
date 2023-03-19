@@ -1,3 +1,4 @@
 const RemoveRotationMap = require("./removerotationmap.js");
+const SubmitUpdate = require("./submitupdate.js");
 
-module.exports = { RemoveRotationMap }
+module.exports = { RemoveRotationMap, SubmitUpdate }
