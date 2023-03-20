@@ -1,4 +1,4 @@
-const config = require("../config.json")
+const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 const cron = require("cron")
 
 module.exports = async (client) => {

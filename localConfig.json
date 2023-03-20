@@ -16,20 +16,20 @@
         "mtcAdmin": "1041243310888603680"
     },
     "mtcSettings":{
-        "approveDenyThreshold": 6,
+        "approveDenyThreshold": 2,
         "qualityControlThreshold": 2,
-        "feedbackThreshold": 2,
-        "blockSelfVoting": true,
+        "feedbackThreshold": 0,
+        "blockSelfVoting": false,
         "pingDateTime": "55 24 23 * * *",
-        "submitCooldownHours": 1,
-        "preventResubmit": true,
+        "submitCooldownHours": 0,
+        "preventResubmit": false,
         "awaitMTCAction": false,
         "bypassAwaitHourThreshold":72,
         "useDiscussionChannel": true
     },
     "urls":{
-        "api": "https://tagpro.koalabeast.com/mtc/rest",
-        "image": "https://static.koalabeast.com/images/maps"
+        "api": "https://tagpro-secret.koalabeast.com/mtc/rest",
+        "image": "https://tagpro-secret.koalabeast.com/images/maps"
     },
     "keys":{
         "tagpro-secret-api-key":"+HPqWaZtiozH/f9hxAbFlImLLH+aogZEm9IBe5nE34Y="

@@ -1,10 +1,9 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
-const config = require("../../config.json")
+const { EmbedBuilder } = require("discord.js")
+const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
 //const fetch = require('node-fetch')
 
-module.exports = (client) => {
-    client.on('messageReactionAdd', async(reaction, user)=>{
+module.exports.execute = async (reaction, user) => {
         if(reaction.message.channelId === config.channels.mtc){
             if (reaction.partial){
                 try{
@@ -18,7 +17,7 @@ module.exports = (client) => {
             if (reaction.message.content.includes("map submission received")){
                 const description = reaction.message.embeds[0].data.description;
                 const descSplit = description.split('**');                
-                const channel = client.channels.cache.get(config.channels.mtc);
+                const channel = reaction.client.channels.cache.get(config.channels.mtc);
                 const active = await channel.threads.fetchActive(true)
                 let feedbackThreads = active.threads.filter(x=>x.name === `${descSplit[3]} Feedback`);
                 // need all this nonsense so it grabs the latest thread rather than finding first match
@@ -44,7 +43,7 @@ module.exports = (client) => {
                 if (config.mtcSettings.blockSelfVoting){
                     if (reaction.message.content.includes(user.id)){
                         await reaction.users.remove(user.id)
-                        reaction.message.channel.send({content:`You know better than to vote on your own map, <@${user.id}>.`,allowedMentions:{"users":[]}})
+                        reaction.message.channel.send({content:`You know better than to vote on your own submission, <@${user.id}>.`,allowedMentions:{"users":[]}})
                     }
                 }
                 
@@ -135,7 +134,7 @@ module.exports = (client) => {
                         await feedbackThreads.find(x=>x.id == threads[0]).setArchived(true);
 
                         if (config.mtcSettings.useDiscussionChannel){
-                            const discChannel = client.channels.cache.get(config.channels.mtcDiscussion);
+                            const discChannel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
                             const discussionThread = discChannel.threads.cache.find(x=>x.name === `${descSplit[3]} Discussion`)  
                             await discussionThread.setArchived(true);
                         }
@@ -164,32 +163,24 @@ module.exports = (client) => {
                             .setAuthor({name:header,iconURL:iconUrl})
                             .setDescription(`${mapByAuthorLinks}\n\nID: **${descSplit[3]}**\n\n${approvalString}\n${denialString}${decision == "Denied" ? '' : '\n' + wireString}`)
                             .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`).setTimestamp()
-                        // const row = new ActionRowBuilder();
-                        // if (decision === "Approved"){
-                        //     row.addComponents(
-                        //         new ButtonBuilder().setCustomId('MarkAsAdded').setStyle(ButtonStyle.Primary).setLabel('Mark as Added'),
-                        //     )
-                        // }
                         reaction.message.reactions.removeAll();
             
                         reaction.message.channel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
                             .then(async (sent)=>{
                                 if (decision === "Approved"){
-                                    //sent.pin();
-                                    // TODO: ADD API CALL HERE
                                     const headers = {
                                         'x-mtc-api-key': config.keys["tagpro-secret-api-key"]
                                     }
-                                    const url = `https://tagpro-secret.koalabeast.com/mtc/rest/addmap/${descSplit[3]}`
+                                    const url = `${config.urls.api}/addmap/${descSplit[3]}`
                                     axios({method:'post',url:url,headers:headers}).then(function(resp){
                                         if (resp.data && resp.data.includes("Inserted")){
                                             console.log("Success!!!")
-                                            var mtcAdminChannel = client.channels.cache.get(config.channels.mtcAdmin);
+                                            var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
                                             mtcAdminChannel.send({embeds:[embed],content:`**Added to Rotation** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
                                         }
                                         else {
                                             console.log("FAILURE! ABORT!")
-                                            var mtcAdminChannel = client.channels.cache.get(config.channels.mtcAdmin);
+                                            var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
                                             mtcAdminChannel.send({content:`**Potential API error.** URL:${url}\n Please investigate ${mapByAuthor}`})
                                         }
                                     })
@@ -210,7 +201,7 @@ module.exports = (client) => {
                                 }
                                 feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
                                 embed.data.description = `${embed.data.description.split("Yes votes:")[0]} ${feedbackString}`;
-                                client.users.cache.get(`${submitterId}`).send({
+                                reaction.client.users.cache.get(`${submitterId}`).send({
                                     content: contentString,
                                     embeds:[embed]
                                 })
@@ -220,5 +211,4 @@ module.exports = (client) => {
                 }
             }
         }
-    })
 }

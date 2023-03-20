@@ -1,10 +1,15 @@
 require("dotenv").config();
-const config = require("./config.json");
-const { SubmitMap, RemoveMap, GetFeedback, RotationSummary, UpdateMap, FindMap, GetCurrentRating, Commands } = require("./Interactions/SlashCommands")
-const { ApproveDenyVote, RemoveKeepVote } = require("./EventListeners/MessageReactionAdd")
-const { ConfirmMapSubmission, CancelMapSubmission, MarkAsAdded, MarkAsRemoved, ConfirmMapUpdate, ConfirmMapRemoval, CancelAction, ConfirmGetCurrentRating } = require("./Interactions/Buttons")
-const { RemoveRotationMap, SubmitUpdate } = require("./Interactions/SelectMenus")
-const { PingMTC, CalculateRotationBalance } = require("./Functions");
+const config = process.env.ENVIRONMENT == "Production" ? require("./config.json") : require("./localConfig.json")
+const fs = require('fs');
+const slashCommands = fs.readdirSync("./Interactions/SlashCommands").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
+const buttons = fs.readdirSync("./Interactions/Buttons").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
+const selectMenus = fs.readdirSync("./Interactions/SelectMenus").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
+const messageReactionAdds = fs.readdirSync("./EventListeners/MessageReactionAdd").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
+// const { SubmitMap, RemoveMap, GetFeedback, RotationSummary, UpdateMap, FindMap, GetCurrentRating, Commands } = require("./Interactions/SlashCommands")
+// const { ApproveDenyVote, RemoveKeepVote } = require("./EventListeners/MessageReactionAdd")
+// const { ConfirmMapSubmission, CancelMapSubmission, ConfirmMapUpdate, ConfirmMapRemoval, CancelAction, ConfirmGetCurrentRating } = require("./Interactions/Buttons")
+// const { SubmitUpdate } = require("./Interactions/SelectMenus")
+const { PingMTC } = require("./Functions");
 const { Routes } = require("discord-api-types/v9");
 const { REST } = require("@discordjs/rest");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
@@ -25,7 +30,7 @@ const client = new Client({
         Partials.User 
     ]
 });
-client.setMaxListeners(20)
+//client.setMaxListeners(20)
 const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
 client.once("ready", () => {
@@ -38,28 +43,65 @@ client.once("ready", () => {
     // CalculateRotationBalance(client) // Using this method here will force run it on bot startup
 
     
-    SubmitMap(client);
-    RemoveMap(client);
-    ConfirmMapSubmission(client);
-    CancelMapSubmission(client);
-    GetFeedback(client);
-    MarkAsAdded(client);
-    MarkAsRemoved(client);
-    RemoveRotationMap(client);
-    ApproveDenyVote(client);
-    RemoveKeepVote(client);
-    PingMTC(client);
-    RotationSummary(client);
-    ConfirmMapUpdate(client);
-    UpdateMap(client);
-    SubmitUpdate(client);
-    CancelAction(client);
-    ConfirmMapRemoval(client);
-    FindMap(client);
-    GetCurrentRating(client);
-    ConfirmGetCurrentRating(client);
-    Commands(client);
+    // SubmitMap(client);
+    // RemoveMap(client);
+    // ConfirmMapSubmission(client);
+    // CancelMapSubmission(client);
+    // GetFeedback(client);
+    // // MarkAsAdded(client);
+    // // MarkAsRemoved(client);
+    // // RemoveRotationMap(client);
+    // ApproveDenyVote(client);
+    // RemoveKeepVote(client);
+    // PingMTC(client);
+    // RotationSummary(client);
+    // ConfirmMapUpdate(client);
+    // UpdateMap(client);
+    // SubmitUpdate(client);
+    // CancelAction(client);
+    // ConfirmMapRemoval(client);
+    // FindMap(client);
+    // GetCurrentRating(client);
+    // ConfirmGetCurrentRating(client);
+    // Commands(client);
 });
+
+client.on('interactionCreate', async interaction => {
+    if (interaction.isChatInputCommand()){
+        for (const cmd of slashCommands){
+            const event = require(`./Interactions/SlashCommands/${cmd}`)
+            if (event){
+                event.execute(interaction)
+            }
+        }
+    }
+    if (interaction.isButton()){
+        for (const cmd of buttons){
+            const event = require(`./Interactions/Buttons/${cmd}`)
+            event.execute(interaction);
+        }
+        // We run through slashCommands again because certain functions can be hit by buttons or slashCommands
+        // findmap, removemap, updatemap
+        for (const cmd of slashCommands){
+            const event = require(`./Interactions/SlashCommands/${cmd}`)
+            event.execute(interaction);
+        }
+    }
+    if (interaction.isSelectMenu()){
+        for (const cmd of selectMenus){
+            const event = require(`./Interactions/SelectMenus/${cmd}`)
+            event.execute(interaction);
+        }
+    }
+});
+
+client.on('messageReactionAdd', async(reaction, user)=>{
+    for (const cmd of messageReactionAdds){
+        const event = require(`./EventListeners/MessageReactionAdd/${cmd}`)
+        event.execute(reaction, user);
+    }
+});
+
 
 client.login(process.env.TOKEN).then(function(){
     console.log(`${client.user.tag} has logged in!`);

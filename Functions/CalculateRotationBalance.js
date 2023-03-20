@@ -1,5 +1,5 @@
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args));
-const config = require("../config.json")
+const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 const Canvas = require('canvas');
 const { EmbedBuilder } = require('discord.js');
 const Image = Canvas.Image;

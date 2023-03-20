@@ -211,7 +211,7 @@ client.on('interactionCreate', interaction => {
                 removeButtonsFromOriginal(interaction);
             }
             else {
-                const imgUrl = `https://static.koalabeast.com/images/maps/${interaction.values[0].replaceAll("_","%20").replaceAll(" ","%20")}-small.png`
+                const imgUrl = `${config.urls.image}/${interaction.values[0].replaceAll("_","%20").replaceAll(" ","%20")}-small.png`
                 console.log(imgUrl)
                 const embed = new EmbedBuilder()
                     .setImage(imgUrl)

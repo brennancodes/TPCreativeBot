@@ -1,4 +1,4 @@
-const config = require("../config.json");
+const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json");
 
 module.exports = async (client, interaction) => {
     let isValid = true;
@@ -55,7 +55,7 @@ module.exports = async (client, interaction) => {
                             }
                             else if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.submitCooldownHours){
                                 isValid = false;
-                                await interaction.editReply({content: `You are submitting too frequently. Try again in ${(config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000).toFixed(2)} minutes.`,ephemeral:true})
+                                await interaction.editReply({content: `You are submitting too frequently. Try again in ${((config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000)).toFixed(2)} minutes.`,ephemeral:true})
                             }
                         }
                     }

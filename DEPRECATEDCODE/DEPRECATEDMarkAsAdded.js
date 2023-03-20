@@ -1,6 +1,4 @@
-const config = require("../../config.json");
-const removeButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal");
-const CalculateRotationBalance = require("../../Functions/CalculateRotationBalance");
+const { CalculateRotationBalance, removeButtonsFromOriginal } = require("../Functions");
 
 module.exports = (client) => {
     client.on("interactionCreate", interaction => {

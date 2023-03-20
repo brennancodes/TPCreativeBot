@@ -1,5 +1,4 @@
 const { ActionRowBuilder, EmbedBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
-const config = require("../config.json");
 const removeButtonsFromOriginal = require("../Functions/RemoveButtonsFromOriginal")
 
 module.exports = (client) => {

@@ -1,6 +1,5 @@
-require("dotenv").config();
+const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 const { REST } = require("@discordjs/rest");
-const config = require("../config.json");
 const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
 module.exports = async (interaction, removeEmbeds = false) => {
