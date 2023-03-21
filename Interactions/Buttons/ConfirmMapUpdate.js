@@ -1,5 +1,5 @@
 const { ActionRowBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
-const removeButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
+const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
 
 module.exports.execute = (interaction) => {
     try {
@@ -55,7 +55,7 @@ module.exports.execute = (interaction) => {
             )
                     
         interaction.reply({content:"Select exactly one playlist and one weight.",ephemeral:true,components:[row,row2]})
-        removeButtonsFromOriginal(interaction);
+        RemoveButtonsFromOriginal(interaction);
     }
     catch (err){
         console.log(err);

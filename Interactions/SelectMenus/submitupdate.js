@@ -1,4 +1,4 @@
-const removeButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
+const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
 const { EmbedBuilder } = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
@@ -87,7 +87,7 @@ module.exports.execute = (interaction) => {
                 interaction.reply({content:`**Potential API error.** URL:${url}\n Please investigate map ${mapId}`})
             }
         })
-        removeButtonsFromOriginal(interaction);
+        RemoveButtonsFromOriginal(interaction);
     }
     catch (err) {
         console.log(err)

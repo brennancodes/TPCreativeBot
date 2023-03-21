@@ -1,4 +1,4 @@
-const removeButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
+const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
 const {EmbedBuilder} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const getMapById = require("../../Functions/GetMapById")
@@ -43,7 +43,7 @@ module.exports.execute = async (interaction) => {
                 }
             });
 
-            removeButtonsFromOriginal(interaction, true);
+            RemoveButtonsFromOriginal(interaction, true);
         }
     }
     catch (err) {
