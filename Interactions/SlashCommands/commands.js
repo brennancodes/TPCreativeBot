@@ -17,15 +17,15 @@ module.exports.execute = (interaction) => {
                 roles: "any"
             },
             {
-                commandName: "submitmap",
-                parameters: "FortunateMaps Code",
-                description: "Submit a map hosted on https://fortunatemaps.herokuapp.com to the Map Test Committee. Submissions may be added to the base game.",
-                roles: "any"
-            },
-            {
                 commandName: "findmap",
                 parameters: "Map Name",
                 description: "Search for a map currently in the Rotation, Trial, Classic, Retired, or Groups playlists",
+                roles: "any"
+            },
+            {
+                commandName: "submitmap",
+                parameters: "FortunateMaps Code",
+                description: "Submit a map hosted on https://fortunatemaps.herokuapp.com to the Map Test Committee. Submissions may be added to the base game.",
                 roles: "any"
             },
             {

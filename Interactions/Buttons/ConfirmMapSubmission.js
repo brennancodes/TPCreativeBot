@@ -1,5 +1,5 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
-const { removeButtonsFromOriginal, ValidateSubmission } = require("../../Functions")
+const { RemoveButtonsFromOriginal, ValidateSubmission } = require("../../Functions")
 
 module.exports.execute = async (interaction) => {
     try {
@@ -32,7 +32,7 @@ module.exports.execute = async (interaction) => {
             }
         }
         // This is needed to remove the components (buttons)            
-        removeButtonsFromOriginal(interaction);
+        RemoveButtonsFromOriginal(interaction);
     }
     catch (err){
         console.log(err);
