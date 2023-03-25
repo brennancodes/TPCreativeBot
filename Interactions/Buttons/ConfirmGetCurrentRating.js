@@ -12,7 +12,7 @@ module.exports.execute = async (interaction) => {
             const map = await getMapById(interaction.customId.split("---")[1]);
 
             const headers = {
-                'x-mtc-api-key': config.keys["tagpro-secret-api-key"]
+                'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
             }
             const url = `${config.urls.api}/getcurrentrating/${map.id}`
             const imageUrl = `${config.urls.image}/${map.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`

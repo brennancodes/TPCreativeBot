@@ -169,7 +169,7 @@ module.exports.execute = async (reaction, user) => {
                         .then(async (sent)=>{
                             if (decision === "Approved"){
                                 const headers = {
-                                    'x-mtc-api-key': config.keys["tagpro-secret-api-key"]
+                                    'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
                                 const url = `${config.urls.api}/addmap/${descSplit[3]}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){

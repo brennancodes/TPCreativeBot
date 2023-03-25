@@ -1,0 +1,32 @@
+{
+    "guildId":"DiscordServerId",
+    "users": {
+        "bot": "DiscordBotId",
+        "botOwner": "DiscordBotOwnerId"
+    },
+    "channels": {
+        "mtc": "MTCChannelId",
+        "mtcDiscussion": "MTCDiscussionChannelId",
+        "mtcAdmin": "MTCAdminChannelId"
+    },
+    "roles":{
+        "mtc": "MTCRoleId",
+        "mtcAdmin": "MTCAdminRoleId"
+    },
+    "mtcSettings":{
+        "approveDenyThreshold": "Integer>1",
+        "qualityControlThreshold": "Integer>1",
+        "feedbackThreshold": "Integer>=0",
+        "blockSelfVoting": "TrueFalse",
+        "pingDateTime": "hh mm ss * * *",
+        "submitCooldownHours": "Integer>=0",
+        "preventResubmit": "TrueFalse",
+        "awaitMTCAction": "TrueFalse",
+        "bypassAwaitHourThreshold":"Integer>=0",
+        "useDiscussionChannel": "TrueFalse"
+    },
+    "urls":{
+        "api": "TagProAPIRootURL",
+        "image": "TagProStaticImagesRootURL"
+    }
+}

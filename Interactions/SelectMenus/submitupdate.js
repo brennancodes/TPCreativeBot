@@ -34,7 +34,7 @@ module.exports.execute = (interaction) => {
             return;
         }
         const headers = {
-            'x-mtc-api-key': config.keys["tagpro-secret-api-key"]
+            'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
         }
         const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
         axios({method:'post',url:url,headers:headers}).then(function(resp){

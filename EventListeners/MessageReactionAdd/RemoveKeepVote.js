@@ -92,7 +92,7 @@ module.exports.execute = async (reaction, user) => {
                         .then(sent=>{
                             if (decision === "Removed"){
                                 const headers = {
-                                    'x-mtc-api-key': config.keys["tagpro-secret-api-key"]
+                                    'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
                                 const url = `${config.urls.api}/removemap/${mapId}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
