@@ -96,15 +96,19 @@ module.exports.execute = async (reaction, user) => {
                                 }
                                 const url = `${config.urls.api}/removemap/${mapId}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
-                                    if (resp.data && (resp.data.includes("Updated map") || resp.data.includes("Deleted map"))){
-                                        console.log("Success!!!")
-                                        var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
-                                        mtcAdminChannel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                                    var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
+                                    try {
+                                        if (resp.data && (resp.data.includes("Updated map") || resp.data.includes("Deleted map"))){
+                                            console.log("Success!!!")
+                                            mtcAdminChannel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                                        }
+                                        else {
+                                            console.log("FAILURE! ABORT!")
+                                            mtcAdminChannel.send({content:`**Potential API error.** URL: ${url}\n Please investigate ${mapByAuthor}`})
+                                        }
                                     }
-                                    else {
-                                        console.log("FAILURE! ABORT!")
-                                        var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
-                                        mtcAdminChannel.send({content:`**Potential API error.** URL: ${url}\n Please investigate ${mapByAuthor}`})
+                                    catch (err){
+                                        mtcAdminChannel.send({content: err})
                                     }
                                 });
                             }

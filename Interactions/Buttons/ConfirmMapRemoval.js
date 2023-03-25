@@ -8,7 +8,6 @@ module.exports.execute = async (interaction) => {
         if (!interaction.customId.includes("ConfirmMapRemoval")){ return false; }
         else {
             const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
-            console.log(interaction.customId)
             const map = await GetMapById(interaction.customId.split("---")[1]);
 
             const imgUrl = `${config.urls.image}/${map.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
