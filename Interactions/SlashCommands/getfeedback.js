@@ -37,7 +37,7 @@ module.exports.execute = (interaction) => {
 
     allThreads.then(()=>{
         for (var i = 0; i < feedbackArray.length; i++){
-            response += "➢ " + feedbackArray[i] + "\n"
+            feedbackArray[i].length > 0 ? response += "➢ " + feedbackArray[i] + "\n" : response += "";
         }
         interaction.reply({content:`${response}`,ephemeral:true})
     })        
