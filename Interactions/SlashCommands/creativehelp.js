@@ -6,12 +6,12 @@ module.exports.execute = (interaction) => {
         if (!interaction.isChatInputCommand()){
             return false;
         }
-        if (interaction.commandName != "commands"){
+        if (interaction.commandName != "creativehelp"){
             return false;
         }
         var commandList = [
             {
-                commandName: "commands",
+                commandName: "creativehelp",
                 parameters: "None",
                 description: "List all commands available to me.",
                 roles: "any"
@@ -20,6 +20,12 @@ module.exports.execute = (interaction) => {
                 commandName: "findmap",
                 parameters: "Map Name",
                 description: "Search for a map currently in the Rotation, Trial, Classic, Retired, or Groups playlists",
+                roles: "any"
+            },
+            {
+                commandName: "findfortunatemap",
+                parameters: "Map Name or FM Code",
+                description: "Search for a map on FortunateMaps",
                 roles: "any"
             },
             {
@@ -85,6 +91,6 @@ module.exports.execute = (interaction) => {
         interaction.reply({embeds:[embed],ephemeral:true})
     }
     catch (err) {
-        console.log(err);
+        console.error(err);
     }    
 }

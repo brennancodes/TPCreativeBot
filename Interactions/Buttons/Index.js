@@ -4,5 +4,14 @@ const ConfirmMapUpdate = require('./ConfirmMapUpdate.js');
 const ConfirmMapRemoval = require('./ConfirmMapRemoval.js');
 const CancelAction = require("./CancelAction");
 const ConfirmGetCurrentRating = require("./ConfirmGetCurrentRating");
+const ShareToChannel = require("./ShareToChannel");
 
-module.exports = { ConfirmMapSubmission, CancelMapSubmission, ConfirmMapUpdate, ConfirmMapRemoval, CancelAction, ConfirmGetCurrentRating };
+module.exports = { 
+    ConfirmMapSubmission, 
+    CancelMapSubmission, 
+    ConfirmMapUpdate, 
+    ConfirmMapRemoval, 
+    CancelAction, 
+    ConfirmGetCurrentRating,
+    ShareToChannel
+};

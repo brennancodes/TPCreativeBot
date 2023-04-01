@@ -40,6 +40,6 @@ module.exports.execute = async (interaction) => {
         }
     }
     catch (err) {
-        console.log(err)
+        console.error(err)
     }
 }

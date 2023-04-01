@@ -19,8 +19,8 @@
         "feedbackThreshold": "Integer>=0",
         "blockSelfVoting": "TrueFalse",
         "pingDateTime": "hh mm ss * * *",
-        "submitCooldownHours": "Integer>=0",
-        "preventResubmit": "TrueFalse",
+        "submitCooldownHours": "Integer>=0, currently broken",
+        "preventResubmit": "TrueFalse, currently broken",
         "awaitMTCAction": "TrueFalse",
         "bypassAwaitHourThreshold":"Integer>=0",
         "useDiscussionChannel": "TrueFalse"

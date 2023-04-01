@@ -39,7 +39,7 @@ module.exports.execute = (interaction) => {
         const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
         axios({method:'post',url:url,headers:headers}).then(function(resp){
             if (resp.data && resp.data.includes("Updated map")){
-                console.log("Success!!!")
+                console.info("Success!!!")
                 //TODO HERE: Get map info from the json, re-create the embed from before.
                 async function searchMaps(){
                     const maps = await nfetch('https://tagpro-secret.koalabeast.com/maps.json')
@@ -79,17 +79,17 @@ module.exports.execute = (interaction) => {
                         .setTimestamp();
                     const mtcAdminChannel = interaction.client.channels.cache.get(config.channels.mtcAdmin);
                     mtcAdminChannel.send({content:`**Map Updated\n** *${x.name}* by ${x.author}`,embeds:[embed]})
-                    interaction.reply({embeds: [embed], content: "**Update complete.** Please allow up to 10 minutes for changes to go into effect."})
+                    interaction.reply({embeds: [embed], content: "**Update complete.** Please allow up to 10 minutes for changes to go into effect.", ephemeral:true})
                 });
             }
             else {
-                console.log("FAILURE! ABORT!")
+                console.error("FAILURE! ABORT!")
                 interaction.reply({content:`**Potential API error.** URL:${url}\n Please investigate map ${mapId}`})
             }
         })
         RemoveButtonsFromOriginal(interaction);
     }
     catch (err) {
-        console.log(err)
+        console.error(err)
     }
 }

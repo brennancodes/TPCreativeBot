@@ -32,7 +32,7 @@ module.exports = async (mapName, resultNumber = 1, isRemoval = false) => {
         return null;
     }
     catch (err){
-        console.log(err);
+        console.error(err);
     }
     
 }

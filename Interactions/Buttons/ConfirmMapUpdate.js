@@ -58,6 +58,6 @@ module.exports.execute = (interaction) => {
         RemoveButtonsFromOriginal(interaction);
     }
     catch (err){
-        console.log(err);
+        console.error(err);
     }
 }     

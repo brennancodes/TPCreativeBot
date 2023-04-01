@@ -2,17 +2,34 @@ const config = process.env.ENVIRONMENT == "Production" ? require("../config.json
 const { REST } = require("@discordjs/rest");
 const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
-module.exports = async (interaction, removeEmbeds = false) => {
+module.exports = async (interaction, removeEmbeds = false, newContentString = null) => {
     var newContent = {};
     if (removeEmbeds == true){
-        newContent = {
-            components: [],
-            embeds: []
+        if (newContentString != null){
+            newContent = {
+                content: newContentString,
+                components: [],
+                embeds: []
+            }
+        }
+        else {
+            newContent = {
+                components: [],
+                embeds: []
+            }
         }
     }
     else {
-        newContent = {                    
-            components: []
+        if (newContentString != null){
+            newContent = {
+                content: newContentString,
+                components: []
+            }
+        }
+        else {
+            newContent = {                    
+                components: []
+            }
         }
     }
 
@@ -25,6 +42,6 @@ module.exports = async (interaction, removeEmbeds = false) => {
         var patchUrl = `/webhooks/${config.users.bot}/${interaction.token}/messages/${interaction.message.id}`
         await rest.patch(patchUrl, {headers: header, body:newContent})
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
 }

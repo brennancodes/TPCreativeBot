@@ -2,8 +2,9 @@ const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOrig
 
 module.exports.execute = (interaction) => {
     if (!interaction.isButton()){ return false; }
-    if (interaction.customId != "CancelMapSubmission"){ return false; }
-    interaction.reply({content:"Submission has been cancelled. Nothing sent to MTC.", ephemeral:true})
-    // This is needed to remove the components (buttons)            
-    RemoveButtonsFromOriginal(interaction);
+    if (!interaction.customId.includes("CancelMapSubmission")){ return false; }
+    var code = interaction.customId.split("---")[1]
+    interaction.update({content:`Submission of map \`${code}\` has been cancelled. Nothing sent to MTC.`, ephemeral:true})
+    // This is needed to remove the components (buttons) and embed.
+    RemoveButtonsFromOriginal(interaction,true);
 }

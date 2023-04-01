@@ -4,7 +4,18 @@ const GetFeedback = require("./getfeedback");
 const RotationSummary = require("./rotationsummary");
 const UpdateMap = require("./updatemap");
 const FindMap = require("./findmap");
+const FindFortunateMap = require("./findfortunatemap");
 const GetCurrentRating = require("./getcurrentrating");
-const Commands = require("./commands");
+const CreativeHelp = require("./creativehelp");
 
-module.exports = { SubmitMap, RemoveMap, GetFeedback, RotationSummary, UpdateMap, FindMap, GetCurrentRating, Commands }
+module.exports = { 
+    SubmitMap, 
+    RemoveMap, 
+    GetFeedback, 
+    RotationSummary, 
+    UpdateMap, 
+    FindMap, 
+    FindFortunateMap,
+    GetCurrentRating, 
+    CreativeHelp 
+}

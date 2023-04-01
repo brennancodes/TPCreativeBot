@@ -99,11 +99,11 @@ module.exports.execute = async (reaction, user) => {
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
                                     try {
                                         if (resp.data && (resp.data.includes("Updated map") || resp.data.includes("Deleted map"))){
-                                            console.log("Success!!!")
+                                            console.success("Success!!!")
                                             mtcAdminChannel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
                                         }
                                         else {
-                                            console.log("FAILURE! ABORT!")
+                                            console.error("FAILURE! ABORT!")
                                             mtcAdminChannel.send({content:`**Potential API error.** URL: ${url}\n Please investigate ${mapByAuthor}`})
                                         }
                                     }

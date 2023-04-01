@@ -24,7 +24,7 @@ module.exports.execute = async (interaction) => {
                 .setTimestamp();
             axios({method:'get',url:url,headers:headers}).then(function(resp){
                 if (resp.data && parseFloat(resp.data) != NaN){
-                    console.log("SUCCESS!!")
+                    console.info("SUCCESS!!")
                     map.score = (resp.data*100).toFixed(2);
                     embed.setDescription('Title: **'+map.name+'**\n'
                         + 'Category: **'+map.category+'**\n'
@@ -47,6 +47,6 @@ module.exports.execute = async (interaction) => {
         }
     }
     catch (err) {
-        console.log(err)
+        console.error(err)
     }
 }

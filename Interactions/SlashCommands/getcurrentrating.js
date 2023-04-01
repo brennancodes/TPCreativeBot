@@ -59,7 +59,7 @@ module.exports.execute = (interaction) => {
                 new ButtonBuilder().setCustomId(`getcurrentrating---${searchString}---${counter}`).setStyle(ButtonStyle.Success).setLabel('Next Map 🡲'),
                 new ButtonBuilder().setCustomId('cancelaction---getcurrent').setStyle(ButtonStyle.Secondary).setLabel('Cancel')
             )
-            if (counter > 1){
+            if (interaction.message != undefined){
                 interaction.update({embeds:[embed], content:"Is this your map? \n*You can click the thumbnail (if it exists) to see a full-size image.*", ephemeral: true, components: [row]})
             }
             else {
@@ -68,6 +68,6 @@ module.exports.execute = (interaction) => {
         })
     }
     catch (err){
-        console.log(err);
+        console.error(err);
     }
 }

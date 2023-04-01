@@ -8,6 +8,6 @@ module.exports.execute = (interaction) => {
         interaction.update({content:"You're welcome!", ephemeral:true})
     }
     else {
-        interaction.update({content:"Action has been cancelled. Knew you wouldn't, pussy.", ephemeral:true})
+        interaction.update({content:"Action has been cancelled. Coward.", ephemeral:true})
     }
 }

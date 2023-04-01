@@ -5,14 +5,10 @@ const slashCommands = fs.readdirSync("./Interactions/SlashCommands").filter(file
 const buttons = fs.readdirSync("./Interactions/Buttons").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
 const selectMenus = fs.readdirSync("./Interactions/SelectMenus").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
 const messageReactionAdds = fs.readdirSync("./EventListeners/MessageReactionAdd").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
-// const { SubmitMap, RemoveMap, GetFeedback, RotationSummary, UpdateMap, FindMap, GetCurrentRating, Commands } = require("./Interactions/SlashCommands")
-// const { ApproveDenyVote, RemoveKeepVote } = require("./EventListeners/MessageReactionAdd")
-// const { ConfirmMapSubmission, CancelMapSubmission, ConfirmMapUpdate, ConfirmMapRemoval, CancelAction, ConfirmGetCurrentRating } = require("./Interactions/Buttons")
-// const { SubmitUpdate } = require("./Interactions/SelectMenus")
-const { PingMTC } = require("./Functions");
+const { PingMTC, RefreshPins } = require("./Functions");
 const { Routes } = require("discord-api-types/v9");
 const { REST } = require("@discordjs/rest");
-const { Client, GatewayIntentBits, Partials } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, ApplicationCommand } = require("discord.js");
 
 const client = new Client({
     intents: [
@@ -34,6 +30,8 @@ const client = new Client({
 const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
 client.once("ready", () => {
+    PingMTC(client);
+    RefreshPins(client);
     //console.log(client.user.avatar)
     // if (client.user.avatar != "b977248a0a4cdb441165f749a6be6f38"){
     //     // client.user.setAvatar("https://i.imgur.com/VzlbIwL.png")
@@ -41,29 +39,6 @@ client.once("ready", () => {
     // }
     //client.user.setAvatar("https://cdn.discordapp.com/attachments/999662176618958968/1047746767833284618/FavIcon_1.png")
     // CalculateRotationBalance(client) // Using this method here will force run it on bot startup
-
-    
-    // SubmitMap(client);
-    // RemoveMap(client);
-    // ConfirmMapSubmission(client);
-    // CancelMapSubmission(client);
-    // GetFeedback(client);
-    // // MarkAsAdded(client);
-    // // MarkAsRemoved(client);
-    // // RemoveRotationMap(client);
-    // ApproveDenyVote(client);
-    // RemoveKeepVote(client);
-    // PingMTC(client);
-    // RotationSummary(client);
-    // ConfirmMapUpdate(client);
-    // UpdateMap(client);
-    // SubmitUpdate(client);
-    // CancelAction(client);
-    // ConfirmMapRemoval(client);
-    // FindMap(client);
-    // GetCurrentRating(client);
-    // ConfirmGetCurrentRating(client);
-    // Commands(client);
 });
 
 client.on('interactionCreate', async interaction => {
@@ -87,7 +62,7 @@ client.on('interactionCreate', async interaction => {
             event.execute(interaction);
         }
     }
-    if (interaction.isSelectMenu()){
+    if (interaction.isStringSelectMenu()){
         for (const cmd of selectMenus){
             const event = require(`./Interactions/SelectMenus/${cmd}`)
             event.execute(interaction);
@@ -110,7 +85,7 @@ client.login(process.env.TOKEN).then(function(){
 async function main() {
     const commands = [
         {
-            name: 'commands',
+            name: 'creativehelp',
             description: 'See my available commands'
         },
         {
@@ -146,6 +121,40 @@ async function main() {
                     description: 'Search for a map by name',
                     type: 3,
                     required: true,
+                }
+            ]
+        },
+        {
+            name: 'findfortunatemap',
+            description: 'Find a map hosted on FortunateMaps',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Search for a fortunate map by name',
+                    type: 1,
+                    required: false,
+                    options: [
+                        {
+                            name: 'name',
+                            description: 'Search for a fortunate map by name',
+                            type: 3,
+                            required: true
+                        }
+                    ]
+                },
+                {
+                    name: 'code',
+                    description: 'Search for a fortunate map by code',
+                    type: 1,
+                    required: false,
+                    options: [
+                        {
+                            name: 'code',
+                            description: 'Search for a fortunate map by code',
+                            type: 4,
+                            required: true
+                        }
+                    ]
                 }
             ]
         },
@@ -188,6 +197,18 @@ async function main() {
                     required: true,
                 }
             ]
+        },
+        {
+            name: 'blackcheck',
+            description: 'check if map has excess black space',
+            options: [
+                {
+                    name: 'code',
+                    description: 'Code from FortunateMaps',
+                    type: 4,
+                    required: true,
+                }
+            ]
         }
     ];
     try {
@@ -197,7 +218,7 @@ async function main() {
             body: commands,
         })
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 }
 

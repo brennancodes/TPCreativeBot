@@ -14,12 +14,12 @@ module.exports.execute = async (reaction, user) => {
             }
         }
         // Use this IF block to determine if it is a reaction on a map submission
-        if (reaction.message.content.includes("map submission received")){
+        if (reaction.message.content.includes("New map submission [")){
             const description = reaction.message.embeds[0].data.description;
             const descSplit = description.split('**');                
             const channel = reaction.client.channels.cache.get(config.channels.mtc);
             const active = await channel.threads.fetchActive(true)
-            let feedbackThreads = active.threads.filter(x=>x.name === `${descSplit[3]} Feedback`);
+            let feedbackThreads = active.threads.filter(x=>x.name.includes(`${descSplit[3]} Feedback`));
             // need all this nonsense so it grabs the latest thread rather than finding first match
             // with potentially old feedback.
             feedbackThreads.sort(function(a,b){
@@ -36,8 +36,8 @@ module.exports.execute = async (reaction, user) => {
                 })
             }
             // extract userTag from message content
-            const tmp = reaction.message.content.split("from ")[1];
-            const submitterTag = tmp.substring(0,tmp.length-1);
+            let msgCont = reaction.message.content;
+            const submitterTag = msgCont.substring(msgCont.lastIndexOf('<'), msgCont.lastIndexOf('>')+1);
             // parse out the ID from the userTag
             const submitterId = submitterTag.slice(2,submitterTag.length-1)
             if (config.mtcSettings.blockSelfVoting){
@@ -70,6 +70,7 @@ module.exports.execute = async (reaction, user) => {
                     decision = "Refresh"
                     return;
                 }
+                //console.log(reaction._emoji.name, reaction.count, config.mtcSettings.approveDenyThreshold)
                 if (reaction.count >= config.mtcSettings.approveDenyThreshold){                        
                     if (feedbackArray.length < config.mtcSettings.feedbackThreshold && (reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
                         decision = "Pending Feedback";
@@ -95,6 +96,8 @@ module.exports.execute = async (reaction, user) => {
             }
     
             isWired.then(async ()=>{
+                await reaction.message.fetch();
+
                 await getDecision();
                 Respond();
             })
@@ -130,12 +133,11 @@ module.exports.execute = async (reaction, user) => {
                 if (decision === 'Approved' || decision === 'Denied'){
                     const header = `${decision} for trial rotation`
                     reaction.message.unpin();
-                    
                     await feedbackThreads.find(x=>x.id == threads[0]).setArchived(true);
 
                     if (config.mtcSettings.useDiscussionChannel){
                         const discChannel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        const discussionThread = discChannel.threads.cache.find(x=>x.name === `${descSplit[3]} Discussion`)  
+                        const discussionThread = discChannel.threads.cache.find(x=>x.name.includes(`${descSplit[3]} Discussion`))  
                         await discussionThread.setArchived(true);
                     }
                     
@@ -176,11 +178,11 @@ module.exports.execute = async (reaction, user) => {
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
                                     try {
                                         if (resp.data && resp.data.includes("Inserted")){
-                                            console.log("Success!!!")
+                                            console.info("Success!!!")
                                             mtcAdminChannel.send({embeds:[embed],content:`**Added to Rotation** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
                                         }
                                         else {
-                                            console.log("FAILURE! ABORT!")
+                                            console.error("FAILURE! ABORT!")
                                             mtcAdminChannel.send({content:`**Potential API error.** URL:${url}\n Please investigate ${mapByAuthor}`})
                                         }
                                     }

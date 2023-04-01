@@ -27,6 +27,7 @@ module.exports.execute = (interaction) => {
         else {
             searchString = interaction.options.data[0].value;
         }
+
         async function searchMaps(){
             var foundMatch = false;
             const map = await GetMapByName(searchString, counter);
@@ -75,9 +76,10 @@ module.exports.execute = (interaction) => {
             }
             row.addComponents(
                 new ButtonBuilder().setCustomId(`findmap---${searchString}---${counter}`).setStyle(ButtonStyle.Success).setLabel('Next Map 🡲'),
+                new ButtonBuilder().setCustomId(`ShareToChannel`).setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
                 new ButtonBuilder().setCustomId('cancelaction---find').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
             )
-            if (counter > 1){
+            if (interaction.message != undefined){
                 interaction.update({embeds:[embed], content:"Is this your map? \n*You can click the thumbnail (if it exists) to see a full-size image.*", ephemeral: true, components: [row]})
             }
             else {
@@ -86,6 +88,6 @@ module.exports.execute = (interaction) => {
         })
     }
     catch (err){
-        console.log(err);
+        console.error(err);
     }
 }

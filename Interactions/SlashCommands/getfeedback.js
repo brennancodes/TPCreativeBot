@@ -16,8 +16,8 @@ module.exports.execute = (interaction) => {
     const allThreads = new Promise(async (resolve,reject)=>{
         const active = await mtcChannel.threads.fetchActive(true);
         const archived = await mtcChannel.threads.fetchArchived(true);
-        const activeArray = active.threads.filter(t=>t.name === `${mapId} Feedback`);
-        const archivedArray = archived.threads.filter(t=>t.name === `${mapId} Feedback`);
+        const activeArray = active.threads.filter(t=>t.name.includes(`${mapId} Feedback`));
+        const archivedArray = archived.threads.filter(t=>t.name.includes(`${mapId} Feedback`));
         const all = activeArray.concat(archivedArray);
         if (all.size === 0){
             resolve();

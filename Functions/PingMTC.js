@@ -19,7 +19,7 @@ module.exports = async (client) => {
                     // fetch the full message
                     const m = await channel.messages.fetch(x)
                     // for each cached partial reaction
-                    await m.react('🔄')                
+                    await m.react('🔄')
                     m.reactions.cache.forEach(async y=>{
                         // fetch the full reaction
                         y.fetch().then(async r=> {
@@ -62,7 +62,7 @@ module.exports = async (client) => {
             })
         }
         else{
-            console.log("No pins")
+            console.info("No pins")
         }
     }
 }

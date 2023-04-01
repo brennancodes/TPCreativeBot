@@ -64,7 +64,7 @@ module.exports.execute = (interaction) => {
                 new ButtonBuilder().setCustomId(`updatemap---${searchString}---${counter}`).setStyle(ButtonStyle.Success).setLabel('Next Map 🡲'),
                 new ButtonBuilder().setCustomId('cancelaction---update').setStyle(ButtonStyle.Secondary).setLabel('Cancel')
             )
-            if (counter > 1){
+            if (interaction.message != undefined){
                 interaction.update({embeds:[embed], content:"*Verify that you've selected the correct map to update.* \n*You can click the thumbnail (if it exists) to see a full-size image.*", ephemeral: true, components: [row]})
             }
             else {
@@ -73,6 +73,6 @@ module.exports.execute = (interaction) => {
         })
     }
     catch (err){
-        console.log(err);
+        console.error(err);
     }
 }

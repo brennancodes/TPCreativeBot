@@ -15,14 +15,14 @@
     "canvas": "^2.11.0",
     "cheerio": "^1.0.0-rc.12",
     "cron": "^2.1.0",
-    "discord.js": "^14.2.0",
+    "discord.js": "^14.8.0",
     "dotenv": "^16.0.1",
     "fs": "^0.0.1-security",
     "node-fetch": "^2.6.9",
     "npm": "^9.6.2",
-    "request-promise": "^4.2.6"
+    "request": "^2.88.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.22"
   }
 }
