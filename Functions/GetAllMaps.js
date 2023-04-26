@@ -1,8 +1,9 @@
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args)) 
+const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 
 //Returns an array of all maps
 module.exports = async () => {
-    const maps = await nfetch('https://tagpro.koalabeast.com/maps.json')
+    const maps = await nfetch(`${config.urls.tagpro}/maps.json`)
     const body = await maps.json();
     const mapList = []
     for (const key in body){

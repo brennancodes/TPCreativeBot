@@ -197,18 +197,6 @@ async function main() {
                     required: true,
                 }
             ]
-        },
-        {
-            name: 'blackcheck',
-            description: 'check if map has excess black space',
-            options: [
-                {
-                    name: 'code',
-                    description: 'Code from FortunateMaps',
-                    type: 4,
-                    required: true,
-                }
-            ]
         }
     ];
     try {
