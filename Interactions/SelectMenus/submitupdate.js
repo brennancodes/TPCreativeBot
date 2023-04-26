@@ -42,7 +42,7 @@ module.exports.execute = (interaction) => {
                 console.info("Success!!!")
                 //TODO HERE: Get map info from the json, re-create the embed from before.
                 async function searchMaps(){
-                    const maps = await nfetch('https://tagpro-secret.koalabeast.com/maps.json')
+                    const maps = await nfetch('https://tagpro.koalabeast.com/maps.json')
                     const body = await maps.json();
                     for (const key in body){
                         for (const key2 in body[key]){

@@ -2,7 +2,7 @@ const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch
 
 //Returns an array of all maps
 module.exports = async () => {
-    const maps = await nfetch('https://tagpro-secret.koalabeast.com/maps.json')
+    const maps = await nfetch('https://tagpro.koalabeast.com/maps.json')
     const body = await maps.json();
     const mapList = []
     for (const key in body){

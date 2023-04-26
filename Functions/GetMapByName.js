@@ -2,7 +2,7 @@ const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch
 
 module.exports = async (mapName, resultNumber = 1, isRemoval = false) => {
     try {
-        const maps = await nfetch('https://tagpro-secret.koalabeast.com/maps.json')
+        const maps = await nfetch('https://tagpro.koalabeast.com/maps.json')
         const body = await maps.json();
         let counter = 0;
         for (const key in body){

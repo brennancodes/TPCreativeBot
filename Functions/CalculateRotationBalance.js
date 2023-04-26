@@ -7,7 +7,7 @@ const Image = Canvas.Image;
 module.exports = (client, interaction) => {
     const fetchEm = new Promise((resolve,reject)=>{
         async function getMaps(){
-            const maps = await nfetch('https://tagpro-secret.koalabeast.com/allmaps.json')
+            const maps = await nfetch('https://tagpro.koalabeast.com/allmaps.json')
             const body = await maps.json();            
             resolve(body);
         }
