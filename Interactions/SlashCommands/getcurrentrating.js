@@ -32,8 +32,13 @@ module.exports.execute = (interaction) => {
                 foundMatch = true;
             }
             if (!foundMatch){
-                RemoveButtonsFromOriginal(interaction, true);
-                interaction.update({content:"Could not find any more maps matching that string.\n Try using `/getcurrentrating` again with different parameters."})
+                if (interaction.message != undefined){
+                    RemoveButtonsFromOriginal(interaction, true);
+                    interaction.update({content:"Could not find any more maps matching that string.\n Try using `/findmap` again with different parameters."})
+                }
+                else {
+                    interaction.reply({content:"Could not find any more maps matching that string.\n Try using `/findmap` again with different parameters.", ephemeral:true})
+                }
                 return;
             }
             return map;
