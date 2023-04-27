@@ -38,7 +38,9 @@ module.exports.execute = async (reaction, user) => {
             async function Respond(){                    
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
                 const mapByAuthor = reaction.message.embeds[0].data.description.split("Current Score:")[0];
+                const score = reaction.message.embeds[0].data.description.split(mapByAuthor)[1].split("Map ID:")[0];
                 const mapId = reaction.message.embeds[0].data.description.split("Map ID: ")[1];
+                const RaR = `Rating at removal: ${score.split("Current Score:")[1]}`
                 
                 if (decision === "Refresh"){
                     await reaction.users.remove(user.id);
@@ -76,10 +78,11 @@ module.exports.execute = async (reaction, user) => {
                         denialString = "No votes: ";
                         denialList.forEach(x=> {if (x != config.users.bot){denialString += "<@" + x + "> "}});                
                     })
+                    const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Kept' ? '#7bcf5c' : '#da3e52')
                         .setAuthor({name:header,iconURL:iconUrl})
-                        .setDescription(`${mapByAuthor}\n${approvalString}\n${denialString}`)
-                        .setThumbnail(`${reaction.message.embeds[0].data.image.url}`).setTimestamp()
+                        .setDescription(`${mapByAuthor}${RaR}\n${approvalString}\n${denialString}`)
+                        .setThumbnail(imageUrl).setTimestamp()
                     // const row = new ActionRowBuilder();
                     // if (decision === "Removed"){
                     //     row.addComponents(
@@ -97,10 +100,15 @@ module.exports.execute = async (reaction, user) => {
                                 const url = `${config.urls.api}/removemap/${mapId}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
+                                    var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);
                                     try {
                                         if (resp.data && (resp.data.includes("Updated map") || resp.data.includes("Deleted map"))){
-                                            console.success("Success!!!")
+                                            console.info("Success!!!")
                                             mtcAdminChannel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                                            embed.setDescription(`${mapByAuthor}${RaR}`);
+                                            embed.setThumbnail(null);
+                                            embed.setImage(imageUrl)
+                                            mtcAnnouncementChannel.send({embeds:[embed],content:`<@&${config.roles.mapUpdates}> ${header}\n${mapByAuthor}`})
                                         }
                                         else {
                                             console.error("FAILURE! ABORT!")
@@ -108,7 +116,8 @@ module.exports.execute = async (reaction, user) => {
                                         }
                                     }
                                     catch (err){
-                                        mtcAdminChannel.send({content: err})
+                                        mtcAdminChannel.send({content: "RemoveMap API Error. Check logs."})
+                                        console.error(err);
                                     }
                                 });
                             }

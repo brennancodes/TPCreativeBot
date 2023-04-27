@@ -7,11 +7,13 @@
     "channels": {
         "mtc": "MTCChannelId",
         "mtcDiscussion": "MTCDiscussionChannelId",
-        "mtcAdmin": "MTCAdminChannelId"
+        "mtcAdmin": "MTCAdminChannelId",
+        "mtcAnnouncements": "MTCAnnouncementsChannelId"
     },
     "roles":{
         "mtc": "MTCRoleId",
-        "mtcAdmin": "MTCAdminRoleId"
+        "mtcAdmin": "MTCAdminRoleId",
+        "mapUpdates": "MapUpdatesRoleId"
     },
     "mtcSettings":{
         "approveDenyThreshold": "Integer>1",
@@ -26,6 +28,7 @@
         "useDiscussionChannel": "TrueFalse"
     },
     "urls":{
+        "tagpro": "TagProSiteBaseURL",
         "api": "TagProAPIRootURL",
         "image": "TagProStaticImagesRootURL"
     }

@@ -161,6 +161,7 @@ module.exports.execute = async (reaction, user) => {
                         wireString = "Quality control by: ";
                         wireList.forEach(x=> {if (x != config.users.bot){wireString += "<@" + x + "> "}});
                     })
+                    const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Approved' ? '#7bcf5c' : '#da3e52')
                         .setAuthor({name:header,iconURL:iconUrl})
                         .setDescription(`${mapByAuthorLinks}\n\nID: **${descSplit[3]}**\n\n${approvalString}\n${denialString}${decision == "Denied" ? '' : '\n' + wireString}`)
@@ -176,10 +177,16 @@ module.exports.execute = async (reaction, user) => {
                                 const url = `${config.urls.api}/addmap/${descSplit[3]}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
+                                    var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);
+
                                     try {
                                         if (resp.data && resp.data.includes("Inserted")){
                                             console.info("Success!!!")
                                             mtcAdminChannel.send({embeds:[embed],content:`**Added to Rotation** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                                            embed.setDescription(`${mapByAuthorLinks}\nID: **${descSplit[3]}**`);
+                                            embed.setThumbnail(null);
+                                            embed.setImage(imageUrl)
+                                            mtcAnnouncementChannel.send({embeds:[embed],content:`<@&${config.roles.mapUpdates}> ${header}\n${mapByAuthor}`})
                                         }
                                         else {
                                             console.error("FAILURE! ABORT!")
@@ -187,7 +194,8 @@ module.exports.execute = async (reaction, user) => {
                                         }
                                     }
                                     catch (err) {
-                                        mtcAdminChannel.send({content: err})
+                                        mtcAdminChannel.send({content: "RemoveMap API Error. Check logs."})
+                                        console.error(err);
                                     }
                                 })
                             }
