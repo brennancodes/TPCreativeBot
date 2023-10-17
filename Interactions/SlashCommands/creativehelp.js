@@ -86,7 +86,7 @@ module.exports.execute = (interaction) => {
         const embed = new EmbedBuilder()
             .setColor('#CDDC39')
             .setAuthor({name: "Commands List", iconURL: iconUrl})
-            .setDescription(`${descriptionString}\n*Developed by Moosen with API integrations from DaEvil1.\nArtwork by [Bally.](https://reddit.com/u/PepiHopi)\nContact <@${config.users.botOwner}> for assistance.*`)
+            .setDescription(`${descriptionString}\n*Developed by Moosen with API integrations from DaEvil1.\nArtwork by [Pepi.](https://reddit.com/u/PepiHopi)\nContact <@${config.users.botOwner}> for assistance.*`)
 
         interaction.reply({embeds:[embed],ephemeral:true})
     }
