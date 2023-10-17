@@ -171,18 +171,18 @@ module.exports.execute = async (reaction, user) => {
                     reaction.message.channel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
                         .then(async (sent)=>{
                             if (decision === "Approved"){
+                                var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
+                                var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);
+                                
                                 const headers = {
                                     'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
                                 const url = `${config.urls.api}/addmap/${descSplit[3]}`
-                                axios({method:'post',url:url,headers:headers}).then(function(resp){
-                                    var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
-                                    var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);
-
+                                await axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     try {
                                         if (resp.data && resp.data.includes("Inserted")){
                                             console.info("Success!!!")
-                                            mtcAdminChannel.send({embeds:[embed],content:`**Added to Rotation** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
+                                            mtcAdminChannel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}});
                                             embed.setDescription(`${mapByAuthorLinks}\nID: **${descSplit[3]}**`);
                                             embed.setThumbnail(null);
                                             embed.setImage(imageUrl)
@@ -191,6 +191,10 @@ module.exports.execute = async (reaction, user) => {
                                         else {
                                             console.error("FAILURE! ABORT!")
                                             mtcAdminChannel.send({content:`**Potential API error.** URL:${url}\n Please investigate ${mapByAuthor}`})
+                                            mtcAdminChannel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}});
+                                            embed.setDescription(`${mapByAuthorLinks}\nID: **${descSplit[3]}**`);
+                                            embed.setThumbnail(null);
+                                            embed.setImage(imageUrl)
                                         }
                                     }
                                     catch (err) {
@@ -198,7 +202,7 @@ module.exports.execute = async (reaction, user) => {
                                         console.error(err);
                                     }
                                 })
-                            }
+                            }                                
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         }).then(()=>{

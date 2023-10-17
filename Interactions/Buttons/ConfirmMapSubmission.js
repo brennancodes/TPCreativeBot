@@ -35,6 +35,10 @@ module.exports.execute = async (interaction) => {
                 })
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
+                    msg.embeds[0].data.thumbnail = msg.embeds[0].data.image;
+                    delete msg.embeds[0].data.image;
+                    delete msg.embeds[0].data.footer;
+                    delete msg.embeds[0].data.author.name;
                     discussionChannel.send(msg).then(sent => {
                         sent.startThread({name:`${mapId} Discussion - Private discussion, speak your mind`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
                     })
