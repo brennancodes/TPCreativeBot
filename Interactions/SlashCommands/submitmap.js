@@ -46,9 +46,9 @@ module.exports.execute = (interaction) => {
                         .setAuthor({name: "Confirm Map Submission", iconURL: iconUrl})
                         .setDescription('Title: [**'+title+'**]('+mapUrl+')\n'
                                         + 'Map ID: **'+code+'**\n'
-                                        + 'Author: [**' + author + '**](' + baseUrl + 'profile/' + author.split(" ").join("_") + ')\n\n'
+                                        + 'Author: [**' + author + '**](' + baseUrl + 'profile/' + author.split(" ").join("_") + ')\n'
+                                        + 'Description: ' + description + '\n\n'
                                         + '[**Test Map**](' + baseUrl + 'test/' + code + ')')
-                        .setFooter({text:`Description: ${description.substring(0,2047)}`});
                     const row = new ActionRowBuilder().addComponents(
                         new ButtonBuilder().setCustomId('ConfirmMapSubmission').setStyle(ButtonStyle.Primary).setLabel('Confirm'),
                         new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
