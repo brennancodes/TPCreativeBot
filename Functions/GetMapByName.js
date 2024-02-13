@@ -32,6 +32,7 @@ module.exports = async (mapName, resultNumber = 1, isRemoval = false, isTrial = 
                             score: x.score,
                             key: x.key,
                             weight: x.weight,
+                            votes: x.totalUsers,
                             category: x.category.charAt(0).toUpperCase() + x.category.slice(1),
                             searchValue: mapName.toLowerCase()
                         }

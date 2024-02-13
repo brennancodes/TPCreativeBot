@@ -30,6 +30,7 @@ module.exports.execute = async (interaction) => {
                     embed.setDescription('Title: **'+map.name+'**\n'
                         + 'Category: **'+map.category+'**\n'
                         + 'Current Rating: **'+map.score+'%**\n'
+                        + 'Total Votes: **'+resp.data.totalUsers+'**\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#7bcf5c");
                     interaction.reply({content:"GET request successful. Showing accurate score (this info may be private).",embeds:[embed],ephemeral:true})
