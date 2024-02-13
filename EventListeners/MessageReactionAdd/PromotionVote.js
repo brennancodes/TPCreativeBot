@@ -13,7 +13,7 @@ module.exports.execute = async (reaction, user) => {
             }
         }
         // Use this IF block to determine if it is a reaction on a map submission
-        if (reaction.message.content.includes("New Trial Map Vote")){
+        if (reaction.message.content.includes("New map promotion nomination")){
             function getDecision(){
                 if (reaction._emoji.name === '🔄'){
                     decision = "Refresh"
@@ -22,9 +22,6 @@ module.exports.execute = async (reaction, user) => {
                 if (reaction.count >= config.mtcSettings.approveDenyThreshold){ 
                     if (reaction._emoji.name === '✅'){
                         decision = "Added";
-                    }
-                    else if (reaction._emoji.name === '❌'){
-                        decision = "Removed"
                     }
                     else if (reaction._emoji.name === '⏳'){
                         decision = "Delayed"
@@ -49,7 +46,7 @@ module.exports.execute = async (reaction, user) => {
                     await reaction.users.remove(user.id);
                     return;
                 }
-                if (decision === 'Added' || decision === 'Removed' || decision === 'Delayed'){
+                if (decision === 'Added' || decision === 'Delayed'){
                     let header = "";
                     if (decision === 'Added'){
                         header = `MAP PROMOTED TO FULL ROTATION`
@@ -57,13 +54,16 @@ module.exports.execute = async (reaction, user) => {
                     else if (decision === 'Delayed'){
                         header = `MAP VOTE TABLED`
                     }
+                    else {
+                        throw new Exception();
+                    }
                     reaction.message.unpin();
                     
                     if (config.mtcSettings.useDiscussionChannel){
                         const last = mapByAuthor.lastIndexOf(" by ");
                         const mapName = mapByAuthor.slice(2,last);
                         const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        const thread = channel.threads.cache.find(x=>x.name === `${mapName} Trial Vote Discussion`)  
+                        const thread = channel.threads.cache.find(x=>x.name === `${mapName} Promotion Discussion`)  
                         await thread.setArchived(true);              
                     }
                     

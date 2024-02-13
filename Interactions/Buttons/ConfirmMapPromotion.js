@@ -5,7 +5,7 @@ const config = process.env.ENVIRONMENT == "Production" ? require("../../config.j
 module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isButton()){ return false; }
-        if (!interaction.customId.includes("ConfirmMapTrialVote")){ return false; }
+        if (!interaction.customId.includes("ConfirmMapPromotion")){ return false; }
         else {
             const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
             const map = await GetMapById(interaction.customId.split("---")[1]);
@@ -22,7 +22,7 @@ module.exports.execute = async (interaction) => {
             .setFooter({text:`Please react ✅ to add or ⏳ to wait for now.`})
             
             const msg = {
-                content:`**ATTENTION <@&${config.roles.mtc}>:** New Trial Map Vote called by <@${interaction.user.id}>.`,
+                content:`**ATTENTION <@&${config.roles.mtc}>:** New map promotion nomination received from <@${interaction.user.id}>.`,
                 embeds:[embed],
                 allowedMentions:{"users":[],"roles":[]}
             }
@@ -30,11 +30,11 @@ module.exports.execute = async (interaction) => {
             if (config.mtcSettings.useDiscussionChannel){
                 const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
                 discussionChannel.send(msg).then(sent=>{
-                    sent.startThread({name:`${map.name} Trial Vote Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss addition or removal"})
+                    sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"})
                 })
             }
 
-            interaction.reply({content:"Removal vote posted in MTC channel!",ephemeral:true})
+            interaction.reply({content:"Promotion vote posted in MTC channel!",ephemeral:true})
             mtcChannel.send(msg).then(sent => {sent.react("✅").then(()=>{sent.react("⏳")}).then(()=>sent.pin())})
             RemoveButtonsFromOriginal(interaction);
         }

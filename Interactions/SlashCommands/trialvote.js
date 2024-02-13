@@ -11,12 +11,12 @@ module.exports.execute = (interaction) => {
         var searchString = "";
         var counter = 1;
         if (interaction.isChatInputCommand()){
-            if (!interaction.commandName.includes("trialvote")){
+            if (!interaction.commandName.includes("promotemap")){
                 return false;
             }
         }
         if (interaction.isButton()){
-            if (!interaction.customId.includes("trialvote")){
+            if (!interaction.customId.includes("promotemap")){
                 return false;
             }
             searchString = interaction.customId.split("---")[1]
@@ -36,10 +36,10 @@ module.exports.execute = (interaction) => {
             if (!foundMatch){
                 if (interaction.message != undefined){
                     RemoveButtonsFromOriginal(interaction, true);
-                    interaction.update({content:"Could not find any more maps matching that string.\n Try using `/trialvote` again with different parameters."})
+                    interaction.update({content:"Could not find any more maps matching that string.\n Try using `/promotemap` again with different parameters."})
                 }
                 else {
-                    interaction.reply({content:"Could not find any more maps matching that string.\n Try using `/trialvote` again with different parameters.", ephemeral:true})
+                    interaction.reply({content:"Could not find any more maps matching that string.\n Try using `/promotemap` again with different parameters.", ephemeral:true})
                 }
                 return;
             }
@@ -66,7 +66,7 @@ module.exports.execute = (interaction) => {
                                 + 'Total Votes: **'+x.votes+'**\n'
                                 + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')');
             const row = new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setCustomId(`ConfirmMapTrialVote---${x.id}`).setStyle(ButtonStyle.Primary).setLabel('Confirm'),
+                new ButtonBuilder().setCustomId(`ConfirmMapPromotion---${x.id}`).setStyle(ButtonStyle.Primary).setLabel('Confirm'),
                 new ButtonBuilder().setCustomId(`removemap---${searchString}---${counter}`).setStyle(ButtonStyle.Success).setLabel('Next Map 🡲'),
                 new ButtonBuilder().setCustomId('cancelaction---trial').setStyle(ButtonStyle.Secondary).setLabel('Cancel')
             )

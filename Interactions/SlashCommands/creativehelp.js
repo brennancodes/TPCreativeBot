@@ -54,9 +54,9 @@ module.exports.execute = (interaction) => {
                 roles: "mtc"
             },
             {
-                commandName: "trialvote",
+                commandName: "promotemap",
                 parameters: "Map Name",
-                description: "Call a vote to determine the fate of a Trial map",
+                description: "Nominate a Trial map to be promoted to full rotation.",
                 roles: "mtc"
             },
             {

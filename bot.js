@@ -113,8 +113,8 @@ async function main() {
             ]
         },
         {
-            name: 'trialvote',
-            description: 'Call a vote to determine the fate of a Trial map',
+            name: 'promotemap',
+            description: 'Nominate a Trial map to be promoted to full rotation',
             options: [
                 {
                     name: 'name',
