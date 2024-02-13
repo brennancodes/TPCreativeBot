@@ -7,6 +7,7 @@ const GetMapByName = require("./GetMapByName");
 const GetAllMaps = require("./GetAllMaps");
 const CheckForExcessBlack = require("./CheckForExcessBlack");
 const RefreshPins = require("./RefreshPins");
+const GetFMRoot = require("./GetFMRoot");
 
 module.exports = { 
     PingMTC, 
@@ -18,4 +19,5 @@ module.exports = {
     GetAllMaps, 
     CheckForExcessBlack,
     RefreshPins,
+    GetFMRoot
  }

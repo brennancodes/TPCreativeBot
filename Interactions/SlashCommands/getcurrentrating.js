@@ -1,5 +1,5 @@
 const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { RemoveButtonsFromOriginal, GetMapByName } = require("../../Functions");
+const { RemoveButtonsFromOriginal, GetMapByName, GetFMRoot } = require("../../Functions");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json");
 
 module.exports.execute = (interaction) => {
@@ -34,10 +34,10 @@ module.exports.execute = (interaction) => {
             if (!foundMatch){
                 if (interaction.message != undefined){
                     RemoveButtonsFromOriginal(interaction, true);
-                    interaction.update({content:"Could not find any more maps matching that string.\n Try using `/findmap` again with different parameters."})
+                    interaction.update({content:"Could not find any more maps matching that string.\n Try using `/getcurrentrating` again with different parameters."})
                 }
                 else {
-                    interaction.reply({content:"Could not find any more maps matching that string.\n Try using `/findmap` again with different parameters.", ephemeral:true})
+                    interaction.reply({content:"Could not find any more maps matching that string.\n Try using `/getcurrentrating` again with different parameters.", ephemeral:true})
                 }
                 return;
             }
@@ -49,7 +49,7 @@ module.exports.execute = (interaction) => {
                 return;
             }
             const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
-            const baseUrl = "https://fortunatemaps.herokuapp.com/"
+            const baseUrl = GetFMRoot();
             const iconUrl = "https://b.thumbs.redditmedia.com/g0IY6wWcORTUY8i8vUbloTAC_N6i1qwcZqhN5UiNvLs.jpg"
             const embed = new EmbedBuilder()
                 .setColor('#CDDC39')

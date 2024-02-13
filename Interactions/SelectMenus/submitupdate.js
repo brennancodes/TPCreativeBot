@@ -2,11 +2,12 @@ const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOrig
 const { EmbedBuilder } = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
+const { GetFMRoot } = require("../../Functions");
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args)) 
 
 module.exports.execute = (interaction) => {
     try {
-        if (!interaction.isSelectMenu()){ return false; }
+        if (!interaction.isStringSelectMenu()){ return false; }
         if (interaction.customId != "submitupdate"){ return; }
         let playlist = "";
         let mapId = "";
@@ -42,7 +43,10 @@ module.exports.execute = (interaction) => {
                 console.info("Success!!!")
                 //TODO HERE: Get map info from the json, re-create the embed from before.
                 async function searchMaps(){
-                    const maps = await nfetch(`${config.urls.tagpro}/maps.json`)
+                    const headers = {
+                        'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
+                    }
+                    const maps = await nfetch(`${config.urls.tagpro}/maps.json`, {headers:headers})
                     const body = await maps.json();
                     for (const key in body){
                         for (const key2 in body[key]){
@@ -52,7 +56,7 @@ module.exports.execute = (interaction) => {
                                     id: x._id,
                                     name: x.name,
                                     author: x.author,
-                                    score: x.averageRating,
+                                    score: x.score,
                                     key: x.key,
                                     weight: x.weight,
                                     category: x.category.charAt(0).toUpperCase() + x.category.slice(1)
@@ -65,7 +69,7 @@ module.exports.execute = (interaction) => {
         
                 searchMaps().then(function(x){
                     const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
-                    const baseUrl = "https://fortunatemaps.herokuapp.com/"
+                    const baseUrl = GetFMRoot();
                     const iconUrl = "https://b.thumbs.redditmedia.com/g0IY6wWcORTUY8i8vUbloTAC_N6i1qwcZqhN5UiNvLs.jpg"
                     const embed = new EmbedBuilder()
                         .setColor('#CDDC39')

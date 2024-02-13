@@ -113,6 +113,18 @@ async function main() {
             ]
         },
         {
+            name: 'trialvote',
+            description: 'Call a vote to determine the fate of a Trial map',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Search for a Trial map by name',
+                    type: 3,
+                    required: true,
+                }
+            ]
+        },
+        {
             name: 'findmap',
             description: 'Find a map from the Rotation, Trial, Classic, Retired, or Group playlists',
             options: [

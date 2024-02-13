@@ -7,7 +7,10 @@ const Image = Canvas.Image;
 module.exports = (client, interaction) => {
     const fetchEm = new Promise((resolve,reject)=>{
         async function getMaps(){
-            const maps = await nfetch(`${config.urls.tagpro}/allmaps.json`)
+            const headers = {
+                'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
+            }
+            const maps = await nfetch(`${config.urls.tagpro}/allmaps.json`, {headers:headers})
             const body = await maps.json();            
             resolve(body);
         }
@@ -24,14 +27,14 @@ module.exports = (client, interaction) => {
         }
 
         function createPlaceholder(){
-            var str = [{category:"trial",name: 'Placeholder',weight: 0,averageRating: 100,png:null}]
+            var str = [{category:"trial",name: 'Placeholder',weight: 0,score: 100,png:null}]
             return str;
         }
 
         const mapData = [];
         for (const key in body){
             if (body[key]){
-                if (key == "group"){
+                if (key == "group" || key == "racing"){
                     continue;
                 }
                 const array = createCategoryArray(body[key]);
@@ -44,7 +47,7 @@ module.exports = (client, interaction) => {
 
         function sorted(obj){
             obj.sort(function(a,b){
-                return b.averageRating - a.averageRating;
+                return b.score - a.score;
             })
             return obj;
         }
@@ -60,17 +63,15 @@ module.exports = (client, interaction) => {
             var averageCounter = 0;
             for (var i = 0; i < category.length; i++){
                 var thisWeight = category[i].weight;
-                // MAY NEED TO ADD IF BLOCK TO CHECK IF AVERAGERATING EXISTS
-                // Above note is relevant if Devs decide to add every map with weight > 0 to the /maps page (maps json) without necessarily attaching a score
-                if (thisWeight > 0) {
+                if (thisWeight > 0 && category[i].score > 0) {
                     averageCounter++
-                    cumulativeScore += category[i].averageRating
+                    cumulativeScore += category[i].score
                 }
                 var type = getType(category[i].png)
                 if (type==="CTF"){CTFWt+=thisWeight}else if(type==="NF"){NFWt+=thisWeight}else if(type==="Placeholder"){CTFWt=0;NFWt=0}else{EXWt+=thisWeight};
                 weight += thisWeight;
-                if (i == 0) {bestMap = `${category[i].name} (${category[i].averageRating})`}
-                if (i == category.length - 1) {worstMap = `${category[i].name} (${category[i].averageRating})`}
+                if (i == 0) {bestMap = `${category[i].name} (${category[i].score})`}
+                if (i == category.length - 1) {worstMap = `${category[i].name} (${category[i].score})`}
             }
             var data = {
                 category: catName,

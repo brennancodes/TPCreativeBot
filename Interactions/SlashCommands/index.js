@@ -7,6 +7,7 @@ const FindMap = require("./findmap");
 const FindFortunateMap = require("./findfortunatemap");
 const GetCurrentRating = require("./getcurrentrating");
 const CreativeHelp = require("./creativehelp");
+const TrialVote = require("./trialvote");
 
 module.exports = { 
     SubmitMap, 
@@ -17,5 +18,6 @@ module.exports = {
     FindMap, 
     FindFortunateMap,
     GetCurrentRating, 
-    CreativeHelp 
+    CreativeHelp,
+    TrialVote
 }

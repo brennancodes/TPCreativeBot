@@ -31,5 +31,8 @@
         "tagpro": "TagProSiteBaseURL",
         "api": "TagProAPIRootURL",
         "image": "TagProStaticImagesRootURL"
+    },
+    "system":{
+        "FMHostSwitchDate": "05/03/2024"
     }
 }

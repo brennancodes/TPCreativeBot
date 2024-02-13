@@ -1,5 +1,6 @@
 const {EmbedBuilder} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
+const { GetFMRoot } = require("../../Functions/");
 
 module.exports.execute = (interaction) => {
     try {
@@ -31,7 +32,7 @@ module.exports.execute = (interaction) => {
             {
                 commandName: "submitmap",
                 parameters: "FortunateMaps Code",
-                description: "Submit a map hosted on https://fortunatemaps.herokuapp.com to the Map Test Committee. Submissions may be added to the base game.",
+                description: "Submit a map hosted on https://fortunatemaps.subaverage.site to the Map Test Committee. Submissions may be added to the base game.",
                 roles: "any"
             },
             {
@@ -50,6 +51,12 @@ module.exports.execute = (interaction) => {
                 commandName: "getcurrentrating",
                 parameters: "Map Name",
                 description: "Select a map that does not have a public score to view the true current score.",
+                roles: "mtc"
+            },
+            {
+                commandName: "trialvote",
+                parameters: "Map Name",
+                description: "Call a vote to determine the fate of a Trial map",
                 roles: "mtc"
             },
             {

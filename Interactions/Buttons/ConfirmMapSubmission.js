@@ -1,5 +1,5 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
-const { RemoveButtonsFromOriginal, ValidateSubmission, CheckForExcessBlack } = require("../../Functions")
+const { RemoveButtonsFromOriginal, ValidateSubmission, CheckForExcessBlack, GetFMRoot } = require("../../Functions")
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 module.exports.execute = async (interaction) => {
@@ -16,7 +16,7 @@ module.exports.execute = async (interaction) => {
             if (invalid != "Valid Submission"){
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Edit Map Border')
-                        .setURL(`https://fortunatemaps.herokuapp.com/editor?mapid=${mapId}`),
+                        .setURL(`${GetFMRoot()}editor?mapid=${mapId}`),
                 )
                 interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,ephemeral:true,components:[row]});
             } else {

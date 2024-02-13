@@ -1,7 +1,8 @@
 const axios = require('axios');
 const cheerio = require("cheerio");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json");
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { GetFMRoot } = require('../../Functions');
 
 module.exports.execute = (interaction) => {
     if (!interaction.isChatInputCommand()){
@@ -11,7 +12,7 @@ module.exports.execute = (interaction) => {
         return false;
     }
     var code = interaction.options.data[0].value;
-    var baseUrl = "https://fortunatemaps.herokuapp.com/"
+    var baseUrl = GetFMRoot();
     var imageUrl = baseUrl + "preview/" + code + ".jpeg";
     var mapUrl = baseUrl + "map/" + code;
     var jsonUrl = baseUrl + "json/" + code + ".json";

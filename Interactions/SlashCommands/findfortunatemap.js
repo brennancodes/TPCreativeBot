@@ -1,5 +1,5 @@
 const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { RemoveButtonsFromOriginal, GetMapByName } = require("../../Functions");
+const { RemoveButtonsFromOriginal, GetMapByName, GetFMRoot } = require("../../Functions");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const cheerio = require("cheerio");
 const request = require("request");
@@ -36,7 +36,7 @@ module.exports.execute = (interaction) => {
         }
         if (interaction.isChatInputCommand() && interaction.options.data[0].name=="code"){
             var code = interaction.options.data[0].options[0].value;
-            var baseUrl = "https://fortunatemaps.herokuapp.com/"
+            var baseUrl = GetFMRoot();
             var imageUrl = baseUrl + "preview/" + code + ".jpeg";
             var mapUrl = baseUrl + "map/" + code;
             var iconUrl = baseUrl + "/assets/logo.png"
@@ -76,7 +76,7 @@ module.exports.execute = (interaction) => {
             })
         }
         else{
-            const url = `https://fortunatemaps.herokuapp.com/search?q=${searchString}&p=${(Math.ceil(counter/24))}`
+            const url = `${GetFMRoot()}search?q=${searchString}&p=${(Math.ceil(counter/24))}`
             const getHTML = new Promise((resolve,reject)=>{
                 return request({
                     uri: url,
@@ -117,7 +117,7 @@ module.exports.execute = (interaction) => {
                     return;
                 }
                 //const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
-                const baseUrl = "https://fortunatemaps.herokuapp.com/"
+                const baseUrl = GetFMRoot();
                 const iconUrl = baseUrl + "/assets/logo.png"
                 const embed = new EmbedBuilder()
                     .setColor('#7bcf5c')

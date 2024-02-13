@@ -1,4 +1,5 @@
 const Canvas = require('canvas');
+const GetFMRoot = require('./GetFMRoot');
 const Image = Canvas.Image;
 module.exports = async (mapId) => {
     if (mapId == null){
@@ -11,7 +12,7 @@ module.exports = async (mapId) => {
         let leftSideGood = false;
         let rightSideGood = false;
         let bottomRowGood = false;
-        const png = `https://fortunatemaps.herokuapp.com/png/${mapId}.png`
+        const png = `${GetFMRoot()}png/${mapId}.png`
 
         image.src = `${png}`;
         let helperString = "";

@@ -1,4 +1,4 @@
-const { ActionRowBuilder, SelectMenuBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
 const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
 
 module.exports.execute = (interaction) => {
@@ -33,11 +33,11 @@ module.exports.execute = (interaction) => {
         }
         const row = new ActionRowBuilder()
             .addComponents(
-                new SelectMenuBuilder()
-                    .setMinValues(2)
-                    .setMaxValues(2)
+                new StringSelectMenuBuilder()
                     .setCustomId('submitupdate')
                     .setPlaceholder('Select Category/Weight, then click outside.')
+                    .setMinValues(2)
+                    .setMaxValues(2)
                     .addOptions(catOptions)                    
             )
         const row2 = new ActionRowBuilder()
