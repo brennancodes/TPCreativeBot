@@ -60,8 +60,13 @@ module.exports.execute = async (reaction, user) => {
                         const last = mapByAuthor.lastIndexOf(" by ");
                         const mapName = mapByAuthor.slice(2,last);
                         const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        const thread = channel.threads.cache.find(x=>x.name === `${mapName} Removal Discussion`)  
-                        await thread.setArchived(true);              
+                        const thread = channel.threads.cache.find(x=>x.name === `${mapName} Removal Discussion`) 
+                        try {
+                            await thread.setArchived(true);              
+                        } 
+                        catch (err) {
+                            console.log(err);
+                        }
                     }
                     
                     var appr = reaction.message.reactions.cache.get('✅');
