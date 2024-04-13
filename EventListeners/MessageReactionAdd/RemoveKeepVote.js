@@ -65,7 +65,7 @@ module.exports.execute = async (reaction, user) => {
                             await thread.setArchived(true);              
                         } 
                         catch (err) {
-                            console.log(err);
+                            console.error(err);
                         }
                     }
                     
