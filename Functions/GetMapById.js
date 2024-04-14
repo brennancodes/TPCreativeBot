@@ -16,6 +16,7 @@ module.exports = async (mapId) => {
                     name: x.name,
                     author: x.author,
                     score: x.score,
+                    votes: x.totalUsers,
                     key: x.key,
                     weight: x.weight,
                     category: x.category.charAt(0).toUpperCase() + x.category.slice(1),

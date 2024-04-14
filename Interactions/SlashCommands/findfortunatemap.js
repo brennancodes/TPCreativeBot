@@ -17,7 +17,7 @@ module.exports.execute = (interaction) => {
         var author = "";
         var indexCounter = 1;
         if (interaction.isChatInputCommand()){
-            if (!interaction.commandName.includes("findfortunatemap")){
+            if (!interaction.commandName.includes("findfortunatemap") && interaction.commandName != "fmap"){
                 return false;
             }
         }

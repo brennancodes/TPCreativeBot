@@ -82,7 +82,7 @@ module.exports.execute = async (reaction, user) => {
                         delayList.forEach(x=> {if (x != config.users.bot){delayString += "<@" + x + "> "}});                
                     })
                     const imageUrl = `${reaction.message.embeds[0].data.image.url}`
-                    const embed = new EmbedBuilder().setColor(decision === 'Added' ? '#7bcf5c' : '#ffb800')
+                    const embed = new EmbedBuilder().setColor(decision === 'Added' ? '#7bcf5c' : '#ffca3a')
                         .setAuthor({name:header,iconURL:iconUrl})
                         .setDescription(`${mapByAuthor}${RaR}\n${approvalString}\n${delayString}`)
                         .setThumbnail(imageUrl).setTimestamp()

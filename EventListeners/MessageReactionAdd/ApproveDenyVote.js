@@ -116,7 +116,7 @@ module.exports.execute = async (reaction, user) => {
                 }
                 if (decision === "Pending Feedback"){
                     await reaction.users.remove(user.id)
-                    const embed = new EmbedBuilder().setColor('#FFB800').setAuthor({name:"Pending verbal feedback from MTC",iconURL:iconUrl})
+                    const embed = new EmbedBuilder().setColor('#ffca3a').setAuthor({name:"Pending verbal feedback from MTC",iconURL:iconUrl})
                     .setDescription(`${mapByAuthorLinks}\n\nThe feedback thread has not met the required minimum of ${config.mtcSettings.feedbackThreshold} comment${config.mtcSettings.feedbackThreshold>1?"s.":"."}\nPlease ensure that enough feedback is given to continue.`)
                     .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`)
                     reaction.message.reply({content:`**PENDING FEEDBACK** \n${mapByAuthor}`,embeds:[embed]})
@@ -124,7 +124,7 @@ module.exports.execute = async (reaction, user) => {
                 }
                 if (decision === 'Pending Manual Test'){
                     await reaction.users.remove(user.id)
-                    const embed = new EmbedBuilder().setColor('#FFB800').setAuthor({name:"Pending manual test confirmation",iconURL:iconUrl})
+                    const embed = new EmbedBuilder().setColor('#ffca3a').setAuthor({name:"Pending manual test confirmation",iconURL:iconUrl})
                     .setDescription(`${mapByAuthorLinks}\n\nPlease click the message this is replying to and perform a manual test of the map to ensure everything is wired properly 
                         and nothing is broken.\n\nIf everything looks good, click the 🔬 reaction then re-cast your ✅ reaction so this map may advance.`)
                     .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`)

@@ -20,6 +20,7 @@ module.exports = async (client) => {
                     const m = await channel.messages.fetch(x)
                     // for each cached partial reaction
                     await m.react('🔄')
+                    await x.reactions.cache.get('🔄').remove()
                     m.reactions.cache.forEach(async y=>{
                         // fetch the full reaction
                         y.fetch().then(async r=> {

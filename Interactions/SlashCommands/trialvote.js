@@ -52,18 +52,28 @@ module.exports.execute = (interaction) => {
             }
             //const gif = await axios.get(`https://api.giphy.com/v1/gifs/random?tag=staredown&api_key=cHJGjczxMtp65VbiDC37JsnBEPRORotU`)
             //console.log(gif.data.data.url);
+            if (x.score == 0){
+                const headers = {
+                    'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
+                }
+                const url = `${config.urls.api}/getmap/${x.id}`
+                await axios({method:'get',url:url,headers:headers}).then(function(resp){
+                    if (resp.data && parseFloat(resp.data.score) != NaN){
+                        x.score = resp.data.score;
+                    }
+                });
+            }
             const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
             const baseUrl = GetFMRoot();
             const iconUrl = "https://b.thumbs.redditmedia.com/g0IY6wWcORTUY8i8vUbloTAC_N6i1qwcZqhN5UiNvLs.jpg"
             const embed = new EmbedBuilder()
-                .setColor('#CDDC39')
+                .setColor('#6CD4FF')
                 //.setImage(gif.data.data.images.downsized.url)
                 .setThumbnail(imageUrl)
-                .setAuthor({name: "Confirm Removal Nomination", iconURL: iconUrl})
+                .setAuthor({name: "Confirm Promotion Nomination", iconURL: iconUrl})
                 .setDescription('Title: **'+x.name+'**\n'
                                 + 'Category: **'+x.category+'**\n'
-                                + 'Current Rating: **'+x.score+'**\n'
-                                + 'Total Votes: **'+x.votes+'**\n'
+                                + 'Current Rating: **'+x.score+'** (' + x.votes + ' votes)\n'
                                 + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')');
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setCustomId(`ConfirmMapPromotion---${x.id}`).setStyle(ButtonStyle.Primary).setLabel('Confirm'),
