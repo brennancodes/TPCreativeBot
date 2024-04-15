@@ -8,9 +8,11 @@ const GetAllMaps = require("./GetAllMaps");
 const CheckForExcessBlack = require("./CheckForExcessBlack");
 const RefreshPins = require("./RefreshPins");
 const GetFMRoot = require("./GetFMRoot");
+const FinalizeVotes = require("./FinalizeVotes");
 
 module.exports = { 
-    PingMTC, 
+    PingMTC,
+    FinalizeVotes,
     RemoveButtonsFromOriginal, 
     ValidateSubmission, 
     CalculateRotationBalance, 

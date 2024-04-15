@@ -4,6 +4,11 @@ const axios = require('axios');
 
 module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
+        const currentDate = new Date();
+        if (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && reaction._emoji.name !== '🔄'){
+            // It is too early to worry about taking any action. 
+            return;
+        }
         if (reaction.partial){
             try{
                 await reaction.fetch();
@@ -19,19 +24,28 @@ module.exports.execute = async (reaction, user) => {
                     decision = "Refresh"
                     return;
                 }
-                if (reaction.count >= config.mtcSettings.approveDenyThreshold){ 
-                    if (reaction._emoji.name === '✅'){
-                        decision = "Removed";
+                let yVotes = reaction.message.reactions.cache.get('✅');
+                let nVotes = reaction.message.reactions.cache.get('❌');
+                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){                
+                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){ 
+                        if (yVotes.count > nVotes.count){
+                            decision = "Removed";
+                        }
+                        else if (nVotes.count > yVotes.count){
+                            decision = "Kept"
+                        }
+                        else {
+                            // Tie
+                            decision = "No Decision";
+                        }
                     }
-                    else if (reaction._emoji.name === '❌'){
-                        decision = "Kept"
-                    }                
                     else {
-                        decision = "Stop Clicking Weird Shit"
+                        // Not enough votes
+                        decision = "No Decision";
                     }
                 }
                 else {
-                    decision = "No Decision";
+                    decision = "Stop Clicking Weird Shit"
                 }
             }
 

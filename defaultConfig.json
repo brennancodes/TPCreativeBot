@@ -20,11 +20,13 @@
         "qualityControlThreshold": "Integer>1",
         "feedbackThreshold": "Integer>=0",
         "blockSelfVoting": "TrueFalse",
-        "pingDateTime": "hh mm ss * * *",
+        "pingDateTime": "ss mm hh * * *",
+        "finalizeDateTime": "ss mm hh * * *",
         "submitCooldownHours": "Integer>=0, currently broken",
         "preventResubmit": "TrueFalse, currently broken",
         "awaitMTCAction": "TrueFalse",
         "bypassAwaitHourThreshold":"Integer>=0",
+        "minimumVoteTime":"Integer>=0",
         "useDiscussionChannel": "TrueFalse"
     },
     "urls":{

@@ -9,6 +9,7 @@ const { PingMTC, RefreshPins } = require("./Functions");
 const { Routes } = require("discord-api-types/v9");
 const { REST } = require("@discordjs/rest");
 const { Client, GatewayIntentBits, Partials, ApplicationCommand } = require("discord.js");
+const FinalizeVotes = require("./Functions/FinalizeVotes");
 
 const client = new Client({
     intents: [
@@ -31,6 +32,7 @@ const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
 client.once("ready", () => {
     PingMTC(client);
+    FinalizeVotes(client);
     RefreshPins(client);
     //console.log(client.user.avatar)
     // if (client.user.avatar != "b977248a0a4cdb441165f749a6be6f38"){

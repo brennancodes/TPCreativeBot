@@ -22,8 +22,8 @@ module.exports.execute = (interaction) => {
     var description = "";
 
     axios({method:'get',url:jsonUrl}).then(function(resp){
-        if (resp.data.info.name == "Untitled"){
-            interaction.reply({content:`Something's up with your JSON file. Make sure the metadata of your map does not list it as "Untitled", and contact <@${config.users.botOwner}> if the issue persists.`,ephemeral:true})
+        if (resp.data.info.name == "Untitled" || (resp.data.info.name.trim() != resp.data.info.name)){
+            interaction.reply({content:`Something's up with your JSON file. Make sure the metadata of your map has no extra whitespace and does not list it as "Untitled", and contact <@${config.users.botOwner}> if the issue persists.`,ephemeral:true})
             return false;
         }
         else {

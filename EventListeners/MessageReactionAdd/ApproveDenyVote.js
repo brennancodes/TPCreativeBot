@@ -6,6 +6,11 @@ const { GetFMRoot } = require("../../Functions");
 
 module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
+        const currentDate = new Date();
+        if (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && reaction._emoji.name !== '🔄'){
+            // It is too early to worry about taking any action. 
+            return;
+        }
         if (reaction.partial){
             try{
                 await reaction.fetch();
@@ -42,7 +47,7 @@ module.exports.execute = async (reaction, user) => {
             // parse out the ID from the userTag
             const submitterId = submitterTag.slice(2,submitterTag.length-1)
             if (config.mtcSettings.blockSelfVoting){
-                if (reaction.message.content.includes(user.id)){
+                if (reaction.message.content.includes(user.id) && reaction._emoji.name !== '❌'){
                     await reaction.users.remove(user.id)
                     reaction.message.channel.send({content:`You know better than to vote on your own submission, <@${user.id}>.`,allowedMentions:{"users":[]}})
                 }
@@ -71,29 +76,38 @@ module.exports.execute = async (reaction, user) => {
                     decision = "Refresh"
                     return;
                 }
-                //console.log(reaction._emoji.name, reaction.count, config.mtcSettings.approveDenyThreshold)
-                if (reaction.count >= config.mtcSettings.approveDenyThreshold){                        
-                    if (feedbackArray.length < config.mtcSettings.feedbackThreshold && (reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
-                        decision = "Pending Feedback";
-                    } 
-                    else if (reaction._emoji.name === '✅'){
-                        if (!wired){
-                            decision = "Pending Manual Test"
+                let yVotes = reaction.message.reactions.cache.get('✅');
+                let nVotes = reaction.message.reactions.cache.get('❌');
+                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
+                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){     
+                        if (feedbackArray.length < config.mtcSettings.feedbackThreshold){
+                            decision = "Pending Feedback";
+                        } 
+                        else if (yVotes.count > nVotes.count){
+                            if (!wired){
+                                decision = "Pending Manual Test"
+                            }
+                            else {
+                                decision = "Approved";
+                            }
                         }
+                        else if (nVotes.count > yVotes.count){
+                            decision = "Denied"
+                        }                
                         else {
-                            decision = "Approved";
+                            // Tie
+                            decision = "No Decision";
                         }
                     }
-                    else if (reaction._emoji.name === '❌'){
-                        decision = "Denied"
-                    }                
                     else {
-                        decision = "Stop Clicking Weird Shit"
+                        // Not enough votes
+                        decision = "No Decision";
                     }
                 }
                 else {
-                    decision = "No Decision";
+                    decision = "Stop Clicking Weird Shit"
                 }
+                //console.log(reaction._emoji.name, reaction.count, config.mtcSettings.approveDenyThreshold)
             }
     
             isWired.then(async ()=>{
@@ -115,7 +129,9 @@ module.exports.execute = async (reaction, user) => {
                     return;
                 }
                 if (decision === "Pending Feedback"){
-                    await reaction.users.remove(user.id)
+                    if (!user.bot){
+                        await reaction.users.remove(user.id)
+                    }
                     const embed = new EmbedBuilder().setColor('#ffca3a').setAuthor({name:"Pending verbal feedback from MTC",iconURL:iconUrl})
                     .setDescription(`${mapByAuthorLinks}\n\nThe feedback thread has not met the required minimum of ${config.mtcSettings.feedbackThreshold} comment${config.mtcSettings.feedbackThreshold>1?"s.":"."}\nPlease ensure that enough feedback is given to continue.`)
                     .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`)
@@ -123,7 +139,9 @@ module.exports.execute = async (reaction, user) => {
                     return;
                 }
                 if (decision === 'Pending Manual Test'){
-                    await reaction.users.remove(user.id)
+                    if (!user.bot){
+                        await reaction.users.remove(user.id)
+                    }
                     const embed = new EmbedBuilder().setColor('#ffca3a').setAuthor({name:"Pending manual test confirmation",iconURL:iconUrl})
                     .setDescription(`${mapByAuthorLinks}\n\nPlease click the message this is replying to and perform a manual test of the map to ensure everything is wired properly 
                         and nothing is broken.\n\nIf everything looks good, click the 🔬 reaction then re-cast your ✅ reaction so this map may advance.`)
@@ -134,12 +152,12 @@ module.exports.execute = async (reaction, user) => {
                 if (decision === 'Approved' || decision === 'Denied'){
                     const header = `${decision} for trial rotation`
                     reaction.message.unpin();
-                    await feedbackThreads.find(x=>x.id == threads[0]).setArchived(true);
+                    await feedbackThreads.find(x=>x.id == threads[0])?.setArchived(true);
 
                     if (config.mtcSettings.useDiscussionChannel){
                         const discChannel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
                         const discussionThread = discChannel.threads.cache.find(x=>x.name.includes(`${descSplit[3]} Discussion`))  
-                        await discussionThread.setArchived(true);
+                        await discussionThread?.setArchived(true);
                     }
                     
                     var appr = reaction.message.reactions.cache.get('✅');
@@ -216,7 +234,7 @@ module.exports.execute = async (reaction, user) => {
                                 contentString = "Sorry, your map was not selected this time."
                             }
                             for (var i = 0; i < feedbackArray.length; i++){
-                                feedbackString += feedbackArray[i] + "\n"
+                                feedbackString += feedbackArray[i] + "\n\n"
                             }
                             feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
                             embed.data.description = `${embed.data.description.split("Yes votes:")[0]} ${feedbackString}`;
