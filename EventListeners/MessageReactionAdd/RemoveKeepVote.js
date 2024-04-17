@@ -4,21 +4,31 @@ const axios = require('axios');
 
 module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
-        const currentDate = new Date();
-        if (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && reaction._emoji.name !== '🔄'){
-            // It is too early to worry about taking any action. 
-            return;
-        }
-        if (reaction.partial){
-            try{
-                await reaction.fetch();
-            } catch (error){
-                console.error(error);
+
+        // Use this IF block to determine if it is a reaction on a map removal nomination
+        if (reaction.message.content.includes("map removal nomination")){
+
+            const currentDate = new Date();
+            const guild =  await reaction.client.guilds.fetch(config.guildId);
+            const mtcRole = guild.roles.cache.get(config.roles.mtc);
+            const mtcMajority = Math.floor(mtcRole.members.size/2)
+            if (
+                ((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && 
+                reaction._emoji.name !== '🔄' &&
+                (reaction.count < mtcMajority || reaction.count == 1)
+            ){
+                // It is too early to worry about taking any action. 
                 return;
             }
-        }
-        // Use this IF block to determine if it is a reaction on a map submission
-        if (reaction.message.content.includes("map removal nomination")){
+            if (reaction.partial){
+                try{
+                    await reaction.fetch();
+                } catch (error){
+                    console.error(error);
+                    return;
+                }
+            }
+
             function getDecision(){
                 if (reaction._emoji.name === '🔄'){
                     decision = "Refresh"
