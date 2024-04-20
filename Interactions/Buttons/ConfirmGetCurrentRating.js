@@ -27,6 +27,7 @@ module.exports.execute = async (interaction) => {
                 if (resp.data && parseFloat(resp.data.score) != NaN){
                     console.info("SUCCESS!!")
                     map.score = resp.data.score;
+                    map.votes = resp.data.totalUsers;
                     embed.setDescription('Title: **'+map.name+'**\n'
                         + 'Category: **'+map.category+'**\n'
                         + 'Current Rating: **'+map.score+'%** (' + map.votes + ' votes)\n'
