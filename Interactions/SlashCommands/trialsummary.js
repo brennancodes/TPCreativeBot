@@ -12,25 +12,41 @@ module.exports.execute = async (interaction) => {
         if (interaction.commandName != "trialsummary"){
             return false;
         }
-    
+
+        const headers = {
+            'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
+        }
+
         const maps = await GetAllMaps();
+
         const embed = new EmbedBuilder()
                 .setColor("#186360")
                 .setAuthor({name:"State of Trial Rotation",iconURL:"https://imgur.com/QWrriCS.png"})
                 .setTimestamp()
+
         for (var i = 0; i < maps.length; i++){
             if (maps[i].category === 'Trial'){
-                embed.addFields({
-                    name: `${maps[i].name}`,
-                    value: "```\n" + `${maps[i].score}%\n${maps[i].votes} votes` + "\n```",
-                    inline: true
+                const url = `${config.urls.api}/getmap/${maps[i].id}`
+                await axios({method:'get',url:url,headers:headers}).then(function(resp){
+                    if (resp.data && parseFloat(resp.data.score) != NaN){
+                        embed.addFields({
+                            name: `${resp.data.name}`,
+                            value: "```\n" + `${resp.data.score}%\n${resp.data.totalUsers} votes` + "\n```",
+                            inline: true
+                        })
+                    }
+                    else {
+                        console.log('shit')
+                    }
                 })
             }
         }
+
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('ShareToChannel---tsummary').setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
             new ButtonBuilder().setCustomId('cancelaction---summary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
         )
+
         if (interaction){
             interaction.reply({content:"Overview",embeds:[embed],components:[row],ephemeral:true})
         }
@@ -41,36 +57,4 @@ module.exports.execute = async (interaction) => {
     catch (err){
         console.error(err);
     }
-    //const map = await getMapById(interaction.customId.split("---")[1]);
-
 }
-
-// var tmp = {
-//     id: x._id,
-//     name: x.name,
-//     author: x.author,
-//     score: x.score,
-//     key: x.key,
-//     weight: x.weight,
-//     category: x.category.charAt(0).toUpperCase() + x.category.slice(1)
-// }
-
-// if (mapData[i].category == "rotation"){
-//     embed.addFields(                        
-//         {
-//             name: "\n\u200b",
-//             value: "\u200b",
-//             inline: true
-//         },
-//         {
-//             name: "\n"+formattedCategory,
-//             value: mapData[i].totalWeight + mapData[i].avgScore,
-//             inline: true
-//         },
-//         {
-//             name: "\n\u200b",
-//             value: "\u200b",
-//             inline: true
-//         }
-//     )
-// }
