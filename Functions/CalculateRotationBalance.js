@@ -1,7 +1,7 @@
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args));
 const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 const Canvas = require('canvas');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const Image = Canvas.Image;
 
 module.exports = (client, interaction) => {
@@ -187,8 +187,12 @@ module.exports = (client, interaction) => {
                 }
             }
         }
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId('ShareToChannel---rsummary').setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
+            new ButtonBuilder().setCustomId('cancelaction---rsummary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
+        )
         if (interaction){
-            interaction.reply({content:"Overview",embeds:[embed]})
+            interaction.reply({content:"Overview",embeds:[embed],components:[row],ephemeral:true})
         }
         else {
             channel.send({content:"Overview",embeds:[embed]})

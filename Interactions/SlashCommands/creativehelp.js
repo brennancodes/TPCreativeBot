@@ -54,6 +54,12 @@ module.exports.execute = (interaction) => {
                 roles: "mtc"
             },
             {
+                commandName: "trialsummary",
+                parameters: "None",
+                description: "Quick look at current trial maps, scores, and votes",
+                roles: "mtc"
+            },
+            {
                 commandName: "promotemap",
                 parameters: "Map Name",
                 description: "Nominate a Trial map to be promoted to full rotation.",

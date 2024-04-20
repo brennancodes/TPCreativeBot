@@ -29,7 +29,7 @@ module.exports.execute = async (interaction) => {
                     map.score = resp.data.score;
                     embed.setDescription('Title: **'+map.name+'**\n'
                         + 'Category: **'+map.category+'**\n'
-                        + 'Current Rating: **'+x.score+'%** (' + x.votes + ' votes)\n'
+                        + 'Current Rating: **'+map.score+'%** (' + map.votes + ' votes)\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#7bcf5c");
                     interaction.update({content:"GET request successful. Showing accurate score (this info may be private).",embeds:[embed],ephemeral:true})

@@ -184,6 +184,10 @@ async function main() {
             ]
         },
         {
+            name: 'trialsummary',
+            description: 'Get a quick look at all the Trial Rotation scores'
+        },
+        {
             name: 'getfeedback',
             description: 'Code from FortunateMaps',
             options: [
