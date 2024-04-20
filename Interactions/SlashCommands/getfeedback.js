@@ -36,7 +36,6 @@ module.exports.execute = (interaction) => {
     })
 
     allThreads.then(()=>{
-        console.log(feedbackArray.length)
         for (var i = feedbackArray.length - 1; i >= 0; i--){
             feedbackArray[i].length > 0 ? response += "➢ " + feedbackArray[i] + "\n" : response += "";
         }

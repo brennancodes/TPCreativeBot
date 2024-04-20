@@ -12,8 +12,12 @@ module.exports.execute = async (reaction, user) => {
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
             const mtcMajority = Math.floor(mtcRole.members.size/2)
+
+            //Make sure we're counting all reactions even if the bot restarts
+            reaction.message.fetch();
+
             if (
-                ((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && 
+                (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) && 
                 reaction._emoji.name !== '🔄' &&
                 (reaction.count < mtcMajority || reaction.count == 1)
             ){
@@ -84,14 +88,22 @@ module.exports.execute = async (reaction, user) => {
                     }
                     reaction.message.unpin();
                     
-                    if (config.mtcSettings.useDiscussionChannel){
-                        const last = mapByAuthor.lastIndexOf(" by ");
-                        const mapName = mapByAuthor.slice(2,last);
-                        const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        const thread = channel.threads.cache.find(x=>x.name === `${mapName} Promotion Discussion`)  
-                        await thread.setArchived(true);              
-                    }
+                    // if (config.mtcSettings.useDiscussionChannel){
+                    //     const last = mapByAuthor.lastIndexOf(" by ");
+                    //     const mapName = mapByAuthor.slice(2,last);
+                    //     const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
+                    //     const thread = channel.threads.cache.find(x=>x.name === `${mapName} Promotion Discussion`)  
+                    //     await thread.setArchived(true);              
+                    // }
                     
+                    const last = mapByAuthor.lastIndexOf(" by ");
+                    const mapName = mapByAuthor.slice(2,last);
+                    const channel = reaction.client.channels.cache.get(config.channels.mtc)
+                    const thread = channel.threads.cache.find(x=>x.name === `${mapName} Promotion Discussion`)
+                    if (thread != null && thread != undefined){
+                        await thread.setArchived(true);
+                    }
+
                     var appr = reaction.message.reactions.cache.get('✅');
                     var delay = reaction.message.reactions.cache.get('⏳');
                     var approvalList = []; var delayList = [];
@@ -111,12 +123,7 @@ module.exports.execute = async (reaction, user) => {
                         .setAuthor({name:header,iconURL:iconUrl})
                         .setDescription(`${mapByAuthor}${RaR}\n${approvalString}\n${delayString}`)
                         .setThumbnail(imageUrl).setTimestamp()
-                    // const row = new ActionRowBuilder();
-                    // if (decision === "Removed"){
-                    //     row.addComponents(
-                    //         new ButtonBuilder().setCustomId('MarkAsRemoved').setStyle(ButtonStyle.Primary).setLabel('Mark as Removed'),
-                    //     )
-                    // }
+
                     reaction.message.reactions.removeAll();
         
                     reaction.message.channel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
@@ -126,7 +133,7 @@ module.exports.execute = async (reaction, user) => {
                                     'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
                                 const url = `${config.urls.api}/updatemap/${mapId}?category=rotation&weight=1`
-                                //        const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
+                                // const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
                                     var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);

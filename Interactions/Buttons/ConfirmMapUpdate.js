@@ -21,16 +21,21 @@ module.exports.execute = (interaction) => {
             {label:'0.0',value:'0'},
             {label:'Group',value:'Group---'+mapId}
         ];
-        for (var i = 0; i < catOptions.length; i++){
-            if (category == catOptions[i].label){
-                catOptions.splice(i,1)
-                break;
-            }
-        }
-        const weightOptions = [];
-        for (var i = 0; i < 11; i++){
-            weightOptions.push({label:`${i/10}`,value:`${i/10}`})
-        }
+
+        // This removes the current category from the list of options, but it turns out we sometimes hate that.
+        // for (var i = 0; i < catOptions.length; i++){
+        //     if (category == catOptions[i].label){
+        //         catOptions.splice(i,1)
+        //         break;
+        //     }
+        // }
+
+        // We also just didn't use this lol idk man
+        // const weightOptions = [];
+        // for (var i = 0; i < 11; i++){
+        //     weightOptions.push({label:`${i/10}`,value:`${i/10}`})
+        // }
+
         const row = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
@@ -54,8 +59,7 @@ module.exports.execute = (interaction) => {
                     .setCustomId('LiterallyDoesNothingLmao')
             )
                     
-        interaction.reply({content:"Select exactly one playlist and one weight.",ephemeral:true,components:[row,row2]})
-        RemoveButtonsFromOriginal(interaction);
+        interaction.update({content:"Select exactly one playlist and one weight.",ephemeral:true,components:[row,row2]})
     }
     catch (err){
         console.error(err);

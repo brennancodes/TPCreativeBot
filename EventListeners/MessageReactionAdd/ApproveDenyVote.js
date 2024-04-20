@@ -6,15 +6,18 @@ const { GetFMRoot } = require("../../Functions");
 
 module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
-        
         // Use this IF block to determine if it is a reaction on a map submission
         if (reaction.message.content.includes("New map submission [")){
             const currentDate = new Date();
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
             const mtcMajority = Math.floor(mtcRole.members.size/2)
+
+            //Make sure we're counting all reactions even if the bot restarts
+            reaction.message.fetch();
+            
             if (
-                ((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && 
+                (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) && 
                 reaction._emoji.name !== '🔄' &&
                 (reaction.count < mtcMajority || reaction.count == 1)
             ){
@@ -116,7 +119,6 @@ module.exports.execute = async (reaction, user) => {
                 else {
                     decision = "Stop Clicking Weird Shit"
                 }
-                //console.log(reaction._emoji.name, reaction.count, config.mtcSettings.approveDenyThreshold)
             }
     
             isWired.then(async ()=>{
@@ -127,8 +129,6 @@ module.exports.execute = async (reaction, user) => {
             })
     
             async function Respond(){
-                // const description = reaction.message.embeds[0].data.description;
-                // const descSplit = description.split('**');
                 const rootUrl = GetFMRoot();
                 const mapByAuthorLinks = `[**${descSplit[1]}**](${rootUrl}map/${descSplit[3]}) by [**${descSplit[5]}**](${rootUrl}profile/${descSplit[5].replaceAll(" ","_")})`
                 const mapByAuthor = `${descSplit[3]}: *${descSplit[1]}* by ${descSplit[5]}`

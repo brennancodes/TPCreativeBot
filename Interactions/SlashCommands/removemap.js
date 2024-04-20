@@ -58,8 +58,7 @@ module.exports.execute = (interaction) => {
                 .setAuthor({name: "Confirm Removal Nomination", iconURL: iconUrl})
                 .setDescription('Title: **'+x.name+'**\n'
                                 + 'Category: **'+x.category+'**\n'
-                                + 'Current Rating: **'+x.score+'**\n'
-                                + 'Total Votes: **'+x.votes+'**\n'
+                                + 'Current Rating: **'+x.score+'%** (' + x.votes + ' votes)\n'
                                 + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')');
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setCustomId(`ConfirmMapRemoval---${x.id}`).setStyle(ButtonStyle.Primary).setLabel('Confirm'),

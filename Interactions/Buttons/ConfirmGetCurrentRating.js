@@ -29,11 +29,10 @@ module.exports.execute = async (interaction) => {
                     map.score = resp.data.score;
                     embed.setDescription('Title: **'+map.name+'**\n'
                         + 'Category: **'+map.category+'**\n'
-                        + 'Current Rating: **'+map.score+'%**\n'
-                        + 'Total Votes: **'+resp.data.totalUsers+'**\n'
+                        + 'Current Rating: **'+x.score+'%** (' + x.votes + ' votes)\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#7bcf5c");
-                    interaction.reply({content:"GET request successful. Showing accurate score (this info may be private).",embeds:[embed],ephemeral:true})
+                    interaction.update({content:"GET request successful. Showing accurate score (this info may be private).",embeds:[embed],ephemeral:true})
                 }
                 else {
                     embed.setDescription('Title: **'+map.name+'**\n'
@@ -41,11 +40,11 @@ module.exports.execute = async (interaction) => {
                         + 'Current Rating: **'+map.score+'%**\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#da3e52");
-                    interaction.reply({content:"GET request failed. Showing public data.",embeds:[embed],ephemeral:true})
+                    interaction.update({content:"GET request failed. Showing public data.",embeds:[embed],ephemeral:true})
                 }
             });
 
-            RemoveButtonsFromOriginal(interaction, true);
+            RemoveButtonsFromOriginal(interaction, false);
         }
     }
     catch (err) {

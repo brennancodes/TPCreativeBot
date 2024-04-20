@@ -60,7 +60,7 @@ module.exports.execute = (interaction) => {
                 .setAuthor({name: "Map Found!", iconURL: iconUrl})
                 .setDescription('Title: **'+x.name+'**\n'
                                 + 'Category: **'+x.category+'**\n'
-                                + 'Current Rating: **'+x.score+'**\n'
+                                + `Current Rating: **${x.score == 0 ? 'Hidden' : x.score}**\n`
                                 + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')')
                 .setFooter({text:"\n\u200b\nNot the map you were looking for? \nTry navigating to the next matching map using the buttons below."});
             const row = new ActionRowBuilder()

@@ -4,16 +4,19 @@ const axios = require('axios');
 
 module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
-
         // Use this IF block to determine if it is a reaction on a map removal nomination
         if (reaction.message.content.includes("map removal nomination")){
-
+            
             const currentDate = new Date();
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
             const mtcMajority = Math.floor(mtcRole.members.size/2)
+            
+            //Make sure we're counting all reactions even if the bot restarts
+            reaction.message.fetch();
+
             if (
-                ((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime && 
+                (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) && 
                 reaction._emoji.name !== '🔄' &&
                 (reaction.count < mtcMajority || reaction.count == 1)
             ){
@@ -59,13 +62,15 @@ module.exports.execute = async (reaction, user) => {
                 }
             }
 
-            async function Respond(){                    
+            async function Respond(){
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
-                const mapByAuthor = reaction.message.embeds[0].data.description.split("Current Score:")[0];
-                const score = reaction.message.embeds[0].data.description.split(mapByAuthor)[1].split("Map ID:")[0];
-                const mapId = reaction.message.embeds[0].data.description.split("Map ID: ")[1];
-                const RaR = `Rating at removal: ${score.split("Current Score:")[1]}`
-                
+                const mapByAuthor = reaction.message.embeds[0].data.description.split("\n")[0];
+                const score = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[0];
+                const votes = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[1].split(" votes")[0];
+                const mapIdString = reaction.message.embeds[0].data.description.split("\n")[2];
+                const mapId = mapIdString.split("Map ID: ")[1];
+                const rawRating = score.split("Current Score: ")[1]
+                let RaR = decision === 'Removed' ? `Rating at removal: ${rawRating}%` : `Current Rating: ${rawRating}%`
                 if (decision === "Refresh"){
                     await reaction.users.remove(user.id);
                     return;
@@ -80,15 +85,23 @@ module.exports.execute = async (reaction, user) => {
                     }
                     reaction.message.unpin();
                     
-                    if (config.mtcSettings.useDiscussionChannel){
-                        const last = mapByAuthor.lastIndexOf(" by ");
-                        const mapName = mapByAuthor.slice(2,last);
-                        const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        const thread = channel.threads.cache.find(x=>x.name === `${mapName} Removal Discussion`)
-                        if (thread != null && thread != undefined){
-                            await thread.setArchived(true);
-                        }
+                    const last = mapByAuthor.lastIndexOf(" by ");
+                    const mapName = mapByAuthor.slice(2,last);
+                    const channel = reaction.client.channels.cache.get(config.channels.mtc)
+                    const thread = channel.threads.cache.find(x=>x.name === `${mapName} Removal Discussion`)
+                    if (thread != null && thread != undefined){
+                        await thread.setArchived(true);
                     }
+
+                    // if (config.mtcSettings.useDiscussionChannel){
+                    //     const last = mapByAuthor.lastIndexOf(" by ");
+                    //     const mapName = mapByAuthor.slice(2,last);
+                    //     const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
+                    //     const thread = channel.threads.cache.find(x=>x.name === `${mapName} Removal Discussion`)
+                    //     if (thread != null && thread != undefined){
+                    //         await thread.setArchived(true);
+                    //     }
+                    // }
                     
                     var appr = reaction.message.reactions.cache.get('✅');
                     var deny = reaction.message.reactions.cache.get('❌');
@@ -107,14 +120,9 @@ module.exports.execute = async (reaction, user) => {
                     const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Kept' ? '#7bcf5c' : '#da3e52')
                         .setAuthor({name:header,iconURL:iconUrl})
-                        .setDescription(`${mapByAuthor}${RaR}\n${approvalString}\n${denialString}`)
+                        .setDescription(`${mapByAuthor}\n${RaR}% (${votes} votes)\n\n${approvalString}\n${denialString}`)
                         .setThumbnail(imageUrl).setTimestamp()
-                    // const row = new ActionRowBuilder();
-                    // if (decision === "Removed"){
-                    //     row.addComponents(
-                    //         new ButtonBuilder().setCustomId('MarkAsRemoved').setStyle(ButtonStyle.Primary).setLabel('Mark as Removed'),
-                    //     )
-                    // }
+
                     reaction.message.reactions.removeAll();
         
                     reaction.message.channel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
@@ -131,7 +139,8 @@ module.exports.execute = async (reaction, user) => {
                                         if (resp.data && (resp.data.includes("Updated map") || resp.data.includes("Deleted map"))){
                                             console.info("Success!!!")
                                             mtcAdminChannel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
-                                            embed.setDescription(`${mapByAuthor}${RaR}`);
+                                            if (rawRating.replace("%","") < 50) { RaR = "Rating at removal: < 50"; }
+                                            embed.setDescription(`${mapByAuthor}\n${RaR}`);
                                             embed.setThumbnail(null);
                                             embed.setImage(imageUrl)
                                             mtcAnnouncementChannel.send({embeds:[embed],content:`<@&${config.roles.mapUpdates}> ${header}\n${mapByAuthor}`})

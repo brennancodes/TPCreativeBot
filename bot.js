@@ -79,7 +79,6 @@ client.on('messageReactionAdd', async(reaction, user)=>{
     }
 });
 
-
 client.login(process.env.TOKEN).then(function(){
     console.log(`${client.user.tag} has logged in!`);
 });

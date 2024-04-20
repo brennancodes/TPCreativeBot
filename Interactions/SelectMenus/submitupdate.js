@@ -83,12 +83,12 @@ module.exports.execute = (interaction) => {
                         .setTimestamp();
                     const mtcAdminChannel = interaction.client.channels.cache.get(config.channels.mtcAdmin);
                     mtcAdminChannel.send({content:`**Map Updated\n** *${x.name}* by ${x.author}`,embeds:[embed]})
-                    interaction.reply({embeds: [embed], content: "**Update complete.** Please allow up to 10 minutes for changes to go into effect.", ephemeral:true})
+                    interaction.update({embeds: [embed], content: "**Update complete.** Please allow up to 10 minutes for changes to go into effect.", ephemeral:true})
                 });
             }
             else {
                 console.error("FAILURE! ABORT!")
-                interaction.reply({content:`**Potential API error.** URL:${url}\n Please investigate map ${mapId}`})
+                interaction.update({content:`**Potential API error.** URL:${url}\n Please investigate map ${mapId}`})
             }
         })
         RemoveButtonsFromOriginal(interaction);

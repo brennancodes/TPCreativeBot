@@ -73,7 +73,7 @@ module.exports.execute = (interaction) => {
                 .setAuthor({name: "Confirm Promotion Nomination", iconURL: iconUrl})
                 .setDescription('Title: **'+x.name+'**\n'
                                 + 'Category: **'+x.category+'**\n'
-                                + 'Current Rating: **'+x.score+'** (' + x.votes + ' votes)\n'
+                                + 'Current Rating: **'+x.score+'%** (' + x.votes + ' votes)\n'
                                 + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')');
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setCustomId(`ConfirmMapPromotion---${x.id}`).setStyle(ButtonStyle.Primary).setLabel('Confirm'),
