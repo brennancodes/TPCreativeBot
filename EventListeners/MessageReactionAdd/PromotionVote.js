@@ -11,7 +11,7 @@ module.exports.execute = async (reaction, user) => {
             const currentDate = new Date();
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
-            const mtcMajority = Math.floor(mtcRole.members.size/2)
+            const mtcMajority = Math.ceil(mtcRole.members.size/2)
 
             //Make sure we're counting all reactions even if the bot restarts
             reaction.message.fetch();

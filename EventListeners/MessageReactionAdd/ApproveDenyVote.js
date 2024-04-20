@@ -11,11 +11,11 @@ module.exports.execute = async (reaction, user) => {
             const currentDate = new Date();
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
-            const mtcMajority = Math.floor(mtcRole.members.size/2)
+            const mtcMajority = Math.ceil(mtcRole.members.size/2)
 
             //Make sure we're counting all reactions even if the bot restarts
             reaction.message.fetch();
-            
+
             if (
                 (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) && 
                 reaction._emoji.name !== '🔄' &&
