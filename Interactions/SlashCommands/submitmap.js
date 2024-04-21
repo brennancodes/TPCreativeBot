@@ -27,7 +27,7 @@ module.exports.execute = (interaction) => {
             return false;
         }
         else {
-            axios.get(mapUrl).then(function(resp, error){
+            axios.get(mapUrl).then(async function(resp, error){
                 if(!error && resp.status == 200){
                     const $ = cheerio.load(resp.data);
                     title = $('.card-title').find('b').first().text() 
@@ -41,8 +41,7 @@ module.exports.execute = (interaction) => {
                     interaction.reply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,ephemeral:true,allowedMentions:{"users":[]}})
                 }
                 else {
-                    console.log(title);
-                    const isUpdate = CheckForExistingMapInRotation(title);
+                    const isUpdate = await CheckForExistingMapInRotation(title);
                     let color = isUpdate ? '#D850F7' : '#7bcf5c'
                     let header = isUpdate ? 'Confirm update submission' : 'Confirm map submission'
                     let content = isUpdate ? `**Hey!** Looks like you're trying to update a map that already is (or has been) in rotation.\nIf so, you're all set to go! If not, please cancel, change your map's name, and try again.`

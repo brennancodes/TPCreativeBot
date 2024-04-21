@@ -2,7 +2,6 @@ const GetAllMaps = require("./GetAllMaps");
 
 module.exports = async (mapName) => {
     try {
-        console.log(mapName)
         const maps = await GetAllMaps();
         let exists = false;
         for (var i = 0; i < maps.length; i++){
