@@ -46,12 +46,7 @@ module.exports.execute = (interaction) => {
                     let header = isUpdate ? 'Confirm update submission' : 'Confirm map submission'
                     let content = isUpdate ? `**Hey!** Looks like you're trying to update a map that already is (or has been) in rotation.\nIf so, you're all set to go! If not, please cancel, change your map's name, and try again.`
                     : `*Verify that you've selected the correct map for submission.* \n*You can click the thumbnail to see a full-size image.*`
-                    if (isUpdate){
 
-                    }
-                    else{
-
-                    }
                     const embed = new EmbedBuilder()
                         .setColor(color)
                         .setThumbnail(imageUrl)
