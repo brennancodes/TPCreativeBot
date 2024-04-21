@@ -214,7 +214,19 @@ async function main() {
                     required: true,
                 }
             ]
-        }
+        },
+        {
+            name: 'manualadd',
+            description: 'Code from FortunateMaps',
+            options: [
+                {
+                    name: 'code',
+                    description: 'Code from FortunateMaps',
+                    type: 4,
+                    required: true,
+                }
+            ]
+        },
     ];
     try {
         console.log('Started refreshing application (/) commands.');

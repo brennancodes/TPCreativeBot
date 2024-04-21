@@ -13,7 +13,7 @@ module.exports = async (client, interaction) => {
             return b.createdAt-a.createdAt;
         })
         pins.forEach(async x=>{
-            if (x.content.includes(interaction.user.id) && x.content.includes("New map submission [")){
+            if (x.content.includes(interaction.user.id) && x.content.includes("map submission [")){
                 // If MTC is taking way too long, skip this, otherwise if we just got a submission from them, stop them.
                 if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.bypassAwaitHourThreshold){
                     isValid = false;
@@ -33,7 +33,7 @@ module.exports = async (client, interaction) => {
                 var x = msgArray[i][1];
                 if (x.content != null){
                     // If we find an earlier submission from this user...
-                    if (x.content.includes(interaction.user.id) && x.content.includes("New map submission [")){
+                    if (x.content.includes(interaction.user.id) && x.content.includes("map submission [")){
                         // If we're preventing resubmission, check all messages for a matching ID, cancel submission if match found
                         if (config.mtcSettings.preventResubmit){
                             if (x.content.substring(x.content.indexOf(`\``)+1, x.content.lastIndexOf(`\``)) == mapId){

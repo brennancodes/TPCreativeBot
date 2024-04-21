@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require("cheerio");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json");
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { GetFMRoot } = require('../../Functions');
+const { GetFMRoot, CheckForExistingMapInRotation } = require('../../Functions');
 
 module.exports.execute = (interaction) => {
     if (!interaction.isChatInputCommand()){
@@ -41,10 +41,22 @@ module.exports.execute = (interaction) => {
                     interaction.reply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,ephemeral:true,allowedMentions:{"users":[]}})
                 }
                 else {
+                    console.log(title);
+                    const isUpdate = CheckForExistingMapInRotation(title);
+                    let color = isUpdate ? '#D850F7' : '#7bcf5c'
+                    let header = isUpdate ? 'Confirm update submission' : 'Confirm map submission'
+                    let content = isUpdate ? `**Hey!** Looks like you're trying to update a map that already is (or has been) in rotation.\nIf so, you're all set to go! If not, please cancel, change your map's name, and try again.`
+                    : `*Verify that you've selected the correct map for submission.* \n*You can click the thumbnail to see a full-size image.*`
+                    if (isUpdate){
+
+                    }
+                    else{
+
+                    }
                     const embed = new EmbedBuilder()
-                        .setColor('#7bcf5c')
+                        .setColor(color)
                         .setThumbnail(imageUrl)
-                        .setAuthor({name: "Confirm Map Submission", iconURL: iconUrl})
+                        .setAuthor({name: header, iconURL: iconUrl})
                         .setDescription('Title: [**'+title+'**]('+mapUrl+')\n'
                                         + 'Map ID: **'+code+'**\n'
                                         + 'Author: [**' + author + '**](' + baseUrl + 'profile/' + author.split(" ").join("_") + ')\n'
@@ -54,7 +66,7 @@ module.exports.execute = (interaction) => {
                         new ButtonBuilder().setCustomId('ConfirmMapSubmission').setStyle(ButtonStyle.Primary).setLabel('Confirm'),
                         new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
                     )
-                    interaction.reply({ embeds:[embed], content:"*Verify that you've selected the correct map for submission.* \n*You can click the thumbnail to see a full-size image.*", ephemeral: true, components: [row] })
+                    interaction.reply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
                 }
             })
         }

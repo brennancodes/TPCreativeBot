@@ -7,7 +7,7 @@ const { GetFMRoot } = require("../../Functions");
 module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
         // Use this IF block to determine if it is a reaction on a map submission
-        if (reaction.message.content.includes("New map submission [")){
+        if (reaction.message.content.includes("map submission [")){
             const currentDate = new Date();
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
@@ -234,7 +234,7 @@ module.exports.execute = async (reaction, user) => {
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         }).then(()=>{
-                            let feedbackString = "**Feedback:**\n";
+                            let feedbackString = "**Feedback:**\n\n";
                             let contentString = "";
                             if (decision == "Approved"){
                                 contentString = "Congratulations!! Your map has been selected to enter the map rotation on a trial basis."

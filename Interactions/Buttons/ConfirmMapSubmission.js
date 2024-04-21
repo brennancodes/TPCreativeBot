@@ -1,6 +1,6 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const { RemoveButtonsFromOriginal, ValidateSubmission, CheckForExcessBlack, GetFMRoot } = require("../../Functions")
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 module.exports.execute = async (interaction) => {
     try {
@@ -9,6 +9,7 @@ module.exports.execute = async (interaction) => {
         await interaction.deferReply({ephemeral:true});
         if (await ValidateSubmission(interaction.client,interaction)){
             let msg = interaction.message;
+            let mapName = msg.embeds[0].data.description.split("**")[1];
             let split = msg.embeds[0].data.description.split("ID: **");
             let split2 = split[1].split("**");
             let mapId = split2[0];
@@ -16,31 +17,44 @@ module.exports.execute = async (interaction) => {
             if (invalid != "Valid Submission"){
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Edit Map Border')
-                        .setURL(`${GetFMRoot()}editor?mapid=${mapId}`),
+                    .setURL(`${GetFMRoot()}editor?mapid=${mapId}`),
                 )
                 interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,ephemeral:true,components:[row]});
             } else {
+                const isUpdate = await msg.embeds[0].data.author.name.includes("update submission");
+                const mapImage = msg.embeds[0].data.thumbnail.url;
+                const desc = msg.embeds[0].data.description;
+                let color = isUpdate ? '#D850F7' : '#7bcf5c'
+                let submissionType = isUpdate ? 'UPDATED map submission' : 'New map submission'
                 interaction.editReply({content:"Got it! Map sent to MTC for review.", ephemeral:true})
                 const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
-                msg.content = `**ATTENTION <@&${config.roles.mtc}>:** New map submission [FM ID: \`${mapId}\`] received from <@${interaction.user.id}>.`
-                msg.embeds[0].data.image = {url:msg.embeds[0].data.thumbnail.url};
-                msg.embeds[0].data.author = {name:`Vote to add map to rotation on trial basis`,iconURL: msg.embeds[0].data.author.iconUrl}
-                msg.embeds[0].data.footer = {text:`Please react ✅ to approve or ❌ to reject.`}
-                delete msg.embeds[0].data.thumbnail;
-                msg.components = [];
-                msg.allowedMentions = {"users":[],"roles":[]};
-                mtcChannel.send(msg).then(sent => {
+
+                const newEmbed = new EmbedBuilder()
+                                    .setColor(color)
+                                    .setImage(mapImage)
+                                    //.setAuthor({name:`Vote to add map to rotation on trial basis`,iconURL: `https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}.png`})
+                                    .setDescription(desc)
+                                    .setFooter({text:`Please react ✅ to approve or ❌ to reject.`})
+                const newContent = `**ATTENTION <@&${config.roles.mtc}>:** ${submissionType} [FM ID: \`${mapId}\`] received from <@${interaction.user.id}>.`
+                
+                mtcChannel.send({content:newContent,embeds:[newEmbed],allowedMentions:{users:[],roles:[]}}).then(sent => {
                     sent.react("✅").then(()=>sent.react("❌")).then(()=>sent.react("🔬")).then(()=>sent.pin())
-                    .then(()=>sent.startThread({name:`${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))                    
+                    .then(()=>sent.startThread({name:`${mapName} ${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))                    
                 })
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                    msg.embeds[0].data.thumbnail = msg.embeds[0].data.image;
-                    delete msg.embeds[0].data.image;
-                    delete msg.embeds[0].data.footer;
-                    delete msg.embeds[0].data.author.name;
-                    discussionChannel.send(msg).then(sent => {
-                        sent.startThread({name:`${mapId} Discussion - Private discussion, speak your mind`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
+
+                    const discEmbed = new EmbedBuilder()
+                                        .setColor(color)
+                                        .setThumbnail(mapImage)
+                                        .setDescription(desc)
+
+                    // msg.embeds[0].data.thumbnail = msg.embeds[0].data.image;
+                    // delete msg.embeds[0].data.image;
+                    // delete msg.embeds[0].data.footer;
+                    // delete msg.embeds[0].data.author;
+                    discussionChannel.send({content:newContent,embeds:[discEmbed],components:[],allowedMentions:{users:[],roles:[]}}).then(sent => {
+                        sent.startThread({name:`${mapName} ${mapId} Discussion - Private discussion, speak your mind`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
                     })
                 }
             }

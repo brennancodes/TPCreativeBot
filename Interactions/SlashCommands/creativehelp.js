@@ -76,6 +76,12 @@ module.exports.execute = (interaction) => {
                 parameters: "Map Name, then new category + weight",
                 description: "MTC Admins can use this method to change settings for existing maps in rotation.",
                 roles: "mtcAdmin"
+            },
+            {
+                commandName: "manualadd",
+                parameters: "FortunateMaps Code",
+                description: "MTC Admins can use this method to manually add a map non-democratically. ICE only.",
+                roles: "mtcAdmin"
             }
         ]    
     
