@@ -66,11 +66,12 @@ module.exports.execute = async (reaction, user) => {
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
                 const mapByAuthor = reaction.message.embeds[0].data.description.split("\n")[0];
                 const score = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[0];
-                const votes = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[1]?.split(" votes")[0];
+                const votes1 = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[1]?.split(" votes")[0];
+                const votes = votes1.split(")")[0];
                 const mapIdString = reaction.message.embeds[0].data.description.split("\n")[2];
                 const mapId = mapIdString.split("Map ID: ")[1];
-                const rawRating = score.split("Current Score: ")[1]
-                let RaR = decision === 'Removed' ? `Rating at removal: ${rawRating}%` : `Current Rating: ${rawRating}%`
+                const rawRatingwPercent = score.split("Current Score: ")[1]
+                let RaR = decision === 'Removed' ? `Rating at removal: ${rawRatingwPercent}` : `Current Rating: ${rawRatingwPercent}`
                 if (decision === "Refresh"){
                     await reaction.users.remove(user.id);
                     return;
@@ -120,7 +121,7 @@ module.exports.execute = async (reaction, user) => {
                     const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Kept' ? '#7bcf5c' : '#da3e52')
                         .setAuthor({name:header,iconURL:iconUrl})
-                        .setDescription(`${mapByAuthor}\n${RaR}% (${votes} votes)\n\n${approvalString}\n${denialString}`)
+                        .setDescription(`${mapByAuthor}\n${RaR} (${votes} votes)\n\n${approvalString}\n${denialString}`)
                         .setThumbnail(imageUrl).setTimestamp()
 
                     reaction.message.reactions.removeAll();
@@ -137,16 +138,17 @@ module.exports.execute = async (reaction, user) => {
                                     var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);
                                     try {
                                         if (resp.data && (resp.data.includes("Updated map") || resp.data.includes("Deleted map"))){
-                                            console.info("Success!!!")
+                                            console.info("Successful request. Response: ", resp.data)
                                             mtcAdminChannel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
-                                            if (rawRating.replace("%","") < 50) { RaR = "Rating at removal: < 50"; }
+                                            const rawRating = rawRatingwPercent.replaceAll("**","").replaceAll("%","");
+                                            if (rawRating < 50) { RaR = "Rating at removal: < 50%"; }
                                             embed.setDescription(`${mapByAuthor}\n${RaR}`);
                                             embed.setThumbnail(null);
                                             embed.setImage(imageUrl)
                                             mtcAnnouncementChannel.send({embeds:[embed],content:`<@&${config.roles.mapUpdates}> ${header}\n${mapByAuthor}`})
                                         }
                                         else {
-                                            console.error("FAILURE! ABORT!")
+                                            console.error("Request failed.")
                                             mtcAdminChannel.send({content:`**Potential API error.** URL: ${url}\n Please investigate ${mapByAuthor}`})
                                         }
                                     }

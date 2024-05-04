@@ -25,7 +25,7 @@ module.exports.execute = async (interaction) => {
                 .setTimestamp();
             axios({method:'get',url:url,headers:headers}).then(function(resp){
                 if (resp.data && parseFloat(resp.data.score) != NaN){
-                    console.info("SUCCESS!!")
+                    console.info("Successful request. Response: ", resp.data)
                     map.score = resp.data.score;
                     map.votes = resp.data.totalUsers;
                     embed.setDescription('Title: **'+map.name+'**\n'

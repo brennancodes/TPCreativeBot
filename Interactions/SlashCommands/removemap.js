@@ -1,6 +1,7 @@
 const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
 const { RemoveButtonsFromOriginal, GetMapByName, GetFMRoot } = require("../../Functions")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json");
+const axios = require('axios');
 
 module.exports.execute = (interaction) => {
     try {
@@ -45,9 +46,20 @@ module.exports.execute = (interaction) => {
             return map;
         }
 
-        searchMaps().then((x)=>{
+        searchMaps().then(async (x)=>{
             if (x == undefined){
                 return;
+            }
+            if (x.score == 0){
+                const headers = {
+                    'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
+                }
+                const url = `${config.urls.api}/getmap/${x.id}`
+                await axios({method:'get',url:url,headers:headers}).then(function(resp){
+                    if (resp.data && parseFloat(resp.data.score) != NaN){
+                        x.score = resp.data.score;
+                    }
+                });
             }
             const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
             const baseUrl = GetFMRoot();

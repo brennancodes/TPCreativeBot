@@ -40,7 +40,7 @@ module.exports.execute = (interaction) => {
         const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
         axios({method:'post',url:url,headers:headers}).then(function(resp){
             if (resp.data && resp.data.includes("Updated map")){
-                console.info("Success!!!")
+                console.info("Successful request. Response: ", resp.data)
                 //TODO HERE: Get map info from the json, re-create the embed from before.
                 async function searchMaps(){
                     const headers = {
@@ -87,7 +87,7 @@ module.exports.execute = (interaction) => {
                 });
             }
             else {
-                console.error("FAILURE! ABORT!")
+                console.error("Request failed.")
                 interaction.update({content:`**Potential API error.** URL:${url}\n Please investigate map ${mapId}`})
             }
         })

@@ -9,6 +9,7 @@ const GetCurrentRating = require("./getcurrentrating");
 const CreativeHelp = require("./creativehelp");
 const PromoteMap = require("./promotemap");
 const TrialSummary = require("./trialsummary");
+const MTC = require("./mtc");
 
 module.exports = { 
     SubmitMap, 
@@ -21,5 +22,6 @@ module.exports = {
     GetCurrentRating, 
     CreativeHelp,
     PromoteMap,
-    TrialSummary
+    TrialSummary,
+    MTC
 }

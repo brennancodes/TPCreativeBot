@@ -17,7 +17,7 @@ module.exports.execute = async (interaction) => {
                 const url = `${config.urls.api}/getmap/${map.id}`
                 await axios({method:'get',url:url,headers:headers}).then(function(resp){
                     if (resp.data && parseFloat(resp.data.score) != NaN){
-                        console.info("SUCCESS!!")
+                        console.info("Successful request. Response: ", resp.data)
                         map.score = resp.data.score;
                     }
                 });

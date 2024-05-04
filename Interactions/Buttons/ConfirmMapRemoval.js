@@ -1,6 +1,7 @@
 const { GetMapById, RemoveButtonsFromOriginal } = require("../../Functions")
 const {EmbedBuilder} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
+const axios = require('axios');
 
 module.exports.execute = async (interaction) => {
     try {
@@ -9,7 +10,18 @@ module.exports.execute = async (interaction) => {
         else {
             const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
             const map = await GetMapById(interaction.customId.split("---")[1]);
-
+            if (map.score == 0){
+                const headers = {
+                    'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
+                }
+                const url = `${config.urls.api}/getmap/${map.id}`
+                await axios({method:'get',url:url,headers:headers}).then(function(resp){
+                    if (resp.data && parseFloat(resp.data.score) != NaN){
+                        console.info("Successful request. Response: ", resp.data)
+                        map.score = resp.data.score;
+                    }
+                });
+            }
             const imgUrl = `${config.urls.image}/${map.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
             
             const embed = new EmbedBuilder()

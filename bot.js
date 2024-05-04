@@ -90,6 +90,10 @@ async function main() {
             description: 'See my available commands'
         },
         {
+            name: 'mtc',
+            description: 'See a list of current MTC members'
+        },
+        {
             name: 'submitmap',
             description: 'Code from FortunateMaps',
             options: [

@@ -42,6 +42,12 @@ module.exports.execute = (interaction) => {
                 roles: "any"
             },
             {
+                commandName: "mtc",
+                parameters: "None",
+                description: "View a list of current MTC members",
+                roles: "any"
+            },
+            {
                 commandName: "rotationsummary",
                 parameters: "None",
                 description: "View the current State of Rotation, including CTF/NF balance, weighted size, and average scores broken down by categories.",

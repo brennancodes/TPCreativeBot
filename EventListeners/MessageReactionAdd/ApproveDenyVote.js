@@ -209,7 +209,7 @@ module.exports.execute = async (reaction, user) => {
                                 await axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     try {
                                         if (resp.data && resp.data.includes("Inserted")){
-                                            console.info("Success!!!")
+                                            console.info("Successful request. Response: ", resp.data)
                                             mtcAdminChannel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}});
                                             embed.setDescription(`${mapByAuthorLinks}\nID: **${descSplit[3]}**`);
                                             embed.setThumbnail(null);
@@ -217,7 +217,7 @@ module.exports.execute = async (reaction, user) => {
                                             mtcAnnouncementChannel.send({embeds:[embed],content:`<@&${config.roles.mapUpdates}> ${header}\n${mapByAuthor}`})
                                         }
                                         else {
-                                            console.error("FAILURE! ABORT!")
+                                            console.error("Request failed.")
                                             mtcAdminChannel.send({content:`**Potential API error.** URL:${url}\n Please investigate ${mapByAuthor}`})
                                             mtcAdminChannel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}});
                                             embed.setDescription(`${mapByAuthorLinks}\nID: **${descSplit[3]}**`);
