@@ -66,8 +66,7 @@ module.exports.execute = async (reaction, user) => {
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
                 const mapByAuthor = reaction.message.embeds[0].data.description.split("\n")[0];
                 const score = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[0];
-                const votes1 = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[1]?.split(" votes")[0];
-                const votes = votes1.split(")")[0];
+                const votes = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[1]?.split(" votes")[0];
                 const mapIdString = reaction.message.embeds[0].data.description.split("\n")[2];
                 const mapId = mapIdString.split("Map ID: ")[1];
                 const rawRatingwPercent = score.split("Current Score: ")[1]
