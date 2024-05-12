@@ -35,7 +35,7 @@ module.exports.execute = async (interaction) => {
                                     //.setAuthor({name:`Vote to add map to rotation on trial basis`,iconURL: `https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}.png`})
                                     .setDescription(desc)
                                     .setFooter({text:`Please react ✅ to approve or ❌ to reject.`})
-                const newContent = `**ATTENTION <@&${config.roles.mtc}>:** ${submissionType} [FM ID: \`${mapId}\`] received from <@${interaction.user.id}>.`
+                let newContent = `**ATTENTION <@&${config.roles.mtc}>:** ${submissionType} [FM ID: \`${mapId}\`] received from <@${interaction.user.id}>.`
                 if (isUpdate) { newContent += `\nAdvancing this map will overwrite the PNG and JSON files of the existing map with this name in the game. It will not overwrite votes.` }
                 
                 mtcChannel.send({content:newContent,embeds:[newEmbed],allowedMentions:{users:[],roles:[]}}).then(sent => {
