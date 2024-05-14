@@ -3,6 +3,7 @@ const RemoveMap = require("../../Interactions/SlashCommands/removemap");
 const GetFeedback = require("./getfeedback");
 const RotationSummary = require("./rotationsummary");
 const UpdateMap = require("./updatemap");
+const ManualAdd = require("./manualadd");
 const FindMap = require("./findmap");
 const FindFortunateMap = require("./findfortunatemap");
 const GetCurrentRating = require("./getcurrentrating");
@@ -16,7 +17,8 @@ module.exports = {
     RemoveMap, 
     GetFeedback, 
     RotationSummary, 
-    UpdateMap, 
+    UpdateMap,
+    ManualAdd,
     FindMap, 
     FindFortunateMap,
     GetCurrentRating, 

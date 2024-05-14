@@ -8,7 +8,7 @@ module.exports.execute = (interaction) => {
     if (!interaction.isChatInputCommand()){
         return false;
     }
-    if (interaction.commandName != "submitmap"){
+    if (interaction.commandName != "submitmap" && interaction.commandName != "manualadd"){
         return false;
     }
     var code = interaction.options.data[0].value;
@@ -56,11 +56,23 @@ module.exports.execute = (interaction) => {
                                         + 'Author: [**' + author + '**](' + baseUrl + 'profile/' + author.split(" ").join("_") + ')\n'
                                         + 'Description: ' + description + '\n\n'
                                         + '[**Test Map**](' + baseUrl + 'test/' + code + ')')
-                    const row = new ActionRowBuilder().addComponents(
-                        new ButtonBuilder().setCustomId('ConfirmMapSubmission').setStyle(ButtonStyle.Primary).setLabel('Confirm'),
-                        new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
-                    )
-                    interaction.reply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
+                    if (interaction.commandName == "submitmap"){
+                        const row = new ActionRowBuilder().addComponents(
+                            new ButtonBuilder().setCustomId('ConfirmMapSubmission').setStyle(ButtonStyle.Primary).setLabel('Confirm'),
+                            new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
+                        )
+                        interaction.reply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
+                    }
+                    if (interaction.commandName == "manualadd"){
+                        const row = new ActionRowBuilder().addComponents(
+                            new ButtonBuilder().setCustomId('ConfirmManualAdd').setStyle(ButtonStyle.Primary).setLabel('Add to Trial'),
+                            // If eventually we can set an initial weight, we want to do something like this
+                            //new ButtonBuilder().setCustomId('ConfirmManualAdd---trial').setStyle(ButtonStyle.Primary).setLabel('Add to Trial'),
+                            //new ButtonBuilder().setCustomId('ConfirmManualAdd---full').setStyle(ButtonStyle.Primary).setLabel('Add to Standard'),
+                            new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
+                        )
+                        interaction.reply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
+                    }
                 }
             })
         }
