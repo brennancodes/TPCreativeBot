@@ -78,6 +78,12 @@ module.exports.execute = (interaction) => {
                 roles: "mtc"
             },
             {
+                commandName: "resetvotes",
+                parameters: "Map Name",
+                description: "MTC Admins can use this method to reset votes for existing maps in rotation.",
+                roles: "mtcAdmin"
+            },
+            {
                 commandName: "updatemap",
                 parameters: "Map Name, then new category + weight",
                 description: "MTC Admins can use this method to change settings for existing maps in rotation.",

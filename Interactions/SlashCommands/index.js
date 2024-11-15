@@ -11,6 +11,7 @@ const CreativeHelp = require("./creativehelp");
 const PromoteMap = require("./promotemap");
 const TrialSummary = require("./trialsummary");
 const MTC = require("./mtc");
+const ResetVotes = require("./resetvotes");
 
 module.exports = { 
     SubmitMap, 
@@ -25,5 +26,6 @@ module.exports = {
     CreativeHelp,
     PromoteMap,
     TrialSummary,
-    MTC
+    MTC,
+    ResetVotes
 }

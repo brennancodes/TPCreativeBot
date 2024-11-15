@@ -188,6 +188,18 @@ async function main() {
             ]
         },
         {
+            name: 'resetvotes',
+            description: 'Reset the votes of a TagPro map',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Search for a map by name',
+                    type: 3,
+                    required: true,
+                }
+            ]
+        },
+        {
             name: 'trialsummary',
             description: 'Get a quick look at all the Trial Rotation scores'
         },

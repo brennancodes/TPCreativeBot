@@ -41,7 +41,6 @@ module.exports.execute = (interaction) => {
         axios({method:'post',url:url,headers:headers}).then(function(resp){
             if (resp.data && resp.data.includes("Updated map")){
                 console.info("Successful request. Response: ", resp.data)
-                //TODO HERE: Get map info from the json, re-create the embed from before.
                 async function searchMaps(){
                     const headers = {
                         'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
