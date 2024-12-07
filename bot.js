@@ -46,6 +46,8 @@ client.once("ready", () => {
 client.on('interactionCreate', async interaction => {
     if (interaction.isChatInputCommand()){
         for (const cmd of slashCommands){
+            if (interaction.commandName == "map") { interaction.commandName = "findmap" }
+            if (interaction.commandName == "fm") { interaction.commandName = "findfortunatemap" }
             const event = require(`./Interactions/SlashCommands/${cmd}`)
             if (event){
                 event.execute(interaction)
@@ -142,7 +144,53 @@ async function main() {
             ]
         },
         {
+            name: 'map',
+            description: 'Find a map from the Rotation, Trial, Classic, Retired, or Group playlists',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Search for a map by name',
+                    type: 3,
+                    required: true,
+                }
+            ]
+        },
+        {
             name: 'findfortunatemap',
+            description: 'Find a map hosted on FortunateMaps',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Search for a fortunate map by name',
+                    type: 1,
+                    required: false,
+                    options: [
+                        {
+                            name: 'name',
+                            description: 'Search for a fortunate map by name',
+                            type: 3,
+                            required: true
+                        }
+                    ]
+                },
+                {
+                    name: 'code',
+                    description: 'Search for a fortunate map by code',
+                    type: 1,
+                    required: false,
+                    options: [
+                        {
+                            name: 'code',
+                            description: 'Search for a fortunate map by code',
+                            type: 4,
+                            required: true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: 'fm',
             description: 'Find a map hosted on FortunateMaps',
             options: [
                 {
@@ -202,6 +250,10 @@ async function main() {
         {
             name: 'trialsummary',
             description: 'Get a quick look at all the Trial Rotation scores'
+        },
+        {
+            name: 'throwbacksummary',
+            description: 'Get a quick look at all the Throwback Rotation scores'
         },
         {
             name: 'getfeedback',

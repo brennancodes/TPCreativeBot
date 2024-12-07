@@ -10,6 +10,7 @@ const GetCurrentRating = require("./getcurrentrating");
 const CreativeHelp = require("./creativehelp");
 const PromoteMap = require("./promotemap");
 const TrialSummary = require("./trialsummary");
+const ThrowbackSummary = require("./throwbacksummary");
 const MTC = require("./mtc");
 const ResetVotes = require("./resetvotes");
 
@@ -26,6 +27,7 @@ module.exports = {
     CreativeHelp,
     PromoteMap,
     TrialSummary,
+    ThrowbackSummary,
     MTC,
     ResetVotes
 }

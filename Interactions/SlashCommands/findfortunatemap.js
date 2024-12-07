@@ -17,7 +17,7 @@ module.exports.execute = (interaction) => {
         var author = "";
         var indexCounter = 1;
         if (interaction.isChatInputCommand()){
-            if (!interaction.commandName.includes("findfortunatemap") && interaction.commandName != "fmap"){
+            if (!interaction.commandName.includes("findfortunatemap")){
                 return false;
             }
         }
@@ -59,14 +59,13 @@ module.exports.execute = (interaction) => {
                     interaction.reply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,ephemeral:true,allowedMentions:{"users":[]}})
                 }
                 else {
+                    const formattedMapByAuthor = `${title.length > 125 ? title.substring(0,122)+ '...' : title} by ${author.length > 125 ? author.substring(0,122)+ '...' : author}`
+                    const formattedLinks = `**${code}** | [**Map**](${baseUrl}map/${code}) | [**Author**](${baseUrl}profile/${author.split(" ").join("_")}) | [**Test Map**](${baseUrl}test/${code})`                
                     const embed = new EmbedBuilder()
                         .setColor('#7bcf5c')
                         .setImage(imageUrl)
-                        .setAuthor({name: "Map Found!", iconURL: iconUrl})
-                        .setDescription('Title: [**'+title+'**]('+mapUrl+')\n'
-                                        + 'FM ID: **'+code+'**\n'
-                                        + 'Author: [**' + author + '**](' + baseUrl + 'profile/' + author.split(" ").join("_") + ')\n\n'
-                                        + '[**Test Map**](' + baseUrl + 'test/' + code + ')');
+                        .setAuthor({name: formattedMapByAuthor, iconURL: iconUrl})
+                        .setDescription(formattedLinks);
                     const row = new ActionRowBuilder().addComponents(
                         new ButtonBuilder().setCustomId(`ShareToChannel`).setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
                         new ButtonBuilder().setCustomId('cancelaction---find').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
@@ -119,14 +118,14 @@ module.exports.execute = (interaction) => {
                 //const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
                 const baseUrl = GetFMRoot();
                 const iconUrl = baseUrl + "/assets/logo.png"
+                const formattedMapByAuthor = `${x.name.length > 125 ? x.name.substring(0,122)+ '...' : x.name} by ${x.author.length > 125 ? x.author.substring(0,122)+ '...' : x.author}`
+                const formattedLinks = `**${x.code}** | [**Map**](${baseUrl}map/${x.code}) | [**Author**](${baseUrl}profile/${x.author.split(" ").join("_")}) | [**Test Map**](${baseUrl}test/${x.code})`
                 const embed = new EmbedBuilder()
                     .setColor('#7bcf5c')
                     .setImage(`${baseUrl}preview/${x.code}.jpeg`)
-                    .setAuthor({name: "Map Found!", iconURL: iconUrl})
-                    .setDescription('Title: **'+x.name+'**\n'
-                                    + 'FM ID: **'+x.code+'**\n'
-                                    + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')')
-                    .setFooter({text:"\n\u200b\nNot the map you were looking for? \nTry navigating to the next matching map using the buttons below."});
+                    .setAuthor({name: formattedMapByAuthor, iconURL: iconUrl})
+                    .setDescription(formattedLinks)
+                    .setFooter({text:"\n\u200b\nNot right? Try clicking Next Map."});
                 const row = new ActionRowBuilder()
                 if (counter == 1){
                     row.addComponents(

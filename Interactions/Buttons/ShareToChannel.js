@@ -6,27 +6,39 @@ module.exports.execute = async (interaction) => {
         if (!interaction.customId.includes("ShareToChannel")){ return false; }
         const { embeds } = interaction.message;
         if (interaction.customId.includes("tsummary")){
-            interaction.reply({
+            interaction.channel.send({
                 content:`${interaction.user} shared the trial rotation summary.`,
                 embeds: [embeds[0]],
                 allowedMentions: {"users":[]},
                 fetchReply: true
             });
+            interaction.update({content:"Content shared!"})
+            RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
+        }
+        else if (interaction.customId.includes("thsummary")){
+            interaction.channel.send({
+                content:`${interaction.user} shared the throwback rotation summary.`,
+                embeds: [embeds[0]],
+                allowedMentions: {"users":[]},
+                fetchReply: true
+            });
+            interaction.update({content:"Content shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
         }
         else if (interaction.customId.includes("rsummary")){
-            interaction.reply({
+            interaction.channel.send({
                 content:`${interaction.user} shared the rotation summary.`,
                 embeds: [embeds[0]],
                 allowedMentions: {"users":[]},
                 fetchReply: true
             });
+            interaction.update({content:"Content shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
         }
         else {
-            embeds[0].data.author.name = "Map Shared!"
+            // embeds[0].data.author.name = "Map Shared!"
             embeds[0].data.footer = {text:"What do you think? Smack some reaction emojis on me!"}
-            const reply = await interaction.reply({
+            const reply = await interaction.channel.send({
                 content:`${interaction.user} shared a map.`,
                 embeds: [embeds[0]],
                 allowedMentions: {"users":[]},
@@ -35,6 +47,7 @@ module.exports.execute = async (interaction) => {
     
             reply.react('👍');
             reply.react('👎');
+            interaction.update({content:"Map shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Map shared!")
         }
     }
