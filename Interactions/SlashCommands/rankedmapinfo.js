@@ -125,7 +125,7 @@ module.exports.execute = (interaction) => {
             }
             row.addComponents(
                 new ButtonBuilder().setCustomId(`rankedmapinfo---${searchString}---${counter}`).setStyle(ButtonStyle.Success).setLabel('Next Map 🡲'),
-                new ButtonBuilder().setCustomId(`ShareToChannel`).setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
+                new ButtonBuilder().setCustomId(`ShareToChannel---rminfo`).setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
                 new ButtonBuilder().setCustomId('cancelaction---ranked').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks'),
             );
             if (interaction.message != undefined){
