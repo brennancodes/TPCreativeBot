@@ -35,6 +35,16 @@ module.exports.execute = async (interaction) => {
             interaction.update({content:"Content shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
         }
+        else if (interaction.customId.includes("rminfo")){
+            interaction.channel.send({
+                content:`${interaction.user} shared some ranked map data.`,
+                embeds: [embeds[0]],
+                allowedMentions: {"users":[]},
+                fetchReply: true
+            });
+            interaction.update({content:"Content shared!"})
+            RemoveButtonsFromOriginal(interaction, true, "Ranked map info shared!")
+        }
         else {
             // embeds[0].data.author.name = "Map Shared!"
             embeds[0].data.footer = {text:"What do you think? Smack some reaction emojis on me!"}
