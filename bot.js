@@ -295,6 +295,18 @@ async function main() {
                 }
             ]
         },
+        {
+            name: 'rankedmapinfo',
+            description: 'Get selection and head-to-head statistics for a ranked rotation map',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Search for a ranked map by name',
+                    type: 3,
+                    required: true,
+                }
+            ]
+        },
     ];
     try {
         console.log('Started refreshing application (/) commands.');

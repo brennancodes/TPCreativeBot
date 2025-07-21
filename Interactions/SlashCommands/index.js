@@ -13,6 +13,7 @@ const TrialSummary = require("./trialsummary");
 const ThrowbackSummary = require("./throwbacksummary");
 const MTC = require("./mtc");
 const ResetVotes = require("./resetvotes");
+const RankedMapInfo = require("./rankedmapinfo");
 
 module.exports = { 
     SubmitMap, 
@@ -29,5 +30,6 @@ module.exports = {
     TrialSummary,
     ThrowbackSummary,
     MTC,
-    ResetVotes
+    ResetVotes,
+    RankedMapInfo
 }
