@@ -8,13 +8,13 @@ const ConfirmGetCurrentRating = require("./ConfirmGetCurrentRating");
 const ConfirmResetVotes = require("./ConfirmResetVotes.js");
 const ShareToChannel = require("./ShareToChannel");
 
-module.exports = { 
-    ConfirmMapSubmission, 
-    CancelMapSubmission, 
-    ConfirmMapUpdate, 
+module.exports = {
+    ConfirmMapSubmission,
+    CancelMapSubmission,
+    ConfirmMapUpdate,
     ConfirmMapRemoval,
     ConfirmManualAdd,
-    CancelAction, 
+    CancelAction,
     ConfirmGetCurrentRating,
     ConfirmResetVotes,
     ShareToChannel

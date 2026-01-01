@@ -70,7 +70,7 @@ module.exports.execute = (interaction) => {
             }
             else {
                 row.addComponents(
-                    new ButtonBuilder().setCustomId(`findmap---${searchString}---${counterMinusOne}`).setStyle(ButtonStyle.Primary).setLabel('🡰 Prev Map'),                    
+                    new ButtonBuilder().setCustomId(`findmap---${searchString}---${counterMinusOne}`).setStyle(ButtonStyle.Primary).setLabel('🡰 Prev Map'),
                 )
             }
             row.addComponents(

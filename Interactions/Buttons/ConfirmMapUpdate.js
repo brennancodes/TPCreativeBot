@@ -43,7 +43,7 @@ module.exports.execute = (interaction) => {
                     .setPlaceholder('Select Category/Weight, then click outside.')
                     .setMinValues(2)
                     .setMaxValues(2)
-                    .addOptions(catOptions)                    
+                    .addOptions(catOptions)
             )
         const row2 = new ActionRowBuilder()
             .addComponents(
@@ -58,10 +58,10 @@ module.exports.execute = (interaction) => {
                     .setLabel('Send it!')
                     .setCustomId('LiterallyDoesNothingLmao')
             )
-                    
+
         interaction.update({content:"Select exactly one playlist and one weight.",ephemeral:true,components:[row,row2]})
     }
     catch (err){
         console.error(err);
     }
-}     
+}

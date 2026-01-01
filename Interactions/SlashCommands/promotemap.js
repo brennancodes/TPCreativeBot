@@ -28,7 +28,7 @@ module.exports.execute = (interaction) => {
         }
 
         async function searchMaps(){
-            var foundMatch = false;            
+            var foundMatch = false;
             const map = await GetMapByName(searchString, counter, false, true);
             if (map != null){
                 foundMatch = true;

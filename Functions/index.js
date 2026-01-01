@@ -12,15 +12,15 @@ const FinalizeVotes = require("./FinalizeVotes");
 const CheckForExistingMapInRotation = require("./CheckForExistingMapInRotation");
 const GetMapWithStats = require("./GetMapWithStats");
 
-module.exports = { 
+module.exports = {
     PingMTC,
     FinalizeVotes,
-    RemoveButtonsFromOriginal, 
-    ValidateSubmission, 
-    CalculateRotationBalance, 
-    GetMapById, 
-    GetMapByName, 
-    GetAllMaps, 
+    RemoveButtonsFromOriginal,
+    ValidateSubmission,
+    CalculateRotationBalance,
+    GetMapById,
+    GetMapByName,
+    GetAllMaps,
     CheckForExcessBlack,
     RefreshPins,
     GetFMRoot,

@@ -11,7 +11,7 @@ module.exports = (client, interaction) => {
                 'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
             }
             const maps = await nfetch(`${config.urls.tagpro}/allmaps.json`, {headers:headers})
-            const body = await maps.json();            
+            const body = await maps.json();
             resolve(body);
         }
         getMaps();
@@ -132,7 +132,7 @@ module.exports = (client, interaction) => {
             .setColor("#186360")
             .setAuthor({name:"State of Rotation",iconURL:"https://imgur.com/QWrriCS.png"})
             .setTimestamp()
-        
+
         const rotSize = mapData[0].totalWeight;
         for (var i = 0; i < mapData.length; i++){
             var formattedCategory = mapData[i].category.charAt(0).toUpperCase() + mapData[i].category.slice(1)
@@ -167,7 +167,7 @@ module.exports = (client, interaction) => {
                     )
                 }
                 if (mapData[i].category == "rotation"){
-                    embed.addFields(                        
+                    embed.addFields(
                         {
                             name: "\n\u200b",
                             value: "\u200b",
@@ -220,7 +220,7 @@ module.exports = (client, interaction) => {
             else {
                 item.totalWeight = "\`\`\`\n🟡 "+item.totalWeight.toFixed(2)+ "\n🟡 Expect " + ideal.size[1] + "-" + ideal.size[2] + "\`\`\`"
             }
-            
+
             if (item.CTFWeight/rotSize*100 < ideal.ctfBal[0] || item.CTFWeight/rotSize*100 > ideal.ctfBal[3]){
                 item.CTFNFBalance = "\`\`\`\n🔴 CTF: " + (item.CTFWeight/rotSize*100).toFixed(2) + "%\n🔴 NF : " + (item.NFWeight/rotSize*100).toFixed(2) + "%\`\`\`"
             }
@@ -240,7 +240,7 @@ module.exports = (client, interaction) => {
             }
             else {
                 item.totalWeight = "\`\`\`\n🟢 Weight："+(item.totalWeight/rotSize*100).toFixed(2)+"%\`\`\`"
-            }                
+            }
         }
         if (item.category === "classic"){
             if (item.totalWeight/rotSize*100 > ideal.claBal[1]){
@@ -251,7 +251,7 @@ module.exports = (client, interaction) => {
             }
             else {
                 item.totalWeight = "\`\`\`\n🟢 Weight："+(item.totalWeight/rotSize*100).toFixed(2)+"%\`\`\`"
-            } 
+            }
         }
         if (item.category === "retired"){
             if (item.totalWeight/rotSize*100 > ideal.tbkBal[1]){
@@ -262,7 +262,7 @@ module.exports = (client, interaction) => {
             }
             else {
                 item.totalWeight = "\`\`\`\n🟢 Weight："+(item.totalWeight/rotSize*100).toFixed(2)+"%\`\`\`"
-            } 
+            }
         }
         if (item.category === "trial"){
             if (item.totalWeight/rotSize*100 > ideal.triBal[1]){
@@ -274,7 +274,7 @@ module.exports = (client, interaction) => {
             }
             else {
                 item.totalWeight = "\`\`\`\n🟢 Weight："+(item.totalWeight/rotSize*100).toFixed(2)+"%\`\`\`"
-            } 
+            }
         }
         if (item.category === "all"){
             if (item.avgScore > ideal.score[1]){
@@ -299,7 +299,7 @@ module.exports = (client, interaction) => {
             }
         }
     }
-    
+
     function getType(png){
         if (png == null){
             return "Placeholder"
@@ -311,7 +311,7 @@ module.exports = (client, interaction) => {
                 var canvas = Canvas.createCanvas();
                 canvas.width = image.width;
                 canvas.height = image.height;
-    
+
                 var context = canvas.getContext('2d');
                 context.drawImage(image,0,0);
                 var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -332,7 +332,7 @@ module.exports = (client, interaction) => {
                 switch(true){
                     case (blue==1 && red ==1 && yellow == 0): mapType = "CTF";
                         break;
-                    case (blue==0 && red ==0 && yellow == 1): mapType = "NF"; 
+                    case (blue==0 && red ==0 && yellow == 1): mapType = "NF";
                         break;
                 }
             }

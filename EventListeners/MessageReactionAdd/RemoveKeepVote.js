@@ -6,21 +6,21 @@ module.exports.execute = async (reaction, user) => {
     if(reaction.message.channelId === config.channels.mtc){
         // Use this IF block to determine if it is a reaction on a map removal nomination
         if (reaction.message.content.includes("map removal nomination")){
-            
+
             const currentDate = new Date();
             const guild =  await reaction.client.guilds.fetch(config.guildId);
             const mtcRole = guild.roles.cache.get(config.roles.mtc);
             const mtcMajority = Math.ceil(mtcRole.members.size/2) + 1
-            
+
             //Make sure we're counting all reactions even if the bot restarts
             reaction.message.fetch();
 
             if (
-                (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) && 
+                (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) &&
                 reaction._emoji.name !== '🔄' &&
                 (reaction.count < mtcMajority || reaction.count == 1)
             ){
-                // It is too early to worry about taking any action. 
+                // It is too early to worry about taking any action.
                 return;
             }
             if (reaction.partial){
@@ -39,8 +39,8 @@ module.exports.execute = async (reaction, user) => {
                 }
                 let yVotes = reaction.message.reactions.cache.get('✅');
                 let nVotes = reaction.message.reactions.cache.get('❌');
-                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){                
-                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){ 
+                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
+                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){
                         if (yVotes.count > nVotes.count){
                             decision = "Removed";
                         }
@@ -84,7 +84,7 @@ module.exports.execute = async (reaction, user) => {
                         header = `MAP KEPT`
                     }
                     reaction.message.unpin();
-                    
+
                     const last = mapByAuthor.lastIndexOf(" by ");
                     const mapName = mapByAuthor.slice(2,last);
                     const channel = reaction.client.channels.cache.get(config.channels.mtc)
@@ -102,7 +102,7 @@ module.exports.execute = async (reaction, user) => {
                     //         await thread.setArchived(true);
                     //     }
                     // }
-                    
+
                     var appr = reaction.message.reactions.cache.get('✅');
                     var deny = reaction.message.reactions.cache.get('❌');
                     var approvalList = []; var denialList = [];
@@ -115,7 +115,7 @@ module.exports.execute = async (reaction, user) => {
                     await deny.users.fetch().then(function(users){
                         denialList = Array.from(users.keys());
                         denialString = "No votes: ";
-                        denialList.forEach(x=> {if (x != config.users.bot){denialString += "<@" + x + "> "}});                
+                        denialList.forEach(x=> {if (x != config.users.bot){denialString += "<@" + x + "> "}});
                     })
                     const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Kept' ? '#7bcf5c' : '#da3e52')
@@ -124,7 +124,7 @@ module.exports.execute = async (reaction, user) => {
                         .setThumbnail(imageUrl).setTimestamp()
 
                     reaction.message.reactions.removeAll();
-        
+
                     reaction.message.channel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
                         .then(sent=>{
                             if (decision === "Removed"){
@@ -160,7 +160,7 @@ module.exports.execute = async (reaction, user) => {
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         })
-                    
+
                 }
             }
 

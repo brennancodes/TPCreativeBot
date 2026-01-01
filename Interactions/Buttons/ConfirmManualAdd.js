@@ -23,7 +23,7 @@ module.exports.execute = async (interaction) => {
                 interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,ephemeral:true,components:[row]});
             } else {
                 const description = interaction.message.embeds[0].data.description;
-                const descSplit = description.split('**');                
+                const descSplit = description.split('**');
                 const channel = interaction.client.channels.cache.get(config.channels.mtc);
                 const mtcAdminChannel = interaction.client.channels.cache.get(config.channels.mtcAdmin);
                 const mtcAnnouncementChannel = interaction.client.channels.cache.get(config.channels.mtcAnnouncements);
@@ -66,10 +66,10 @@ module.exports.execute = async (interaction) => {
                 })
             }
         }
-        // This is needed to remove the components (buttons)            
+        // This is needed to remove the components (buttons)
         RemoveButtonsFromOriginal(interaction);
     }
     catch (err){
         console.error(err);
     }
-}     
+}

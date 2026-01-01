@@ -49,7 +49,7 @@ module.exports.execute = (interaction) => {
             }, function(error, response, html){
                 if(!error && response.statusCode == 200){
                     const $ = cheerio.load(html);
-                    title = $('.card-title').find('b').first().text() 
+                    title = $('.card-title').find('b').first().text();
                     author = $('.card-title').find('b').last().text();
                 }
                 else {
@@ -60,7 +60,7 @@ module.exports.execute = (interaction) => {
                 }
                 else {
                     const formattedMapByAuthor = `${title.length > 125 ? title.substring(0,122)+ '...' : title} by ${author.length > 125 ? author.substring(0,122)+ '...' : author}`
-                    const formattedLinks = `**${code}** | [**Map**](${baseUrl}map/${code}) | [**Author**](${baseUrl}profile/${author.split(" ").join("_")}) | [**Test Map**](${baseUrl}test/${code})`                
+                    const formattedLinks = `**${code}** | [**Map**](${baseUrl}map/${code}) | [**Author**](${baseUrl}profile/${author.split(" ").join("_")}) | [**Test Map**](${baseUrl}test/${code})`
                     const embed = new EmbedBuilder()
                         .setColor('#7bcf5c')
                         .setImage(imageUrl)
@@ -99,9 +99,9 @@ module.exports.execute = (interaction) => {
                     }
                 })
             })
-    
+
             getHTML.then((x)=>{
-                var foundMatch = false;            
+                var foundMatch = false;
                 if (x.name != "" && x.author != ""){
                     foundMatch = true;
                 }
@@ -134,7 +134,7 @@ module.exports.execute = (interaction) => {
                 }
                 else {
                     row.addComponents(
-                        new ButtonBuilder().setCustomId(`findfortunatemap---${searchString}---${counterMinusOne}`).setStyle(ButtonStyle.Primary).setLabel('🡰 Prev Map'),                    
+                        new ButtonBuilder().setCustomId(`findfortunatemap---${searchString}---${counterMinusOne}`).setStyle(ButtonStyle.Primary).setLabel('🡰 Prev Map'),
                     )
                 }
                 row.addComponents(

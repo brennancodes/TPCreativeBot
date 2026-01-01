@@ -3,7 +3,7 @@ const { EmbedBuilder } = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
 const { GetFMRoot } = require("../../Functions");
-const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args)) 
+const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args))
 
 module.exports.execute = (interaction) => {
     try {
@@ -63,9 +63,9 @@ module.exports.execute = (interaction) => {
                                 return tmp;
                             }
                         }
-                    }                    
+                    }
                 }
-        
+
                 searchMaps().then(function(x){
                     const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
                     const baseUrl = GetFMRoot();

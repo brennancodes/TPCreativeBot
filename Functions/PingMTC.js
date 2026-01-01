@@ -43,7 +43,7 @@ module.exports = async (client) => {
                     });
                 })
             })
-    
+
             getLazyPeople.then(()=>{
                 const naughtyPeople = [];
                 mtcUsers.forEach(u=>{
