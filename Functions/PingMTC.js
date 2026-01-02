@@ -5,65 +5,54 @@ module.exports = async (client) => {
     let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
     job.start();
     //setInterval(()=>{ping()},5000)
-    async function ping(){
+    async function ping() {
         const guild =  await client.guilds.fetch(config.guildId);
+
+        const mtcMemberIds = guild.roles.cache.get(config.roles.mtc).members.map(m=>m.user.id);
+
         const channel = await guild.channels.fetch(config.channels.mtc);
-        const pins = await channel.messages.fetchPinned(true);
+        const pins = await channel.messages.fetchPins(true);
         await guild.members.fetch();
-        const mtcUsers = guild.roles.cache.get(config.roles.mtc).members.map(m=>m.user.id)
-        if (pins.size > 0){
-            const userArray = [];
-            const getLazyPeople = new Promise((resolve, reject)=>{
-                // for each pinned message...
-                pins.forEach(async x=>{
-                    // fetch the full message
-                    const m = await channel.messages.fetch(x)
-                    // for each cached partial reaction
-                    await m.react('🔄')
-                    await x.reactions.cache.get('🔄').remove()
-                    m.reactions.cache.forEach(async y=>{
-                        // fetch the full reaction
-                        y.fetch().then(async r=> {
-                            if (r._emoji.name === '❌' || r._emoji.name === '✅'){
-                                // fetch the users who clicked each reaction
-                                const usrs = await r.users.fetch()
-                                // map the user ids to a new array
-                                usrs.map(z=>{
-                                    if (!z.bot){
-                                        userArray.push(z.id);
-                                        // TODO: put this in the original if statement so people don't get pinged about their own map submission
-                                        if (m.content.includes(z.id)){
-                                            //console.log("Submitter")
-                                        }
-                                    }
-                                });
-                            }
-                            resolve();
-                        })
-                    });
-                })
-            })
-    
-            getLazyPeople.then(()=>{
-                const naughtyPeople = [];
-                mtcUsers.forEach(u=>{
-                    // If any member did not react and is not a bot, make them naughty
-                    if (u != config.users.bot && !userArray.includes(u)){
-                        naughtyPeople.push(u);
+
+        const idleMemberIds = new Set();
+        if (pins.size > 0) {
+            for (const pin of pins.values()) {
+                const reaction = await pin.react('🔄')
+                await reaction.remove();
+
+                const reactedIds = [];
+                pin.reactions.cache.forEach(async cachedReact=>{
+                    // .fetch the full hydrated reaction, must do if we want user data (we want user data)
+                    const reaction = await cachedReact.fetch();
+
+                    if (['❌', '✅'].includes(reaction.emoji.name)) {
+                        // fetch the users who clicked each reaction
+                        const users = await reaction.users.fetch()
+                        for (const user of users.values()) {
+                            reactedIds.push(user.id);
+                        }
                     }
-                })
-                if (naughtyPeople.length > 0){
-                    var tagUsersString = "";
-                    naughtyPeople.forEach(n=>{
-                        tagUsersString += `<@${n}>, `
-                    })
-                    tagUsersString += "there are unhandled actions that require your attention. Please review the pinned messages."
-                    channel.send({content:tagUsersString})
+                });
+
+                for (const id of mtcMemberIds) {
+                    // Mark a member idle if they did not react and did not submit this map
+                    if (!reactedIds.includes(id) && !pin.content.includes(id)) {
+                        idleMemberIds.add(id);
+                    }
                 }
-            })
+            }
         }
-        else{
-            console.info("No pins")
+
+        if (idleMemberIds.size > 0) {
+            let tagUsersString = "";
+            for (const memberId of idleMemberIds) {
+                tagUsersString += `<@${memberId}>, `
+            }
+            tagUsersString += "there are unhandled actions which require your attention. Please review the pinned messages."
+
+            channel.send({content:tagUsersString});
+        } else {
+            channel.send({content: "All MTC members are up-to-date on their voting, nice work!"});
         }
     }
 }
