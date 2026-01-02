@@ -54,7 +54,7 @@ module.exports.execute = async (interaction) => {
                 allowedMentions: {"users":[]},
                 fetchReply: true
             });
-    
+
             reply.react('👍');
             reply.react('👎');
             interaction.update({content:"Map shared!"})

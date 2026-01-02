@@ -21,7 +21,7 @@ module.exports.execute = async (reaction, user) => {
                 reaction._emoji.name !== '🔄' &&
                 (reaction.count < mtcMajority || reaction.count == 1)
             ){
-                // It is too early to worry about taking any action. 
+                // It is too early to worry about taking any action.
                 return;
             }
             if (reaction.partial){
@@ -32,9 +32,9 @@ module.exports.execute = async (reaction, user) => {
                     return;
                 }
             }
-            
+
             const description = reaction.message.embeds[0].data.description;
-            const descSplit = description.split('**');                
+            const descSplit = description.split('**');
             const channel = reaction.client.channels.cache.get(config.channels.mtc);
             const active = await channel.threads.fetchActive(true)
             let feedbackThreads = active.threads.filter(x=>x.name.includes(`${descSplit[3]} Feedback`));
@@ -64,7 +64,7 @@ module.exports.execute = async (reaction, user) => {
                     reaction.message.channel.send({content:`You know better than to vote on your own submission, <@${user.id}>.`,allowedMentions:{"users":[]}})
                 }
             }
-            
+
             let decision;
             let wired;
             const isWired = new Promise((resolve,reject)=>{
@@ -82,7 +82,7 @@ module.exports.execute = async (reaction, user) => {
                 }
                 wireFunc();
             })
-            
+
             async function getDecision(){
                 if (reaction._emoji.name === '🔄'){
                     decision = "Refresh"
@@ -91,10 +91,10 @@ module.exports.execute = async (reaction, user) => {
                 let yVotes = reaction.message.reactions.cache.get('✅');
                 let nVotes = reaction.message.reactions.cache.get('❌');
                 if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
-                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){     
+                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){
                         if (feedbackArray.length < config.mtcSettings.feedbackThreshold){
                             decision = "Pending Feedback";
-                        } 
+                        }
                         else if (yVotes.count > nVotes.count){
                             if (!wired){
                                 decision = "Pending Manual Test"
@@ -105,7 +105,7 @@ module.exports.execute = async (reaction, user) => {
                         }
                         else if (nVotes.count > yVotes.count){
                             decision = "Denied"
-                        }                
+                        }
                         else {
                             // Tie
                             decision = "No Decision";
@@ -120,14 +120,14 @@ module.exports.execute = async (reaction, user) => {
                     decision = "Stop Clicking Weird Shit"
                 }
             }
-    
+
             isWired.then(async ()=>{
                 await reaction.message.fetch();
 
                 await getDecision();
                 Respond();
             })
-    
+
             async function Respond(){
                 const rootUrl = GetFMRoot();
                 const mapByAuthorLinks = `[**${descSplit[1]}**](${rootUrl}map/${descSplit[3]}) by [**${descSplit[5]}**](${rootUrl}profile/${descSplit[5].replaceAll(" ","_")})`
@@ -165,10 +165,10 @@ module.exports.execute = async (reaction, user) => {
 
                     if (config.mtcSettings.useDiscussionChannel){
                         const discChannel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        const discussionThread = discChannel.threads.cache.find(x=>x.name.includes(`${descSplit[3]} Discussion`))  
+                        const discussionThread = discChannel.threads.cache.find(x=>x.name.includes(`${descSplit[3]} Discussion`))
                         await discussionThread?.setArchived(true);
                     }
-                    
+
                     var appr = reaction.message.reactions.cache.get('✅');
                     var deny = reaction.message.reactions.cache.get('❌');
                     var wire = reaction.message.reactions.cache.get('🔬');
@@ -182,7 +182,7 @@ module.exports.execute = async (reaction, user) => {
                     await deny.users.fetch().then(function(users){
                         denialList = Array.from(users.keys());
                         denialString = "No votes: ";
-                        denialList.forEach(x=> {if (x != config.users.bot){denialString += "<@" + x + "> "}});                
+                        denialList.forEach(x=> {if (x != config.users.bot){denialString += "<@" + x + "> "}});
                     })
                     await wire.users.fetch().then(function(users){
                         wireList = Array.from(users.keys());
@@ -195,13 +195,13 @@ module.exports.execute = async (reaction, user) => {
                         .setDescription(`${mapByAuthorLinks}\n\nID: **${descSplit[3]}**\n\n${approvalString}\n${denialString}${decision == "Denied" ? '' : '\n' + wireString}`)
                         .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`).setTimestamp()
                     reaction.message.reactions.removeAll();
-        
+
                     reaction.message.channel.send({embeds:[embed],content:`**${decision.toLocaleUpperCase()} FOR ROTATION** \n${mapByAuthor}`,allowedMentions: {"users":[]}})
                         .then(async (sent)=>{
                             if (decision === "Approved"){
                                 var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
                                 var mtcAnnouncementChannel = reaction.client.channels.cache.get(config.channels.mtcAnnouncements);
-                                
+
                                 const headers = {
                                     'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
@@ -230,7 +230,7 @@ module.exports.execute = async (reaction, user) => {
                                         console.error(err);
                                     }
                                 })
-                            }                                
+                            }
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         }).then(()=>{
@@ -252,7 +252,7 @@ module.exports.execute = async (reaction, user) => {
                                 embeds:[embed]
                             })
                         })
-                    
+
                 }
             }
         }

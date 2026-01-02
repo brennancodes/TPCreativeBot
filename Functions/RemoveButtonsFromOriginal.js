@@ -27,7 +27,7 @@ module.exports = async (interaction, removeEmbeds = false, newContentString = nu
             }
         }
         else {
-            newContent = {                    
+            newContent = {
                 components: []
             }
         }

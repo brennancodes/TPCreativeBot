@@ -95,8 +95,8 @@ module.exports.execute = (interaction) => {
                 description: "MTC Admins can use this method to manually add a map non-democratically. ICE only.",
                 roles: "mtcAdmin"
             }
-        ]    
-    
+        ]
+
         const isMTC = interaction.member.roles.cache.some(r=>r.id == config.roles.mtc)
         const isMTCAdmin = interaction.member.roles.cache.some(r=>r.id == config.roles.mtcAdmin)
 
@@ -123,5 +123,5 @@ module.exports.execute = (interaction) => {
     }
     catch (err) {
         console.error(err);
-    }    
+    }
 }

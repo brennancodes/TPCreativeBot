@@ -1,4 +1,4 @@
-const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args)) 
+const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args))
 const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 
 module.exports = async (mapName, resultNumber = 1, isRemoval = false, isTrial = false) => {
@@ -46,5 +46,5 @@ module.exports = async (mapName, resultNumber = 1, isRemoval = false, isTrial = 
     catch (err){
         console.error(err);
     }
-    
+
 }

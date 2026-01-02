@@ -1,4 +1,4 @@
-const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args)) 
+const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args))
 const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 
 //Returns an array of all maps

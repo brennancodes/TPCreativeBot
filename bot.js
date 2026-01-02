@@ -13,18 +13,18 @@ const FinalizeVotes = require("./Functions/FinalizeVotes");
 
 const client = new Client({
     intents: [
-        GatewayIntentBits.Guilds, 
-        GatewayIntentBits.DirectMessages, 
-        GatewayIntentBits.GuildMessages, 
-        GatewayIntentBits.GuildMessageReactions, 
-        GatewayIntentBits.MessageContent, 
-        GatewayIntentBits.GuildMembers 
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
     ],
     partials: [
-        Partials.Channel, 
-        Partials.Message, 
-        Partials.Reaction, 
-        Partials.User 
+        Partials.Channel,
+        Partials.Message,
+        Partials.Reaction,
+        Partials.User,
     ]
 });
 //client.setMaxListeners(20)

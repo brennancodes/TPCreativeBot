@@ -37,10 +37,10 @@ module.exports.execute = async (interaction) => {
                                     .setFooter({text:`Please react ✅ to approve or ❌ to reject.`})
                 let newContent = `**ATTENTION <@&${config.roles.mtc}>:** ${submissionType} [FM ID: \`${mapId}\`] received from <@${interaction.user.id}>.`
                 if (isUpdate) { newContent += `\nAdvancing this map will overwrite the PNG and JSON files of the existing map with this name in the game. It will not overwrite votes.` }
-                
+
                 mtcChannel.send({content:newContent,embeds:[newEmbed],allowedMentions:{users:[],roles:[]}}).then(sent => {
                     sent.react("✅").then(()=>sent.react("❌")).then(()=>sent.react("🔬")).then(()=>sent.pin())
-                    .then(()=>sent.startThread({name:`${mapName} ${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))                    
+                    .then(()=>sent.startThread({name:`${mapName} ${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))
                 })
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
@@ -60,10 +60,10 @@ module.exports.execute = async (interaction) => {
                 }
             }
         }
-        // This is needed to remove the components (buttons)            
+        // This is needed to remove the components (buttons)
         RemoveButtonsFromOriginal(interaction);
     }
     catch (err){
         console.error(err);
     }
-}     
+}

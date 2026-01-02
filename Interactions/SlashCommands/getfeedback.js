@@ -40,5 +40,5 @@ module.exports.execute = (interaction) => {
             feedbackArray[i].length > 0 ? response += "➢ " + feedbackArray[i] + "\n" : response += "";
         }
         interaction.reply({content:`${response}`,ephemeral:true})
-    })        
+    });
 }

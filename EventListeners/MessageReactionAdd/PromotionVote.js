@@ -21,7 +21,7 @@ module.exports.execute = async (reaction, user) => {
                 reaction._emoji.name !== '🔄' &&
                 (reaction.count < mtcMajority || reaction.count == 1)
             ){
-                // It is too early to worry about taking any action. 
+                // It is too early to worry about taking any action.
                 return;
             }
             if (reaction.partial){
@@ -40,8 +40,8 @@ module.exports.execute = async (reaction, user) => {
                 }
                 let yVotes = reaction.message.reactions.cache.get('✅');
                 let nVotes = reaction.message.reactions.cache.get('⏳');
-                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '⏳')){                
-                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){ 
+                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '⏳')){
+                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){
                         if (yVotes.count > nVotes.count){
                             decision = "Added";
                         }
@@ -61,16 +61,16 @@ module.exports.execute = async (reaction, user) => {
                 else {
                     decision = "Stop Clicking Weird Shit"
                 }
-                
+
             }
 
-            async function Respond(){                    
+            async function Respond(){
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
                 const mapByAuthor = reaction.message.embeds[0].data.description.split("Current Score:")[0];
                 const score = reaction.message.embeds[0].data.description.split(mapByAuthor)[1].split("Map ID:")[0];
                 const mapId = reaction.message.embeds[0].data.description.split("Map ID: ")[1];
                 const RaR = `Current Rating: ${score.split("Current Score:")[1]}`
-                
+
                 if (decision === "Refresh"){
                     await reaction.users.remove(user.id);
                     return;
@@ -87,15 +87,15 @@ module.exports.execute = async (reaction, user) => {
                         throw new Exception();
                     }
                     reaction.message.unpin();
-                    
+
                     // if (config.mtcSettings.useDiscussionChannel){
                     //     const last = mapByAuthor.lastIndexOf(" by ");
                     //     const mapName = mapByAuthor.slice(2,last);
                     //     const channel = reaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                    //     const thread = channel.threads.cache.find(x=>x.name === `${mapName} Promotion Discussion`)  
-                    //     await thread.setArchived(true);              
+                    //     const thread = channel.threads.cache.find(x=>x.name === `${mapName} Promotion Discussion`)
+                    //     await thread.setArchived(true);
                     // }
-                    
+
                     const last = mapByAuthor.lastIndexOf(" by ");
                     const mapName = mapByAuthor.slice(2,last);
                     const channel = reaction.client.channels.cache.get(config.channels.mtc)
@@ -116,7 +116,7 @@ module.exports.execute = async (reaction, user) => {
                     await delay.users.fetch().then(function(users){
                         delayList = Array.from(users.keys());
                         delayString = "Delay votes: ";
-                        delayList.forEach(x=> {if (x != config.users.bot){delayString += "<@" + x + "> "}});                
+                        delayList.forEach(x=> {if (x != config.users.bot){delayString += "<@" + x + "> "}});
                     })
                     const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Added' ? '#7bcf5c' : '#ffca3a')
@@ -125,14 +125,14 @@ module.exports.execute = async (reaction, user) => {
                         .setThumbnail(imageUrl).setTimestamp()
 
                     reaction.message.reactions.removeAll();
-        
+
                     reaction.message.channel.send({embeds:[embed],content:`${header}\n${mapByAuthor}`,allowedMentions: {"users":[]}})
                         .then(sent=>{
                             if (decision == "Added"){
                                 const headers = {
                                     'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
-                                const url = `${config.urls.api}/updatemap/${mapId}?category=rotation&weight=1`
+                                const url = `${config.urls.api}/updatemap/${mapId}?category=rotation&weight=1&ratingType=inCasualRotation`
                                 // const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);
@@ -160,7 +160,7 @@ module.exports.execute = async (reaction, user) => {
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         })
-                    
+
                 }
             }
 
