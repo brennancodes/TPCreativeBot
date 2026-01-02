@@ -132,7 +132,7 @@ module.exports.execute = async (reaction, user) => {
                                 const headers = {
                                     'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
                                 }
-                                const url = `${config.urls.api}/updatemap/${mapId}?category=rotation&weight=1`
+                                const url = `${config.urls.api}/updatemap/${mapId}?category=rotation&weight=1&ratingType=inCasualRotation`
                                 // const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
                                 axios({method:'post',url:url,headers:headers}).then(function(resp){
                                     var mtcAdminChannel = reaction.client.channels.cache.get(config.channels.mtcAdmin);

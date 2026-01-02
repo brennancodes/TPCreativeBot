@@ -12,13 +12,15 @@ module.exports.execute = (interaction) => {
         let playlist = "";
         let mapId = "";
         let weight = 0;
-        var validWeight = false;
-        var validId = false;
-        for (var i = 0; i < interaction.values.length; i++){
+        let validWeight = false;
+        let validId = false;
+        let ratingType;
+        for (let i = 0; i < interaction.values.length; i++){
             if (interaction.values[i].includes("---")){
                 valSplit = interaction.values[i].split("---")
                 playlist = valSplit[0];
-                mapId = valSplit[1]
+                mapId = valSplit[1];
+                ratingType = valSplit[2]; // Undefined for non casual/ranked
                 validId = true;
             }
             else if (typeof parseFloat(interaction.values[i]) == 'number'){
@@ -37,7 +39,7 @@ module.exports.execute = (interaction) => {
         const headers = {
             'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
         }
-        const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
+        const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}${ratingType ? "&ratingType=" + ratingType : ""}`
         axios({method:'post',url:url,headers:headers}).then(function(resp){
             if (resp.data && resp.data.includes("Updated map")){
                 console.info("Successful request. Response: ", resp.data)
