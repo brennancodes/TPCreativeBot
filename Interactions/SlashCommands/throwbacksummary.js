@@ -13,8 +13,6 @@ module.exports.execute = async (interaction) => {
             return false;
         }
 
-        await interaction.deferReply({flags:MessageFlags.Ephemeral})
-
         const headers = {
             'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
         }
@@ -50,7 +48,7 @@ module.exports.execute = async (interaction) => {
         )
 
         if (interaction){
-            interaction.editReply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
+            interaction.reply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
         }
         else {
             channel.send({content:"Overview",embeds:[embed]})

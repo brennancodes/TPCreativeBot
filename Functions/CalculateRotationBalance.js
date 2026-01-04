@@ -5,9 +5,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags
 const Image = Canvas.Image;
 
 module.exports = async (client, interaction) => {
-    if (interaction){
-        await interaction.deferReply({flags:MessageFlags.Ephemeral});
-    }
+
     const fetchEm = new Promise((resolve,reject)=>{
         async function getMaps(){
             const headers = {
@@ -195,7 +193,7 @@ module.exports = async (client, interaction) => {
             new ButtonBuilder().setCustomId('cancelaction---rsummary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
         )
         if (interaction){
-            interaction.editReply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
+            interaction.reply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
         }
         else {
             channel.send({content:"Overview",embeds:[embed]})
