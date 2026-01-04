@@ -8,7 +8,7 @@ module.exports = async (client, interaction) => {
     const mapId = msgSplit2[0];
     const mtcChannel = client.channels.cache.get(config.channels.mtc);
     if (config.mtcSettings.awaitMTCAction) {
-        const pins = await mtcChannel.messages.fetchPinned(true);
+        const pins = await mtcChannel.messages.fetchPins(true);
         pins.sort(function(a,b){
             return b.createdAt-a.createdAt;
         })
