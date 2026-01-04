@@ -1,4 +1,5 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json");
+const { MessageFlags } = require("discord.js");
 
 module.exports = async (client, interaction) => {
     let isValid = true;
@@ -17,7 +18,7 @@ module.exports = async (client, interaction) => {
                 // If MTC is taking way too long, skip this, otherwise if we just got a submission from them, stop them.
                 if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.bypassAwaitHourThreshold){
                     isValid = false;
-                    await interaction.editReply({content:"You still have a submission under review. Please try again later.", ephemeral:true})
+                    await interaction.editReply({content:"You still have a submission under review. Please try again later.", flags:MessageFlags.Ephemeral})
                     return isValid;
                 }            
             }
@@ -38,7 +39,7 @@ module.exports = async (client, interaction) => {
                         if (config.mtcSettings.preventResubmit){
                             if (x.content.substring(x.content.indexOf(`\``)+1, x.content.lastIndexOf(`\``)) == mapId){
                                 isValid = false;
-                                interaction.editReply({content:`This map has already been submitted, most recently on ${x.createdAt.toLocaleString()}.`, ephemeral:true})
+                                interaction.editReply({content:`This map has already been submitted, most recently on ${x.createdAt.toLocaleString()}.`, flags:MessageFlags.Ephemeral})
                                 return isValid;
                             }
                         }
@@ -46,7 +47,7 @@ module.exports = async (client, interaction) => {
                         else if (config.mtcSettings.submitCooldownHours > 0){
                             if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.submitCooldownHours){
                                 isValid = false;
-                                interaction.editReply({content:`You are submitting too frequently. Try again in ${((config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000)).toFixed(2)} minutes.`,ephemeral:true})
+                                interaction.editReply({content:`You are submitting too frequently. Try again in ${((config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000)).toFixed(2)} minutes.`,flags:MessageFlags.Ephemeral})
                                 return isValid;
                             }
                         }
@@ -62,7 +63,7 @@ module.exports = async (client, interaction) => {
             //             if (config.mtcSettings.preventResubmit){
             //                 if (x.content.substring(x.content.indexOf(`\``)+1, x.content.lastIndexOf(`\``)) == mapId){
             //                     isValid = false;
-            //                     interaction.editReply({content:`This map has already been submitted, most recently on ${x.createdAt}.`, ephemeral:true})
+            //                     interaction.editReply({content:`This map has already been submitted, most recently on ${x.createdAt}.`, flags:MessageFlags.Ephemeral})
             //                     return isValid;
             //                 }
             //             }
@@ -70,7 +71,7 @@ module.exports = async (client, interaction) => {
             //             else if (config.mtcSettings.submitCooldownHours > 0){
             //                 if (((currentDate - x.createdAt)/3600000).toFixed(2) < config.mtcSettings.submitCooldownHours){
             //                     isValid = false;
-            //                     interaction.editReply({content:`You are submitting too frequently. Try again in ${((config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000)).toFixed(2)} minutes.`,ephemeral:true})
+            //                     interaction.editReply({content:`You are submitting too frequently. Try again in ${((config.mtcSettings.submitCooldownHours*60) - ((currentDate - x.createdAt)/60000)).toFixed(2)} minutes.`,flags:MessageFlags.Ephemeral})
             //                     return isValid;
             //                 }
             //             }

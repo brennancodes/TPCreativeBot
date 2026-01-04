@@ -1,5 +1,5 @@
 const { GetMapById, RemoveButtonsFromOriginal } = require("../../Functions")
-const {EmbedBuilder} = require("discord.js")
+const {EmbedBuilder,MessageFlags} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
 
@@ -8,17 +8,19 @@ module.exports.execute = async (interaction) => {
         if (!interaction.isButton()){ return false; }
         if (!interaction.customId.includes("ConfirmMapRemoval")){ return false; }
         else {
+            await interaction.deferReply({flags:MessageFlags.Ephemeral})
             const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
             const map = await GetMapById(interaction.customId.split("---")[1]);
             if (map.score == 0){
                 const headers = {
                     'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
                 }
-                const url = `${config.urls.api}/getmap/${map.id}`
+                const url = `${config.urls.api}/getmap/${map.id}`                
                 await axios({method:'get',url:url,headers:headers}).then(function(resp){
                     if (resp.data && parseFloat(resp.data.score) != NaN){
                         console.info("Successful request. Response: ", resp.data)
                         map.score = resp.data.score;
+                        map.votes = resp.data.totalUsers;
                     }
                 });
             }
@@ -40,7 +42,7 @@ module.exports.execute = async (interaction) => {
             }            
             
 
-            interaction.reply({content:"Removal vote posted in MTC channel!",ephemeral:true})
+            interaction.editReply({content:"Removal vote posted in MTC channel!",flags:MessageFlags.Ephemeral})
             mtcChannel.send(msg).then(sent => {sent.react("✅").then(() => sent.react("❌")).then(() => sent.pin())
             .then(() => {sent.startThread({name:`${map.name} Removal Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss removal"}); 
                             let sentMessageUrl = sent.url;

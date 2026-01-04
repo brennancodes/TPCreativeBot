@@ -42,7 +42,6 @@ module.exports = async (client) => {
                             m.react('❌');
                         }
                     }
-                    //console.log(y, n, w)
                 })
             })
         }

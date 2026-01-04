@@ -1,8 +1,8 @@
-const {EmbedBuilder} = require("discord.js")
+const {EmbedBuilder,MessageFlags} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const { GetFMRoot } = require("../../Functions/");
 
-module.exports.execute = (interaction) => {
+module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isChatInputCommand()){
             return false;
@@ -10,6 +10,7 @@ module.exports.execute = (interaction) => {
         if (interaction.commandName != "creativehelp"){
             return false;
         }
+        await interaction.deferReply({flags:MessageFlags.Ephemeral})
         var commandList = [
             {
                 commandName: "creativehelp",
@@ -32,7 +33,7 @@ module.exports.execute = (interaction) => {
             {
                 commandName: "submitmap",
                 parameters: "FortunateMaps Code",
-                description: "Submit a map hosted on https://fortunatemaps.subaverage.site to the Map Test Committee. Submissions may be added to the base game.",
+                description: "Submit a map hosted on https://fortunatemaps.herokuapp.com to the Map Test Committee. Submissions may be added to the base game.",
                 roles: "any"
             },
             {
@@ -117,9 +118,9 @@ module.exports.execute = (interaction) => {
         const embed = new EmbedBuilder()
             .setColor('#CDDC39')
             .setAuthor({name: "Commands List", iconURL: iconUrl})
-            .setDescription(`${descriptionString}\n*Developed by Moosen with API integrations from DaEvil1.\nArtwork by [Pepi.](https://reddit.com/u/PepiHopi)\nContact <@${config.users.botOwner}> for assistance.*`)
-            .setFooter({ text: `CreativeBot v2.1.2`});
-        interaction.reply({embeds:[embed],ephemeral:true})
+            .setDescription(`${descriptionString}\n*Developed by Moosen with contributions from DaEvil1, black orchid, and Cheezedoodle. Artwork by [Pepi.](https://reddit.com/u/PepiHopi)\nContact <@${config.users.botOwner}> for assistance.*`)
+            .setFooter({ text: `CreativeBot v2.2.1`});
+        interaction.editReply({embeds:[embed],flags:MessageFlags.Ephemeral})
     }
     catch (err) {
         console.error(err);

@@ -1,8 +1,8 @@
-const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { RemoveButtonsFromOriginal, GetMapByName, GetMapWithStats } = require("../../Functions");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json");
 
-module.exports.execute = (interaction) => {
+module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isChatInputCommand() && !interaction.isButton()){
             return false;
@@ -28,6 +28,10 @@ module.exports.execute = (interaction) => {
             searchString = interaction.options.data[0].value;
         }
 
+        if (interaction.message == undefined){
+            await interaction.deferReply({flags:MessageFlags.Ephemeral})
+        }
+
         async function searchMaps(){
             var foundMatch = false;
             const map = await GetMapByName(searchString, counter);
@@ -40,7 +44,7 @@ module.exports.execute = (interaction) => {
                     interaction.update({content:"Could not find any more ranked rotation maps matching that string.\n Try using `/rankedmapinfo` again with different parameters."});
                 }
                 else {
-                    interaction.reply({content:"Could not find any ranked rotation maps matching that string.\n Try using `/rankedmapinfo` again with different parameters.", ephemeral:true});
+                    interaction.editReply({content:"Could not find any ranked rotation maps matching that string.\n Try using `/rankedmapinfo` again with different parameters.", flags:MessageFlags.Ephemeral});
                 }
                 return;
             }
@@ -72,7 +76,7 @@ module.exports.execute = (interaction) => {
                         interaction.update({content:"Could not find any ranked rotation maps matching that string.\n Try using `/rankedmapinfo` again with different parameters."});
                     }
                     else {
-                        interaction.reply({content:"Could not find any ranked rotation maps matching that string.\n Try using `/rankedmapinfo` again with different parameters.", ephemeral:true});
+                        interaction.editReply({content:"Could not find any ranked rotation maps matching that string.\n Try using `/rankedmapinfo` again with different parameters.", flags:MessageFlags.Ephemeral});
                     }
                     return;
                 }
@@ -132,7 +136,7 @@ module.exports.execute = (interaction) => {
                 interaction.update({embeds:[embed], content:"Ranked map selection statistics:", ephemeral: true, components: [row]});
             }
             else {
-                interaction.reply({ embeds:[embed], content:"Ranked map selection statistics:", ephemeral: true, components: [row] });
+                interaction.editReply({ embeds:[embed], content:"Ranked map selection statistics:", ephemeral: true, components: [row] });
             }
         });
     }

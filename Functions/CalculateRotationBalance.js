@@ -1,10 +1,13 @@
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args));
 const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
 const Canvas = require('canvas');
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, Message } = require('discord.js');
 const Image = Canvas.Image;
 
-module.exports = (client, interaction) => {
+module.exports = async (client, interaction) => {
+    if (interaction){
+        await interaction.deferReply({flags:MessageFlags.Ephemeral});
+    }
     const fetchEm = new Promise((resolve,reject)=>{
         async function getMaps(){
             const headers = {
@@ -157,7 +160,7 @@ module.exports = (client, interaction) => {
                 )
             }
             else {
-                if (mapData[i].category != "rotation"){
+                if (mapData[i].category != "rotation" && mapData[i].category != "minigames"){
                     embed.addFields(
                         {
                             name: formattedCategory,
@@ -192,7 +195,7 @@ module.exports = (client, interaction) => {
             new ButtonBuilder().setCustomId('cancelaction---rsummary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
         )
         if (interaction){
-            interaction.reply({content:"Overview",embeds:[embed],components:[row],ephemeral:true})
+            interaction.editReply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
         }
         else {
             channel.send({content:"Overview",embeds:[embed]})

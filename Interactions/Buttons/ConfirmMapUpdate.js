@@ -1,4 +1,4 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js")
 const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
 
 module.exports.execute = (interaction) => {
@@ -59,7 +59,7 @@ module.exports.execute = (interaction) => {
                     .setCustomId('LiterallyDoesNothingLmao')
             )
                     
-        interaction.update({content:"Select exactly one playlist and one weight.",ephemeral:true,components:[row,row2]})
+        interaction.update({content:"Select exactly one playlist and one weight.",flags:MessageFlags.Ephemeral,components:[row,row2]})
     }
     catch (err){
         console.error(err);

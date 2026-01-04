@@ -1,6 +1,6 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args));
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js")
 const axios = require('axios');
 const { GetAllMaps } = require("../../Functions");
 
@@ -12,6 +12,8 @@ module.exports.execute = async (interaction) => {
         if (interaction.commandName != "trialsummary"){
             return false;
         }
+
+        await interaction.deferReply({flags:MessageFlags.Ephemeral})
 
         const headers = {
             'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
@@ -48,7 +50,7 @@ module.exports.execute = async (interaction) => {
         )
 
         if (interaction){
-            interaction.reply({content:"Overview",embeds:[embed],components:[row],ephemeral:true})
+            interaction.editReply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
         }
         else {
             channel.send({content:"Overview",embeds:[embed]})

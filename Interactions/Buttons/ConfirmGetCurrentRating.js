@@ -1,5 +1,5 @@
 const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
-const {EmbedBuilder} = require("discord.js")
+const {EmbedBuilder,MessageFlags} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const getMapById = require("../../Functions/GetMapById")
 const axios = require('axios');
@@ -33,7 +33,7 @@ module.exports.execute = async (interaction) => {
                         + 'Current Rating: **'+map.score+'%** (' + map.votes + ' votes)\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#7bcf5c");
-                    interaction.update({content:"GET request successful. Showing accurate score (this info may be private).",embeds:[embed],ephemeral:true})
+                    interaction.update({content:"GET request successful. Showing accurate score (this info may be private).",embeds:[embed],flags:MessageFlags.Ephemeral})
                 }
                 else {
                     embed.setDescription('Title: **'+map.name+'**\n'
@@ -41,7 +41,7 @@ module.exports.execute = async (interaction) => {
                         + 'Current Rating: **'+map.score+'%**\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#da3e52");
-                    interaction.update({content:"GET request failed. Showing public data.",embeds:[embed],ephemeral:true})
+                    interaction.update({content:"GET request failed. Showing public data.",embeds:[embed],flags:MessageFlags.Ephemeral})
                 }
             });
 

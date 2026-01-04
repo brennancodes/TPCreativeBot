@@ -16,7 +16,7 @@
     "cheerio": "^1.0.0-rc.12",
     "cron": "^2.1.0",
     "discord": "^0.8.2",
-    "discord.js": "^14.8.0",
+    "discord.js": "^14.25.1",
     "dotenv": "^16.0.1",
     "fs": "^0.0.1-security",
     "node": "^20.12.2",

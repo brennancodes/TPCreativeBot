@@ -2,26 +2,30 @@ const config = process.env.ENVIRONMENT == "Production" ? require("../config.json
 const cron = require("cron")
 
 module.exports = async (client) => {
+    // Comment next two lines and uncomment third line to test this method
     let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
     job.start();
-    //setInterval(()=>{ping()},5000)
+    //setTimeout(()=>{ping()},1000)
+
     async function ping() {
         const guild =  await client.guilds.fetch(config.guildId);
 
         const mtcMemberIds = guild.roles.cache.get(config.roles.mtc).members.map(m=>m.user.id);
 
         const channel = await guild.channels.fetch(config.channels.mtc);
-        const pins = await channel.messages.fetchPins(true);
-        await guild.members.fetch();
+        const pins = await channel.messages.fetchPins()
+
+        //Leaving this commented for now but I don't think we actually need it and I think it actually broke the app in testing
+        //await guild.members.fetch();
 
         const idleMemberIds = new Set();
-        if (pins.size > 0) {
-            for (const pin of pins.values()) {
-                const reaction = await pin.react('🔄')
+        if (pins.items.length > 0) {            
+            for (const pin of pins.items) {
+                const reaction = await pin.message.react('🔄')
                 await reaction.remove();
 
                 const reactedIds = [];
-                pin.reactions.cache.forEach(async cachedReact=>{
+                for (const cachedReact of pin.message.reactions.cache.values()){
                     // .fetch the full hydrated reaction, must do if we want user data (we want user data)
                     const reaction = await cachedReact.fetch();
 
@@ -32,11 +36,11 @@ module.exports = async (client) => {
                             reactedIds.push(user.id);
                         }
                     }
-                });
+                };
 
                 for (const id of mtcMemberIds) {
                     // Mark a member idle if they did not react and did not submit this map
-                    if (!reactedIds.includes(id) && !pin.content.includes(id)) {
+                    if (!reactedIds.includes(id) && !pin.message.content.includes(id)) {
                         idleMemberIds.add(id);
                     }
                 }
