@@ -1,62 +1,76 @@
-const config = process.env.ENVIRONMENT == "Production" ? require("../config.json") : require("../localConfig.json")
-const cron = require("cron")
+const config = process.env.ENVIRONMENT === "Production" ? require("../config.json") : require("../localConfig.json");
+const cron = require("cron");
 
 module.exports = async (client) => {
-    // Comment next two lines and uncomment third line to test this method
-    let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
-    job.start();
-    //setTimeout(()=>{ping()},1000)
+  let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
+  job.start();
+  setTimeout(() => {ping(true);}, 3000);
 
-    async function ping() {
-        const guild =  await client.guilds.fetch(config.guildId);
+  async function ping(logOnly = false) {
+    const guild = await client.guilds.fetch(config.guildId);
 
-        const mtcMemberIds = guild.roles.cache.get(config.roles.mtc).members.map(m=>m.user.id);
+    const role = guild.roles.cache.get(config.roles.mtc);
+    if (!role) return console.error("MTC role not found");
 
-        const channel = await guild.channels.fetch(config.channels.mtc);
-        const pins = await channel.messages.fetchPins()
+    const mtcMemberIds = role.members.map(m => m.user.id);
 
-        //Leaving this commented for now but I don't think we actually need it and I think it actually broke the app in testing
-        //await guild.members.fetch();
+    const channel = await guild.channels.fetch(config.channels.mtc);
+    const pins = await channel.messages.fetchPins();
 
-        const idleMemberIds = new Set();
-        if (pins.items.length > 0) {            
-            for (const pin of pins.items) {
-                const reaction = await pin.message.react('🔄')
-                await reaction.remove();
+    const idleMemberIds = new Set();
 
-                const reactedIds = [];
-                for (const cachedReact of pin.message.reactions.cache.values()){
-                    // .fetch the full hydrated reaction, must do if we want user data (we want user data)
-                    const reaction = await cachedReact.fetch();
+    if (pins.items.length > 0) {
+      for (const pin of pins.items) {
+        const message = await pin.message.fetch();
+        const reactedIds = new Set();
 
-                    if (['❌', '✅'].includes(reaction.emoji.name)) {
-                        // fetch the users who clicked each reaction
-                        const users = await reaction.users.fetch()
-                        for (const user of users.values()) {
-                            reactedIds.push(user.id);
-                        }
-                    }
-                };
+        // Only look at reactions we care about
+        const relevantReactions = message.reactions.cache.filter(r =>
+          ["❌", "✅"].includes(r.emoji.name)
+        );
 
-                for (const id of mtcMemberIds) {
-                    // Mark a member idle if they did not react and did not submit this map
-                    if (!reactedIds.includes(id) && !pin.message.content.includes(id)) {
-                        idleMemberIds.add(id);
-                    }
-                }
-            }
+        // Fetch all reaction users IN PARALLEL
+        const userFetches = relevantReactions.map(r => r.users.fetch());
+        const usersCollections = await Promise.all(userFetches);
+
+        for (const users of usersCollections) {
+          for (const user of users.values()) {
+            reactedIds.add(user.id);
+          }
         }
 
-        if (idleMemberIds.size > 0) {
-            let tagUsersString = "";
-            for (const memberId of idleMemberIds) {
-                tagUsersString += `<@${memberId}>, `
-            }
-            tagUsersString += "there are unhandled actions which require your attention. Please review the pinned messages."
+        for (const id of mtcMemberIds) {
+          if (!reactedIds.has(id) && !message.content.includes(id)) {
+            idleMemberIds.add(id);
+          }
+        }
+      }
+    }
 
-            channel.send({content:tagUsersString});
-        } else {
-            channel.send({content: "All MTC members are up-to-date on their voting, nice work!"});
+    if (idleMemberIds.size > 0) {
+      let tagUsersString = "";
+
+      for (const memberId of idleMemberIds) {
+        tagUsersString += `<@${memberId}>, `;
+      }
+
+      tagUsersString +=
+        "there are unhandled actions which require your attention. Please review the pinned messages.";
+      if (logOnly){
+        console.log(tagUsersString);
+      }
+      else {
+        await channel.send({ content: tagUsersString });
+      }
+    } else {
+        if (logOnly){
+            console.log("All MTC members are up-to-date on their voting, nice work!")
+        }
+        else {
+            await channel.send({
+              content: "All MTC members are up-to-date on their voting, nice work!",
+            });
         }
     }
-}
+  }
+};
