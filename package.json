@@ -22,7 +22,8 @@
     "node": "^20.12.2",
     "node-fetch": "^2.6.9",
     "npm": "^9.6.2",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "web-streams-polyfill": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
