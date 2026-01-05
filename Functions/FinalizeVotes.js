@@ -8,7 +8,7 @@ module.exports = async (client) => {
     async function checkForCompletedVotes(){ 
         const guild =  await client.guilds.fetch(config.guildId);
         const channel = await guild.channels.cache.get(config.channels.mtc);
-        const pins = await channel.messages.fetchPins(true);
+        const pins = await channel.messages.fetchPins();
         if (pins){
             console.log("Checking pins for completed votes...")
             pins.forEach(async p => {

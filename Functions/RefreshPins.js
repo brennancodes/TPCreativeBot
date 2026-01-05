@@ -2,7 +2,7 @@ const config = process.env.ENVIRONMENT == "Production" ? require("../config.json
 module.exports = async (client) => {
     const guild =  await client.guilds.fetch(config.guildId);
     const channel = await guild.channels.fetch(config.channels.mtc);
-    const pins = await channel.messages.fetchPins(true);
+    const pins = await channel.messages.fetchPins();
     if (pins.size > 0){
         // for each pinned message...
         pins.forEach(async x=>{
