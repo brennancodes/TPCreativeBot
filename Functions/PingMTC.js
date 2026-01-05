@@ -4,7 +4,9 @@ const cron = require("cron");
 module.exports = async (client) => {
   let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
   job.start();
-  setTimeout(() => {ping(true);}, 3000);
+
+  //setTimeout(() => {ping(true);}, 3000);
+  ping(true);
 
   async function ping(logOnly = false) {
     const guild = await client.guilds.fetch(config.guildId);
@@ -57,14 +59,14 @@ module.exports = async (client) => {
       tagUsersString +=
         "there are unhandled actions which require your attention. Please review the pinned messages.";
       if (logOnly){
-        console.log(tagUsersString);
+        console.log("Log: " + tagUsersString);
       }
       else {
         await channel.send({ content: tagUsersString });
       }
     } else {
         if (logOnly){
-            console.log("All MTC members are up-to-date on their voting, nice work!")
+            console.log("Log: All MTC members are up-to-date on their voting, nice work!")
         }
         else {
             await channel.send({
