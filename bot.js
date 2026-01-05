@@ -5,11 +5,10 @@ const slashCommands = fs.readdirSync("./Interactions/SlashCommands").filter(file
 const buttons = fs.readdirSync("./Interactions/Buttons").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
 const selectMenus = fs.readdirSync("./Interactions/SelectMenus").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
 const messageReactionAdds = fs.readdirSync("./EventListeners/MessageReactionAdd").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
-const { PingMTC, RefreshPins } = require("./Functions");
+const { PingMTC, RefreshPins, FinalizeVotes } = require("./Functions");
 const { Routes } = require("discord-api-types/v9");
 const { REST } = require("@discordjs/rest");
 const { Client, GatewayIntentBits, Partials, ApplicationCommand } = require("discord.js");
-const FinalizeVotes = require("./Functions/FinalizeVotes");
 
 const client = new Client({
     intents: [

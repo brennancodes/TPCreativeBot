@@ -3,8 +3,6 @@ module.exports = async (client) => {
     const guild =  await client.guilds.fetch(config.guildId);
     const channel = await guild.channels.fetch(config.channels.mtc);
     const pins = await channel.messages.fetchPins(true);
-    await guild.members.fetch();
-    const mtcUsers = guild.roles.cache.get(config.roles.mtc).members.map(m=>m.user.id)
     if (pins.size > 0){
         // for each pinned message...
         pins.forEach(async x=>{

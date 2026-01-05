@@ -4,9 +4,9 @@ const cron = require("cron");
 module.exports = async (client) => {
   let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
   job.start();
-
+  process.stdout.write("Reached Ping MTC function\n");
   //setTimeout(() => {ping(true);}, 3000);
-  ping(true);
+  await ping(true);
 
   async function ping(logOnly = false) {
     const guild = await client.guilds.fetch(config.guildId);
@@ -28,7 +28,7 @@ module.exports = async (client) => {
 
         // Only look at reactions we care about
         const relevantReactions = message.reactions.cache.filter(r =>
-          ["❌", "✅"].includes(r.emoji.name)
+          ["❌", "✅", "⏳"].includes(r.emoji.name)
         );
 
         // Fetch all reaction users IN PARALLEL
@@ -59,14 +59,14 @@ module.exports = async (client) => {
       tagUsersString +=
         "there are unhandled actions which require your attention. Please review the pinned messages.";
       if (logOnly){
-        console.log("Log: " + tagUsersString);
+        process.stdout.write("Log: " + tagUsersString + "\n");
       }
       else {
         await channel.send({ content: tagUsersString });
       }
     } else {
         if (logOnly){
-            console.log("Log: All MTC members are up-to-date on their voting, nice work!")
+            process.stdout.write("Log: All MTC members are up-to-date on their voting, nice work!\n")
         }
         else {
             await channel.send({
