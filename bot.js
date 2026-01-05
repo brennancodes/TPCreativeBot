@@ -1,6 +1,8 @@
 require("dotenv").config();
-require('web-streams-polyfill/ponyfill/es2018');
-const config = process.env.ENVIRONMENT == "Production" ? require("./config.json") : require("./localConfig.json")
+const {ReadableStream, WritableStream, TransformStream} = require('web-streams-polyfill/ponyfill');
+global.ReadableStream = global.ReadableStream || ReadableStream;
+global.WritableStream = global.WritableStream || WritableStream;
+global.TransformStream = global.TransformStream || TransformStream;const config = process.env.ENVIRONMENT == "Production" ? require("./config.json") : require("./localConfig.json")
 const fs = require('fs');
 const slashCommands = fs.readdirSync("./Interactions/SlashCommands").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
 const buttons = fs.readdirSync("./Interactions/Buttons").filter(file=>file.endsWith('.js') && !file.toLowerCase().includes("index"));
