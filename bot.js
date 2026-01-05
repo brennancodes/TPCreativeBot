@@ -29,7 +29,7 @@ const client = new Client({
 //client.setMaxListeners(20)
 const rest = new REST({ version: 10 }).setToken(process.env.TOKEN);
 
-client.once("clientReady", () => {
+client.once("ready", () => {
     PingMTC(client);
     FinalizeVotes(client);
     RefreshPins(client);
