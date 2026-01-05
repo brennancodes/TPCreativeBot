@@ -10,15 +10,14 @@ module.exports = async (client) => {
 
   async function ping(logOnly = false) {
     const guild = await client.guilds.fetch(config.guildId);
-
+    await guild.members.fetch();
     const role = guild.roles.cache.get(config.roles.mtc);
     if (!role) return console.error("MTC role not found");
 
     const mtcMemberIds = role.members.map(m => m.user.id);
-
+    console.log(mtcMemberIds);
     const channel = await guild.channels.fetch(config.channels.mtc);
     const pins = await channel.messages.fetchPins();
-
     const idleMemberIds = new Set();
 
     if (pins.items.length > 0) {
@@ -34,9 +33,9 @@ module.exports = async (client) => {
         // Fetch all reaction users IN PARALLEL
         const userFetches = relevantReactions.map(r => r.users.fetch());
         const usersCollections = await Promise.all(userFetches);
-
         for (const users of usersCollections) {
           for (const user of users.values()) {
+            //console.log(user)
             reactedIds.add(user.id);
           }
         }
