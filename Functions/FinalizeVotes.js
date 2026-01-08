@@ -4,15 +4,15 @@ const cron = require("cron")
 module.exports = async (client) => {
     let job = new cron.CronJob(config.mtcSettings.finalizeDateTime, checkForCompletedVotes)
     job.start();
-
+    setTimeout(() => {checkForCompletedVotes();}, 3000);
     async function checkForCompletedVotes(){ 
         const guild =  await client.guilds.fetch(config.guildId);
         const channel = await guild.channels.cache.get(config.channels.mtc);
         const pins = await channel.messages.fetchPins();
         if (pins){
             console.log("Checking pins for completed votes...")
-            pins.forEach(async p => {
-                p.fetch(p.id).then((m) => {
+            pins.items.forEach(async p => {
+                p.message.fetch(p.id).then((m) => {
                     let y = m.reactions.cache.get('✅')?.count;
                     let n = m.reactions.cache.get('❌')?.count;
                     let w = m.reactions.cache.get('⏳')?.count;
