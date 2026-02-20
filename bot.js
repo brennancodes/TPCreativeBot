@@ -306,6 +306,10 @@ async function main() {
                 }
             ]
         },
+        {
+            name: 'rankedrotation',
+            description: 'View selection rates for all ranked rotation maps'
+        },
     ];
     try {
         console.log('Started refreshing application (/) commands.');

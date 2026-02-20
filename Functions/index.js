@@ -11,6 +11,7 @@ const GetFMRoot = require("./GetFMRoot");
 const FinalizeVotes = require("./FinalizeVotes");
 const CheckForExistingMapInRotation = require("./CheckForExistingMapInRotation");
 const GetMapWithStats = require("./GetMapWithStats");
+const GetRotationMapsWithStats = require("./GetRotationMapsWithStats");
 
 module.exports = { 
     PingMTC,
@@ -25,5 +26,6 @@ module.exports = {
     RefreshPins,
     GetFMRoot,
     CheckForExistingMapInRotation,
-    GetMapWithStats
+    GetMapWithStats,
+    GetRotationMapsWithStats
  }

@@ -14,6 +14,7 @@ const ThrowbackSummary = require("./throwbacksummary");
 const MTC = require("./mtc");
 const ResetVotes = require("./resetvotes");
 const RankedMapInfo = require("./rankedmapinfo");
+const RankedRotation = require("./rankedrotation");
 
 module.exports = { 
     SubmitMap, 
@@ -31,5 +32,6 @@ module.exports = {
     ThrowbackSummary,
     MTC,
     ResetVotes,
-    RankedMapInfo
+    RankedMapInfo,
+    RankedRotation
 }
