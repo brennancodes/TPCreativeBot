@@ -21,7 +21,7 @@ module.exports = async (client, interaction) => {
                     isValid = false;
                     await interaction.editReply({content:"You still have a submission under review. Please try again later.", flags:MessageFlags.Ephemeral})
                     return isValid;
-                }            
+                }
             }
         })
     }

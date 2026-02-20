@@ -16,16 +16,16 @@ const ResetVotes = require("./resetvotes");
 const RankedMapInfo = require("./rankedmapinfo");
 const RankedRotation = require("./rankedrotation");
 
-module.exports = { 
-    SubmitMap, 
-    RemoveMap, 
-    GetFeedback, 
-    RotationSummary, 
+module.exports = {
+    SubmitMap,
+    RemoveMap,
+    GetFeedback,
+    RotationSummary,
     UpdateMap,
     ManualAdd,
-    FindMap, 
+    FindMap,
     FindFortunateMap,
-    GetCurrentRating, 
+    GetCurrentRating,
     CreativeHelp,
     PromoteMap,
     TrialSummary,

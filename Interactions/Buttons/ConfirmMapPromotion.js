@@ -24,7 +24,7 @@ module.exports.execute = async (interaction) => {
                 });
             }
             const imgUrl = `${config.urls.image}/${map.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
-            
+
             const embed = new EmbedBuilder()
             .setImage(imgUrl)
             .setColor("#6CD4FF")
@@ -33,7 +33,7 @@ module.exports.execute = async (interaction) => {
             // .setDescription("**"+interaction.message.components[0].components[0].data.options.filter(x=>x.value==interaction.values[0])[0].label+"**\n"
             //     + interaction.message.components[0].components[0].data.options.filter(x=>x.value==interaction.values[0])[0].description)
             .setFooter({text:`Please react ✅ to add or ⏳ to wait for now.`})
-            
+
             const msg = {
                 content:`**ATTENTION <@&${config.roles.mtc}>:** New map promotion nomination received from <@${interaction.user.id}>.`,
                 embeds:[embed],
@@ -42,7 +42,7 @@ module.exports.execute = async (interaction) => {
 
             interaction.editReply({content:"Promotion vote posted in MTC channel!",flags:MessageFlags.Ephemeral})
             mtcChannel.send(msg).then(sent => {sent.react("✅").then(()=>{sent.react("⏳")}).then(()=>sent.pin())
-                .then(() => { sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"}); 
+                .then(() => { sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"});
                     let sentMessageUrl = sent.url;
                     if (config.mtcSettings.useDiscussionChannel){
                         const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);

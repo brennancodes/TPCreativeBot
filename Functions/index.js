@@ -13,15 +13,15 @@ const CheckForExistingMapInRotation = require("./CheckForExistingMapInRotation")
 const GetMapWithStats = require("./GetMapWithStats");
 const GetRotationMapsWithStats = require("./GetRotationMapsWithStats");
 
-module.exports = { 
+module.exports = {
     PingMTC,
     FinalizeVotes,
-    RemoveButtonsFromOriginal, 
-    ValidateSubmission, 
-    CalculateRotationBalance, 
-    GetMapById, 
-    GetMapByName, 
-    GetAllMaps, 
+    RemoveButtonsFromOriginal,
+    ValidateSubmission,
+    CalculateRotationBalance,
+    GetMapById,
+    GetMapByName,
+    GetAllMaps,
     CheckForExcessBlack,
     RefreshPins,
     GetFMRoot,

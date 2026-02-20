@@ -11,7 +11,8 @@ module.exports.execute = (interaction) => {
         let catSplit = msg.embeds[0].data.description.split("Category: **");
         let category = catSplit[1].split("**")[0];
         const catOptions = [
-            {label:'Rotation',value:'Rotation---'+mapId},
+            {label:'Casual Rotation',value:'Rotation---'+mapId+'---inCasualRotation'},
+            {label:'Ranked Rotation',value:'Rotation---'+mapId+'---inRankedRotation'},
             {label:'1.0',value:'1.0'},
             {label:'Trial',value:'Trial---'+mapId},
             {label:'0.5',value:'0.5'},
@@ -43,7 +44,7 @@ module.exports.execute = (interaction) => {
                     .setPlaceholder('Select Category/Weight, then click outside.')
                     .setMinValues(2)
                     .setMaxValues(2)
-                    .addOptions(catOptions)                    
+                    .addOptions(catOptions)
             )
         const row2 = new ActionRowBuilder()
             .addComponents(
@@ -64,4 +65,4 @@ module.exports.execute = (interaction) => {
     catch (err){
         console.error(err);
     }
-}     
+}

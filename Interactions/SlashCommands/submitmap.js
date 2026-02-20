@@ -31,7 +31,7 @@ module.exports.execute = async (interaction) => {
             axios.get(mapUrl).then(async function(resp, error){
                 if(!error && resp.status == 200){
                     const $ = cheerio.load(resp.data);
-                    title = $('.card-title').find('b').first().text() 
+                    title = $('.card-title').find('b').first().text();
                     author = $('.card-title').find('b').last().text();
                     description = $('.map-description').text();
                 }

@@ -3,7 +3,7 @@ const { EmbedBuilder, MessageFlags } = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
 const { GetFMRoot } = require("../../Functions");
-const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args)) 
+const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args))
 
 module.exports.execute = async (interaction) => {
     try {
@@ -12,13 +12,15 @@ module.exports.execute = async (interaction) => {
         let playlist = "";
         let mapId = "";
         let weight = 0;
-        var validWeight = false;
-        var validId = false;
-        for (var i = 0; i < interaction.values.length; i++){
+        let validWeight = false;
+        let validId = false;
+        let ratingType;
+        for (let i = 0; i < interaction.values.length; i++){
             if (interaction.values[i].includes("---")){
                 valSplit = interaction.values[i].split("---")
                 playlist = valSplit[0];
-                mapId = valSplit[1]
+                mapId = valSplit[1];
+                ratingType = valSplit[2]; // Undefined for non casual/ranked
                 validId = true;
             }
             else if (typeof parseFloat(interaction.values[i]) == 'number'){
@@ -37,7 +39,7 @@ module.exports.execute = async (interaction) => {
         const headers = {
             'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
         }
-        const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}`
+        const url = `${config.urls.api}/updatemap/${mapId}?category=${playlist.toLowerCase()}&weight=${weight}${ratingType ? "&ratingType=" + ratingType : ""}`
         axios({method:'post',url:url,headers:headers}).then(function(resp){
             if (resp.data && resp.data.includes("Updated map")){
                 console.info("Successful request. Response: ", resp.data)
@@ -63,9 +65,9 @@ module.exports.execute = async (interaction) => {
                                 return tmp;
                             }
                         }
-                    }                    
+                    }
                 }
-        
+
                 searchMaps().then(function(x){
                     const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
                     const baseUrl = GetFMRoot();

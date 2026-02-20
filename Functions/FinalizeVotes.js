@@ -22,7 +22,7 @@ module.exports = async (client) => {
                     let c = Math.round(new Date(m.createdTimestamp).getTime() / 1000)
                     var now = Math.round(new Date().getTime() / 1000);
                     var mvtAgo = now - (config.mtcSettings.minimumVoteTime * 3600);
-    
+
                     // if the vote was called > X hours ago
                     // trust me this is what it means
                     if (c < mvtAgo){
