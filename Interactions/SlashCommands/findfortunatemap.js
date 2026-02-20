@@ -1,10 +1,10 @@
-const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags, Message } = require("discord.js");
 const { RemoveButtonsFromOriginal, GetMapByName, GetFMRoot } = require("../../Functions");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const cheerio = require("cheerio");
 const request = require("request");
 
-module.exports.execute = (interaction) => {
+module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isChatInputCommand() && !interaction.isButton()){
             return false;
@@ -34,6 +34,9 @@ module.exports.execute = (interaction) => {
         else {
             searchString = interaction.options.data[0].options[0].value;
         }
+        if (interaction.message == undefined){
+            await interaction.deferReply({flags:MessageFlags.Ephemeral})
+        }
         if (interaction.isChatInputCommand() && interaction.options.data[0].name=="code"){
             var code = interaction.options.data[0].options[0].value;
             var baseUrl = GetFMRoot();
@@ -56,7 +59,7 @@ module.exports.execute = (interaction) => {
                     console.error(error, response.statusCode);
                 }
                 if (title == "" && author == ""){
-                    interaction.reply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,ephemeral:true,allowedMentions:{"users":[]}})
+                    interaction.editReply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,flags:MessageFlags.Ephemeral,allowedMentions:{"users":[]}})
                 }
                 else {
                     const formattedMapByAuthor = `${title.length > 125 ? title.substring(0,122)+ '...' : title} by ${author.length > 125 ? author.substring(0,122)+ '...' : author}`
@@ -70,7 +73,7 @@ module.exports.execute = (interaction) => {
                         new ButtonBuilder().setCustomId(`ShareToChannel`).setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
                         new ButtonBuilder().setCustomId('cancelaction---find').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
                     )
-                    interaction.reply({ embeds:[embed], content:"Is this your map?", ephemeral: true, components: [row] })
+                    interaction.editReply({ embeds:[embed], content:"Is this your map?", ephemeral: true, components: [row] })
                 }
             })
         }
@@ -111,7 +114,7 @@ module.exports.execute = (interaction) => {
                         interaction.update({content:"Could not find any more maps matching that string.\n Try using `/findfortunatemap` again with different parameters."})
                     }
                     else {
-                        interaction.reply({content:"Could not find any more maps matching that string.\n Try using `/findfortunatemap` again with different parameters.", ephemeral:true})
+                        interaction.editReply({content:"Could not find any more maps matching that string.\n Try using `/findfortunatemap` again with different parameters.", flags:MessageFlags.Ephemeral})
                     }
                     return;
                 }
@@ -146,7 +149,7 @@ module.exports.execute = (interaction) => {
                     interaction.update({embeds:[embed], content:"Is this your map?", ephemeral: true, components: [row]})
                 }
                 else {
-                    interaction.reply({ embeds:[embed], content:"Is this your map?", ephemeral: true, components: [row] })
+                    interaction.editReply({ embeds:[embed], content:"Is this your map?", ephemeral: true, components: [row] })
                 }
             })
         }

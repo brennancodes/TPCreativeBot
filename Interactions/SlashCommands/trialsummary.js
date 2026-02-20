@@ -1,6 +1,6 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args));
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js")
 const axios = require('axios');
 const { GetAllMaps } = require("../../Functions");
 
@@ -48,7 +48,7 @@ module.exports.execute = async (interaction) => {
         )
 
         if (interaction){
-            interaction.reply({content:"Overview",embeds:[embed],components:[row],ephemeral:true})
+            interaction.reply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
         }
         else {
             channel.send({content:"Overview",embeds:[embed]})

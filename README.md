@@ -7,7 +7,7 @@ TPCreativeBot is a Discord bot built using Node.js and the discord.js library. T
 `/creativehelp`: List all commands available to the user.
 `/findmap`: Search for a map currently in the Rotation, Trial, Classic, Retired, or Groups playlists.
 `/findfortunatemap`: Search for a map on FortunateMaps.
-`/submitmap`: Submit a map hosted on [FortunateMaps](https://fortunatemaps.subaverage.site) to the Map Test Committee. Submissions may be added to the base game.
+`/submitmap`: Submit a map hosted on [FortunateMaps](https://fortunatemaps.herokuapp.com) to the Map Test Committee. Submissions may be added to the base game.
 `/getfeedback`: Review feedback from the MTC on a submitted map. You may want to use this input to refine your map and resubmit it.
 
 ## Private SlashCommands

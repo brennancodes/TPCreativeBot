@@ -1,12 +1,12 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const { RemoveButtonsFromOriginal, ValidateSubmission, CheckForExcessBlack, GetFMRoot } = require("../../Functions")
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 
 module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isButton()){ return false; }
         if (interaction.customId != "ConfirmMapSubmission"){ return false; }
-        await interaction.deferReply({ephemeral:true});
+        await interaction.deferReply({flags:MessageFlags.Ephemeral});
         if (await ValidateSubmission(interaction.client,interaction)){
             let msg = interaction.message;
             let mapName = msg.embeds[0].data.description.split("**")[1];
@@ -19,14 +19,14 @@ module.exports.execute = async (interaction) => {
                     new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Edit Map Border')
                     .setURL(`${GetFMRoot()}editor?mapid=${mapId}`),
                 )
-                interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,ephemeral:true,components:[row]});
+                interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,flags:MessageFlags.Ephemeral,components:[row]});
             } else {
                 const isUpdate = await msg.embeds[0].data.author.name.includes("update submission");
                 const mapImage = msg.embeds[0].data.thumbnail.url;
                 const desc = msg.embeds[0].data.description;
                 let color = isUpdate ? '#D850F7' : '#7bcf5c'
                 let submissionType = isUpdate ? 'UPDATED map submission' : 'New map submission'
-                interaction.editReply({content:"Got it! Map sent to MTC for review.", ephemeral:true})
+                interaction.editReply({content:"Got it! Map sent to MTC for review.", flags:MessageFlags.Ephemeral})
                 const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
 
                 const newEmbed = new EmbedBuilder()

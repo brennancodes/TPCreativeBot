@@ -1,5 +1,5 @@
 const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
-const {EmbedBuilder} = require("discord.js")
+const {EmbedBuilder,MessageFlags} = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const getMapById = require("../../Functions/GetMapById")
 const axios = require('axios');
@@ -15,7 +15,6 @@ module.exports.execute = async (interaction) => {
             const headers = {
                 'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY,
             }
-            console.log(map.id)
             const url = `${config.urls.api}/clearmapratings/${map.id}`
             const imageUrl = `${config.urls.image}/${map.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
             const baseUrl = GetFMRoot();
@@ -34,7 +33,7 @@ module.exports.execute = async (interaction) => {
                     //    + 'Current Rating: **'+map.score+'%** (' + map.votes + ' votes)\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#7bcf5c");
-                    interaction.update({content:"POST request successful. Votes have been reset.",embeds:[embed],ephemeral:true})
+                    interaction.update({content:"POST request successful. Votes have been reset.",embeds:[embed],flags:MessageFlags.Ephemeral})
                     var mtcAdminChannel = interaction.client.channels.cache.get(config.channels.mtcAdmin);
                     mtcAdminChannel.send({content:`**${map.name}** by **${map.author}** votes reset by administrator.`,allowedMentions: {"users":[]}})
                 }
@@ -44,7 +43,7 @@ module.exports.execute = async (interaction) => {
                     //    + 'Current Rating: **'+map.score+'%**\n'
                         + 'Author: [**' + map.author + '**](' + baseUrl + 'profile/' + map.author.split(" ").join("_") + ')')
                     .setColor("#da3e52");
-                    interaction.update({content:"POST request failed. Votes unaffected.",embeds:[embed],ephemeral:true})
+                    interaction.update({content:"POST request failed. Votes unaffected.",embeds:[embed],flags:MessageFlags.Ephemeral})
                 }
             });
 

@@ -1,14 +1,14 @@
 const RemoveButtonsFromOriginal = require("../../Functions/RemoveButtonsFromOriginal")
-const { EmbedBuilder } = require("discord.js")
+const { EmbedBuilder, MessageFlags } = require("discord.js")
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const axios = require('axios');
 const { GetFMRoot } = require("../../Functions");
 const nfetch = (...args) => import('node-fetch').then(({default:fetch}) => fetch(...args))
 
-module.exports.execute = (interaction) => {
+module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isStringSelectMenu()){ return false; }
-        if (interaction.customId != "submitupdate"){ return; }
+        if (interaction.customId != "submitupdate"){ return; }        
         let playlist = "";
         let mapId = "";
         let weight = 0;
@@ -33,7 +33,7 @@ module.exports.execute = (interaction) => {
             }
         }
         if (!validId || !validWeight){
-            interaction.reply({content:"One category, one weight, dumbass. Try again.\nYou can fix the existing select menu or use **/updatemap** to start over.",ephemeral:true})
+            interaction.reply({content:"One category, one weight, dumbass. Try again.\nYou can fix the existing select menu or use **/updatemap** to start over.",flags:MessageFlags.Ephemeral})
             return;
         }
         const headers = {
@@ -84,7 +84,7 @@ module.exports.execute = (interaction) => {
                         .setTimestamp();
                     const mtcAdminChannel = interaction.client.channels.cache.get(config.channels.mtcAdmin);
                     mtcAdminChannel.send({content:`**Map Updated\n** *${x.name}* by ${x.author}`,embeds:[embed]})
-                    interaction.update({embeds: [embed], content: "**Update complete.** Please allow up to 10 minutes for changes to go into effect.", ephemeral:true})
+                    interaction.update({embeds: [embed], content: "**Update complete.** Please allow up to 10 minutes for changes to go into effect.", flags:MessageFlags.Ephemeral})
                 });
             }
             else {

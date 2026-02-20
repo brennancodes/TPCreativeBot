@@ -1,16 +1,17 @@
 const axios = require('axios');
 const cheerio = require("cheerio");
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json");
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { GetFMRoot, CheckForExistingMapInRotation } = require('../../Functions');
 
-module.exports.execute = (interaction) => {
+module.exports.execute = async (interaction) => {
     if (!interaction.isChatInputCommand()){
         return false;
     }
     if (interaction.commandName != "submitmap" && interaction.commandName != "manualadd"){
         return false;
     }
+    await interaction.deferReply({flags:MessageFlags.Ephemeral})
     var code = interaction.options.data[0].value;
     var baseUrl = GetFMRoot();
     var imageUrl = baseUrl + "preview/" + code + ".jpeg";
@@ -23,7 +24,7 @@ module.exports.execute = (interaction) => {
 
     axios({method:'get',url:jsonUrl}).then(function(resp){
         if (resp.data.info.name == "Untitled" || (resp.data.info.name.trim() != resp.data.info.name)){
-            interaction.reply({content:`Something's up with your JSON file. Make sure the metadata of your map has no extra whitespace and does not list it as "Untitled", and contact <@${config.users.botOwner}> if the issue persists.`,ephemeral:true})
+            interaction.editReply({content:`Something's up with your JSON file. Make sure the metadata of your map has no extra whitespace and does not list it as "Untitled", and contact <@${config.users.botOwner}> if the issue persists.`,flags:MessageFlags.Ephemeral})
             return false;
         }
         else {
@@ -38,7 +39,7 @@ module.exports.execute = (interaction) => {
                     console.error(error, response.status);
                 }
                 if (title == "" && author == ""){
-                    interaction.reply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,ephemeral:true,allowedMentions:{"users":[]}})
+                    interaction.editReply({content:`Map not found!\nPlease double-check the code \`${code}\` and contact <@${config.users.botOwner}> if you're certain it's correct.`,flags:MessageFlags.Ephemeral,allowedMentions:{"users":[]}})
                 }
                 else {
                     const isUpdate = await CheckForExistingMapInRotation(title);
@@ -61,7 +62,7 @@ module.exports.execute = (interaction) => {
                             new ButtonBuilder().setCustomId('ConfirmMapSubmission').setStyle(ButtonStyle.Primary).setLabel('Confirm'),
                             new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
                         )
-                        interaction.reply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
+                        interaction.editReply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
                     }
                     if (interaction.commandName == "manualadd"){
                         const row = new ActionRowBuilder().addComponents(
@@ -71,7 +72,7 @@ module.exports.execute = (interaction) => {
                             //new ButtonBuilder().setCustomId('ConfirmManualAdd---full').setStyle(ButtonStyle.Primary).setLabel('Add to Standard'),
                             new ButtonBuilder().setCustomId(`CancelMapSubmission---${code}`).setStyle(ButtonStyle.Secondary).setLabel('Cancel')
                         )
-                        interaction.reply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
+                        interaction.editReply({ embeds:[embed], content:content, ephemeral: true, components: [row] })
                     }
                 }
             })

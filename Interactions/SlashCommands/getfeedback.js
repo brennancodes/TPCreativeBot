@@ -1,12 +1,15 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
+const { MessageFlags } = require("discord.js")
 
-module.exports.execute = (interaction) => {
+module.exports.execute = async (interaction) => {
     if (!interaction.isChatInputCommand()){
         return false;
     }
     if (interaction.commandName != "getfeedback"){
         return false;
     }
+    await interaction.deferReply({flags:MessageFlags.Ephemeral})
+
     var mapId = interaction.options.data[0].value;
     const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
 
@@ -39,6 +42,6 @@ module.exports.execute = (interaction) => {
         for (var i = feedbackArray.length - 1; i >= 0; i--){
             feedbackArray[i].length > 0 ? response += "➢ " + feedbackArray[i] + "\n" : response += "";
         }
-        interaction.reply({content:`${response}`,ephemeral:true})
-    });
+        interaction.editReply({content:`${response}`,flags:MessageFlags.Ephemeral})
+    })        
 }

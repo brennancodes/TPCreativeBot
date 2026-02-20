@@ -1,13 +1,13 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const { RemoveButtonsFromOriginal, ValidateSubmission, CheckForExcessBlack, GetFMRoot } = require("../../Functions")
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const axios = require('axios');
 
 module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isButton()){ return false; }
         if (interaction.customId != "ConfirmManualAdd"){ return false; }
-        await interaction.deferReply({ephemeral:true});
+        await interaction.deferReply({flags:MessageFlags.Ephemeral});
         if (await ValidateSubmission(interaction.client,interaction)){
             let msg = interaction.message;
             let mapName = msg.embeds[0].data.description.split("**")[1];
@@ -20,7 +20,7 @@ module.exports.execute = async (interaction) => {
                     new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Edit Map Border')
                     .setURL(`${GetFMRoot()}editor?mapid=${mapId}`),
                 )
-                interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,ephemeral:true,components:[row]});
+                interaction.editReply({content:`${invalid}\n*Don't forget to rewire any gates, portals, bombs, and buttons after resizing.*`,flags:MessageFlags.Ephemeral,components:[row]});
             } else {
                 const description = interaction.message.embeds[0].data.description;
                 const descSplit = description.split('**');
@@ -39,7 +39,7 @@ module.exports.execute = async (interaction) => {
                 await axios({method:'post',url:url,headers:headers}).then(function(resp){
                     try {
                         if (resp.data && resp.data.includes("Inserted")){
-                            interaction.editReply({content:"Got it! Map added to Trial Rotation.", ephemeral:true})
+                            interaction.editReply({content:"Got it! Map added to Trial Rotation.", flags:MessageFlags.Ephemeral})
                             //const imageUrl = `${interaction.message.embeds[0].data.image.url}`
                             const imageUrl = `${interaction.message.embeds[0].data.thumbnail.url}`
                             const embed = new EmbedBuilder().setColor('#7bcf5c')

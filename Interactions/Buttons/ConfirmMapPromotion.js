@@ -1,6 +1,6 @@
 const config = process.env.ENVIRONMENT == "Production" ? require("../../config.json") : require("../../localConfig.json")
 const { GetMapById, RemoveButtonsFromOriginal } = require("../../Functions")
-const {EmbedBuilder} = require("discord.js")
+const {EmbedBuilder,MessageFlags} = require("discord.js")
 const axios = require('axios');
 
 module.exports.execute = async (interaction) => {
@@ -8,6 +8,7 @@ module.exports.execute = async (interaction) => {
         if (!interaction.isButton()){ return false; }
         if (!interaction.customId.includes("ConfirmMapPromotion")){ return false; }
         else {
+            await interaction.deferReply({flags:MessageFlags.Ephemeral});
             const mtcChannel = interaction.client.channels.cache.get(config.channels.mtc);
             const map = await GetMapById(interaction.customId.split("---")[1]);
             if (map.score == 0){
@@ -39,7 +40,7 @@ module.exports.execute = async (interaction) => {
                 allowedMentions:{"users":[],"roles":[]}
             }
 
-            interaction.reply({content:"Promotion vote posted in MTC channel!",ephemeral:true})
+            interaction.editReply({content:"Promotion vote posted in MTC channel!",flags:MessageFlags.Ephemeral})
             mtcChannel.send(msg).then(sent => {sent.react("✅").then(()=>{sent.react("⏳")}).then(()=>sent.pin())
                 .then(() => { sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"});
                     let sentMessageUrl = sent.url;
