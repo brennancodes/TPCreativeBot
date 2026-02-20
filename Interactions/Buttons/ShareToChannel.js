@@ -4,6 +4,7 @@ module.exports.execute = async (interaction) => {
     try {
         if (!interaction.isButton()){ return false; }
         if (!interaction.customId.includes("ShareToChannel")){ return false; }
+        // TO DO: Use a switch statement instead of repeating yourself 100 times
         const { embeds } = interaction.message;
         if (interaction.customId.includes("tsummary")){
             interaction.channel.send({
@@ -25,6 +26,26 @@ module.exports.execute = async (interaction) => {
             interaction.update({content:"Content shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
         }
+        else if (interaction.customId.includes("csummary")){
+            interaction.channel.send({
+                content:`${interaction.user} shared the casual rotation summary.`,
+                embeds: [embeds[0]],
+                allowedMentions: {"users":[]},
+                fetchReply: true
+            });
+            interaction.update({content:"Content shared!"})
+            RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
+        }
+        else if (interaction.customId.includes("ksummary")){
+            interaction.channel.send({
+                content:`${interaction.user} shared the ranked rotation summary.`,
+                embeds: [embeds[0]],
+                allowedMentions: {"users":[]},
+                fetchReply: true
+            });
+            interaction.update({content:"Content shared!"})
+            RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
+        }
         else if (interaction.customId.includes("rsummary")){
             interaction.channel.send({
                 content:`${interaction.user} shared the rotation summary.`,
@@ -34,7 +55,7 @@ module.exports.execute = async (interaction) => {
             });
             interaction.update({content:"Content shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
-        }
+        }        
         else if (interaction.customId.includes("rminfo")){
             interaction.channel.send({
                 content:`${interaction.user} shared some ranked map data.`,

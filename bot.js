@@ -255,6 +255,17 @@ async function main() {
             description: 'Get a quick look at all the Throwback Rotation scores'
         },
         {
+            name: 'casualsummary',
+            description: 'Get a quick look at all the Casual Rotation scores'
+        },
+        {
+            name: 'rankedsummary',
+            description: 'Get a quick look at all the Ranked Rotation selection rates'
+        },
+        // TO DO: ADD /CLASSICSUMMARY AND /ROTATION THAT LISTS ALL MAPS WITH WEIGHT > 0
+            // WOULD BE GOOD TO CONDITIONALLY DISPLAY SCORES IF CALLER HAS MTC ROLE
+        // TO DO: ALSO NEED TO ADD /QUICKSUMMARY EVENTUALLY IF WE'RE DOING THAT
+        {
             name: 'getfeedback',
             description: 'Code from FortunateMaps',
             options: [
@@ -305,11 +316,7 @@ async function main() {
                     required: true,
                 }
             ]
-        },
-        {
-            name: 'rankedrotation',
-            description: 'View selection rates for all ranked rotation maps'
-        },
+        }
     ];
     try {
         console.log('Started refreshing application (/) commands.');

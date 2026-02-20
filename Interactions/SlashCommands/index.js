@@ -1,5 +1,5 @@
 const SubmitMap = require("./submitmap");
-const RemoveMap = require("../../Interactions/SlashCommands/removemap");
+const RemoveMap = require("./removemap");
 const GetFeedback = require("./getfeedback");
 const RotationSummary = require("./rotationsummary");
 const UpdateMap = require("./updatemap");
@@ -14,7 +14,9 @@ const ThrowbackSummary = require("./throwbacksummary");
 const MTC = require("./mtc");
 const ResetVotes = require("./resetvotes");
 const RankedMapInfo = require("./rankedmapinfo");
-const RankedRotation = require("./rankedrotation");
+const RankedSummary = require("./rankedsummary");
+const CasualSummary = require("./casualsummary");
+const QuickSummary = require("./quicksummary");
 
 module.exports = {
     SubmitMap,
@@ -33,5 +35,7 @@ module.exports = {
     MTC,
     ResetVotes,
     RankedMapInfo,
-    RankedRotation
+    RankedSummary,
+    CasualSummary,
+    QuickSummary
 }

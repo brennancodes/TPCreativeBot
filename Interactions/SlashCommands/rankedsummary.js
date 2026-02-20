@@ -1,12 +1,12 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const { GetRotationMapsWithStats } = require("../../Functions");
 
 module.exports.execute = async (interaction) => {
-    if (!interaction.isChatInputCommand() || !interaction.commandName.includes("rankedrotation")) {
+    if (!interaction.isChatInputCommand() || !interaction.commandName.includes("rankedsummary")) {
         return false;
     }
 
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags:MessageFlags.Ephemeral });
 
     const maps = await GetRotationMapsWithStats();
 
@@ -41,6 +41,11 @@ module.exports.execute = async (interaction) => {
     description += `\nTotal Presentations: **${totalPresentations.toLocaleString()}**`;
     description += `\nTotal Selections: **${totalSelections.toLocaleString()}**`;
 
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('ShareToChannel---ksummary').setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
+        new ButtonBuilder().setCustomId('cancelaction---summary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
+    )
+
     const embed = new EmbedBuilder()
         .setColor('#CDDC39')
         .setTitle('Ranked Rotation Map Selection Statistics')
@@ -50,6 +55,7 @@ module.exports.execute = async (interaction) => {
 
     await interaction.editReply({ 
         embeds: [embed],
-        ephemeral: true,
+        components: [row],
+        flags:MessageFlags.Ephemeral
     });
 };

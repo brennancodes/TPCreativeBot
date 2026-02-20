@@ -60,7 +60,8 @@ module.exports.execute = async (interaction) => {
                                     score: x.score,
                                     key: x.key,
                                     weight: x.weight,
-                                    category: x.category.charAt(0).toUpperCase() + x.category.slice(1)
+                                    category: x.category.charAt(0).toUpperCase() + x.category.slice(1),
+                                    subcategory: x.inRankedRotation && x.inCasualRotation ? "Both" : x.inRankedRotation ? "Ranked" : x.inCasualRotation ? "Casual" : ""
                                 }
                                 return tmp;
                             }
@@ -71,16 +72,12 @@ module.exports.execute = async (interaction) => {
                 searchMaps().then(function(x){
                     const imageUrl = `${config.urls.image}/${x.name.split(" ").join("_").replaceAll("_","%20").trim()}-small.png`
                     const baseUrl = GetFMRoot();
-                    const iconUrl = "https://b.thumbs.redditmedia.com/g0IY6wWcORTUY8i8vUbloTAC_N6i1qwcZqhN5UiNvLs.jpg"
+                    const iconUrl = "https://b.thumbs.redditmedia.com/g0IY6wWcORTUY8i8vUbloTAC_N6i1qwcZqhN5UiNvLs.jpg"                    
                     const embed = new EmbedBuilder()
                         .setColor('#CDDC39')
                         .setThumbnail(imageUrl)
                         .setAuthor({name: "Map Update", iconURL: iconUrl})
-                        .setDescription('Title: **'+x.name+'**\n'
-                                        + 'Category: **' + playlist + '** (was ' + x.category + ')\n'
-                                        + 'Weight: **' + weight.toFixed(1) + '** (was ' + x.weight.toFixed(1) + ')\n'
-                                        + 'Map ID: **'+x.id+'**\n'
-                                        + 'Author: [**' + x.author + '**](' + baseUrl + 'profile/' + x.author.split(" ").join("_") + ')')
+                        .setDescription(buildMapDescription(x, playlist, ratingType, weight, baseUrl))
                         .setTimestamp();
                     const mtcAdminChannel = interaction.client.channels.cache.get(config.channels.mtcAdmin);
                     mtcAdminChannel.send({content:`**Map Updated\n** *${x.name}* by ${x.author}`,embeds:[embed]})
@@ -97,4 +94,66 @@ module.exports.execute = async (interaction) => {
     catch (err) {
         console.error(err)
     }
+
+    function formatWeight(value) {
+        return parseFloat(value.toFixed(2)).toString();
+    }    
+    function getSubcategory(inRanked, inCasual) {
+        if (inRanked && inCasual) return "Both";
+        if (inRanked) return "Ranked";
+        if (inCasual) return "Casual";
+        return "Neither";
+    }
+    function computeNewSubcategory(x, playlist, ratingType, weight) {
+        let newRanked = x.inRankedRotation;
+        let newCasual = x.inCasualRotation;
+    
+        if (playlist === "Rotation" && ratingType && (weight === 1 || weight === 0)) {
+            const value = weight === 1;
+    
+            if (ratingType === "inRankedRotation") {
+                newRanked = value;
+            } else if (ratingType === "inCasualRotation") {
+                newCasual = value;
+            }
+        }
+    
+        return getSubcategory(newRanked, newCasual);
+    }
+    function buildMapDescription(x, playlist, ratingType, weight, baseUrl) {
+
+        const lines = [];
+    
+        const oldSub = getSubcategory(x.inRankedRotation, x.inCasualRotation);
+        const newSub = computeNewSubcategory(x, playlist, ratingType, weight);
+        const subChanged = oldSub !== newSub;
+    
+        const showSubLine =
+            x.inRankedRotation ||
+            x.inCasualRotation ||
+            subChanged;
+    
+        lines.push(`Title: **${x.name}**`);
+        lines.push(`Category: **${playlist}** (was ${x.category})`);
+        if (showSubLine) {
+            if (subChanged) {
+                lines.push(`Subcategory: **${newSub}** (was ${oldSub})`);
+            } else {
+                lines.push(`Subcategory: **${oldSub}**`);
+            }
+        }
+        if ((weight > 0 && ratingType === "inCasualRotation") || x.weight > 0){
+            lines.push(
+                `Casual Weight: **${formatWeight(weight)}** (was ${formatWeight(x.weight)})`
+            );
+        }
+    
+    
+        lines.push(`Map ID: **${x.id}**`);
+        lines.push(
+            `Author: [**${x.author}**](${baseUrl}profile/${x.author.split(" ").join("_")})`
+        );
+    
+        return lines.join("\n");
+    }    
 }

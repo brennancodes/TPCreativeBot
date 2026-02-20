@@ -20,7 +20,9 @@ module.exports = async () => {
                     votes: x.totalUsers,
                     key: x.key,
                     weight: x.weight,
-                    category: x.category.charAt(0).toUpperCase() + x.category.slice(1)
+                    category: x.category.charAt(0).toUpperCase() + x.category.slice(1),
+                    inCasualRotation: x.inCasualRotation,
+                    inRankedRotation: x.inRankedRotation
                 }
                 mapList.push(tmp);
         }

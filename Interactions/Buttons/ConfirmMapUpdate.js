@@ -15,27 +15,14 @@ module.exports.execute = (interaction) => {
             {label:'Ranked Rotation',value:'Rotation---'+mapId+'---inRankedRotation'},
             {label:'1.0',value:'1.0'},
             {label:'Trial',value:'Trial---'+mapId},
-            {label:'0.5',value:'0.5'},
+            {label:'0.75',value:'0.75'},
             {label:'Classic',value:'Classic---'+mapId},
-            {label:'0.1',value:'0.1'},
+            {label:'0.5',value:'0.5'},
             {label:'Retired',value:'Retired---'+mapId},
-            {label:'0.0',value:'0'},
-            {label:'Group',value:'Group---'+mapId}
+            {label:'0.1',value:'0.1'},
+            {label:'Group',value:'Group---'+mapId},
+            {label:'0.0',value:'0'}
         ];
-
-        // This removes the current category from the list of options, but it turns out we sometimes hate that.
-        // for (var i = 0; i < catOptions.length; i++){
-        //     if (category == catOptions[i].label){
-        //         catOptions.splice(i,1)
-        //         break;
-        //     }
-        // }
-
-        // We also just didn't use this lol idk man
-        // const weightOptions = [];
-        // for (var i = 0; i < 11; i++){
-        //     weightOptions.push({label:`${i/10}`,value:`${i/10}`})
-        // }
 
         const row = new ActionRowBuilder()
             .addComponents(

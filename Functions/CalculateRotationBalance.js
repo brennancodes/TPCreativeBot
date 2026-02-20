@@ -6,199 +6,191 @@ const Image = Canvas.Image;
 
 module.exports = async (client, interaction) => {
 
-    const fetchEm = new Promise((resolve,reject)=>{
-        async function getMaps(){
-            const headers = {
-                'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
-            }
-            const maps = await nfetch(`${config.urls.tagpro}/allmaps.json`, {headers:headers})
-            const body = await maps.json();
-            resolve(body);
-        }
-        getMaps();
-    })
+    const headers = {
+        'x-mtc-api-key': process.env.ENVIRONMENT == "Production" ? process.env.PROD_API_KEY : process.env.STAGING_API_KEY
+    }
+    const maps = await nfetch(`${config.urls.tagpro}/allmaps.json`, {headers:headers})
+    const body = await maps.json();
 
-    fetchEm.then((body)=>{
-        function createCategoryArray(bodyKey){
-            let arr = [];
-            for (const key in bodyKey){
-                arr.push(bodyKey[key])
-            }
-            return arr;
+    function createCategoryArray(bodyKey){
+        let arr = [];
+        for (const key in bodyKey){
+            arr.push(bodyKey[key])
         }
+        return arr;
+    }
 
-        function createPlaceholder(){
-            var str = [{category:"trial",name: 'Placeholder',weight: 0,score: 100,png:null}]
-            return str;
-        }
+    function createPlaceholder(){
+        var str = [{category:"trial",name: 'Placeholder',weight: 0,score: 100,png:null}]
+        return str;
+    }
 
-        const mapData = [];
-        for (const key in body){
-            if (body[key]){
-                if (key == "group" || key == "racing"){
-                    continue;
-                }
-                const array = createCategoryArray(body[key]);
-                getDataByCategory(sorted(array), key)
+    const mapData = [];
+    for (const key in body){
+        if (body[key]){
+            if (key == "group" || key == "racing"){
+                continue;
             }
-            else {
-                getDataByCategory(createPlaceholder(), key)
-            }
+            const array = createCategoryArray(body[key]);
+            getDataByCategory(sorted(array), key)
         }
-
-        function sorted(obj){
-            obj.sort(function(a,b){
-                return b.score - a.score;
-            })
-            return obj;
+        else {
+            getDataByCategory(createPlaceholder(), key)
         }
+    }
 
-        function getDataByCategory(category, catName){
-            var weight = 0;
-            var CTFWt = 0;
-            var NFWt = 0;
-            var EXWt = 0;
-            var cumulativeScore = 0;
-            var bestMap = "";
-            var worstMap = "";
-            var averageCounter = 0;
-            for (var i = 0; i < category.length; i++){
-                var thisWeight = category[i].weight;
-                if (thisWeight > 0 && category[i].score > 0) {
-                    averageCounter++
-                    cumulativeScore += category[i].score
-                }
-                var type = getType(category[i].png)
-                if (type==="CTF"){CTFWt+=thisWeight}else if(type==="NF"){NFWt+=thisWeight}else if(type==="Placeholder"){CTFWt=0;NFWt=0}else{EXWt+=thisWeight};
-                weight += thisWeight;
-                if (i == 0) {bestMap = `${category[i].name} (${category[i].score})`}
-                if (i == category.length - 1) {worstMap = `${category[i].name} (${category[i].score})`}
-            }
-            var data = {
-                category: catName,
-                totalWeight: weight,
-                CTFWeight: CTFWt,
-                NFWeight: NFWt,
-                EXWeight: EXWt,
-                avgScore: averageCounter > 0 ? (cumulativeScore/averageCounter) : (cumulativeScore),
-                bestMap: bestMap,
-                worstMap: worstMap
-            }
-            mapData.push(data);
-        }
+    function sorted(obj){
+        obj.sort(function(a,b){
+            return b.score - a.score;
+        })
+        return obj;
+    }
 
-        var totalCTFWt = 0;
-        var totalNFWt = 0;
-        var totalEXWt = 0;
-        var totalWt = 0;
-        var totalSum = 0;
-        var bestPlaylist = "";
+    function getDataByCategory(category, catName){
+        var weight = 0;
+        var CTFWt = 0;
+        var NFWt = 0;
+        var EXWt = 0;
+        var cumulativeScore = 0;
         var bestMap = "";
         var worstMap = "";
-        for(var i = 0; i < mapData.length; i++){
-            wL = mapData[i].worstMap.length;
-            bL = mapData[i].bestMap.length;
-            totalWt += mapData[i].totalWeight;
-            totalCTFWt += mapData[i].CTFWeight;
-            totalNFWt += mapData[i].NFWeight;
-            totalEXWt += mapData[i].EXWeight;
-            totalSum += (mapData[i].avgScore*mapData[i].totalWeight);
-            if (i == 0 || (i > 0 && mapData[i].avgScore > mapData[i-1].avgScore)){
-                bestPlaylist = `${mapData[i].category} (${mapData[i].avgScore})`;
+        var averageCounter = 0;
+        for (var i = 0; i < category.length; i++){
+            var thisWeight = category[i].weight;
+            if (thisWeight > 0 && category[i].score > 0) {
+                averageCounter++
+                cumulativeScore += category[i].score
             }
-            if (i == 0 || (i > 0 && parseInt(mapData[i].bestMap.substring(bL-3,bL-1))) > parseInt(mapData[i-1].bestMap.substring(mapData[i-1].bestMap.length-3,mapData[i-1].bestMap.length-1))){
-                bestMap = mapData[i].bestMap;
-            }
-            if (i == 0 || (i > 0 && parseInt(mapData[i].worstMap.substring(wL-3,wL-1)) < parseInt(mapData[i-1].worstMap.substring(mapData[i-1].worstMap.length-3,mapData[i-1].worstMap.length-1)))){
-                worstMap = mapData[i].worstMap;
-            }
+            var type = getType(category[i].png)
+            if (type==="CTF"){CTFWt+=thisWeight}else if(type==="NF"){NFWt+=thisWeight}else if(type==="Placeholder"){CTFWt=0;NFWt=0}else{EXWt+=thisWeight};
+            weight += thisWeight;
+            if (i == 0) {bestMap = `${category[i].name} (${category[i].score})`}
+            if (i == category.length - 1) {worstMap = `${category[i].name} (${category[i].score})`}
         }
-        mapData.push({category:"all",
-                    totalWeight:totalWt,
-                    CTFWeight:totalCTFWt,
-                    NFWeight:totalNFWt,
-                    EXWeight:totalEXWt,
-                    avgScore:parseFloat(parseFloat(totalSum/totalWt).toFixed(2)),
-                    CTFNFBalance: `🔴🔵 ${(totalCTFWt/totalWt*100).toFixed(2)}%\n⚫🟡 ${(totalNFWt/totalWt*100).toFixed(2)}%`,
-                    bestPlaylist: bestPlaylist,
-                    bestMap: bestMap,
-                    worstMap: worstMap
-                })
-        const channel = client.channels.cache.get(config.channels.mtc);
-        //channel.send({content:JSON.stringify(mapData)})
-        mapData.sort(function(a,b){
-            return b.totalWeight - a.totalWeight
-        })
-        const embed = new EmbedBuilder()
-            .setColor("#186360")
-            .setAuthor({name:"State of Rotation",iconURL:"https://imgur.com/QWrriCS.png"})
-            .setTimestamp()
+        var data = {
+            category: catName,
+            totalWeight: weight,
+            CTFWeight: CTFWt,
+            NFWeight: NFWt,
+            EXWeight: EXWt,
+            avgScore: averageCounter > 0 ? (cumulativeScore/averageCounter) : (cumulativeScore),
+            bestMap: bestMap,
+            worstMap: worstMap
+        }
+        mapData.push(data);
+    }
 
-        const rotSize = mapData[0].totalWeight;
-        for (var i = 0; i < mapData.length; i++){
-            var formattedCategory = mapData[i].category.charAt(0).toUpperCase() + mapData[i].category.slice(1)
-            styleMachine(mapData[i], rotSize);
-            if (mapData[i].category == "all"){
+    var totalCTFWt = 0;
+    var totalNFWt = 0;
+    var totalEXWt = 0;
+    var totalWt = 0;
+    var totalSum = 0;
+    var bestPlaylist = "";
+    var bestMap = "";
+    var worstMap = "";
+    for(var i = 0; i < mapData.length; i++){
+        wL = mapData[i].worstMap.length;
+        bL = mapData[i].bestMap.length;
+        totalWt += mapData[i].totalWeight;
+        totalCTFWt += mapData[i].CTFWeight;
+        totalNFWt += mapData[i].NFWeight;
+        totalEXWt += mapData[i].EXWeight;
+        totalSum += (mapData[i].avgScore*mapData[i].totalWeight);
+        if (i == 0 || (i > 0 && mapData[i].avgScore > mapData[i-1].avgScore)){
+            bestPlaylist = `${mapData[i].category} (${mapData[i].avgScore})`;
+        }
+        if (i == 0 || (i > 0 && parseInt(mapData[i].bestMap.substring(bL-3,bL-1))) > parseInt(mapData[i-1].bestMap.substring(mapData[i-1].bestMap.length-3,mapData[i-1].bestMap.length-1))){
+            bestMap = mapData[i].bestMap;
+        }
+        if (i == 0 || (i > 0 && parseInt(mapData[i].worstMap.substring(wL-3,wL-1)) < parseInt(mapData[i-1].worstMap.substring(mapData[i-1].worstMap.length-3,mapData[i-1].worstMap.length-1)))){
+            worstMap = mapData[i].worstMap;
+        }
+    }
+    mapData.push({category:"all",
+                totalWeight:totalWt,
+                CTFWeight:totalCTFWt,
+                NFWeight:totalNFWt,
+                EXWeight:totalEXWt,
+                avgScore:parseFloat(parseFloat(totalSum/totalWt).toFixed(2)),
+                CTFNFBalance: `🔴🔵 ${(totalCTFWt/totalWt*100).toFixed(2)}%\n⚫🟡 ${(totalNFWt/totalWt*100).toFixed(2)}%`,
+                bestPlaylist: bestPlaylist,
+                bestMap: bestMap,
+                worstMap: worstMap
+            })
+    const channel = client.channels.cache.get(config.channels.mtc);
+    //channel.send({content:JSON.stringify(mapData)})
+    mapData.sort(function(a,b){
+        return b.totalWeight - a.totalWeight
+    })
+    const embed = new EmbedBuilder()
+        .setColor("#186360")
+        .setAuthor({name:"Complete Casual Rotation Overview",iconURL:"https://imgur.com/QWrriCS.png"})
+        .setTimestamp()
+
+    const rotSize = mapData[0].totalWeight;
+    for (var i = 0; i < mapData.length; i++){
+        var formattedCategory = mapData[i].category.charAt(0).toUpperCase() + mapData[i].category.slice(1)
+        styleMachine(mapData[i], rotSize);
+        if (mapData[i].category == "all"){
+            embed.addFields(
+                {
+                    name: "Size",
+                    value: mapData[i].totalWeight,
+                    inline: true
+                },
+                {
+                    name: "Balance",
+                    value: mapData[i].CTFNFBalance,
+                    inline: true
+                },
+                {
+                    name: "Score",
+                    value: mapData[i].avgScore,
+                    inline: true
+                }
+            )
+        }
+        else {
+            if (mapData[i].category != "rotation" && mapData[i].category != "minigames"){
                 embed.addFields(
                     {
-                        name: "Size",
-                        value: mapData[i].totalWeight,
-                        inline: true
-                    },
-                    {
-                        name: "Balance",
-                        value: mapData[i].CTFNFBalance,
-                        inline: true
-                    },
-                    {
-                        name: "Score",
-                        value: mapData[i].avgScore,
+                        name: formattedCategory,
+                        value: mapData[i].totalWeight + mapData[i].avgScore,
                         inline: true
                     }
                 )
             }
-            else {
-                if (mapData[i].category != "rotation" && mapData[i].category != "minigames"){
-                    embed.addFields(
-                        {
-                            name: formattedCategory,
-                            value: mapData[i].totalWeight + mapData[i].avgScore,
-                            inline: true
-                        }
-                    )
-                }
-                if (mapData[i].category == "rotation"){
-                    embed.addFields(
-                        {
-                            name: "\n\u200b",
-                            value: "\u200b",
-                            inline: true
-                        },
-                        {
-                            name: "\n"+formattedCategory,
-                            value: mapData[i].totalWeight + mapData[i].avgScore,
-                            inline: true
-                        },
-                        {
-                            name: "\n\u200b",
-                            value: "\u200b",
-                            inline: true
-                        }
-                    )
-                }
+            if (mapData[i].category == "rotation"){
+                embed.addFields(
+                    {
+                        name: "\n\u200b",
+                        value: "\u200b",
+                        inline: true
+                    },
+                    {
+                        name: "\n"+formattedCategory,
+                        value: mapData[i].totalWeight + mapData[i].avgScore,
+                        inline: true
+                    },
+                    {
+                        name: "\n\u200b",
+                        value: "\u200b",
+                        inline: true
+                    }
+                )
             }
         }
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('ShareToChannel---rsummary').setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
-            new ButtonBuilder().setCustomId('cancelaction---rsummary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
-        )
-        if (interaction){
-            interaction.reply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
-        }
-        else {
-            channel.send({content:"Overview",embeds:[embed]})
-        }
-    })
+    }
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('ShareToChannel---rsummary').setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
+        new ButtonBuilder().setCustomId('cancelaction---rsummary').setStyle(ButtonStyle.Secondary).setLabel('Cool, thanks')
+    )
+    if (interaction){
+        interaction.editReply({content:"Overview",embeds:[embed],components:[row],flags:MessageFlags.Ephemeral})
+    }
+    else {
+        channel.send({content:"Overview",embeds:[embed]})
+    }
 
     function styleMachine(item, rotSize){
         const ideal = {
