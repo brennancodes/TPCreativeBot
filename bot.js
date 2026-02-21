@@ -44,12 +44,18 @@ client.on("clientReady", () => {
 
 client.on('interactionCreate', async interaction => {
     if (interaction.isChatInputCommand()){
-        for (const cmd of slashCommands){
-            if (interaction.commandName == "map") { interaction.commandName = "findmap" }
-            if (interaction.commandName == "fm") { interaction.commandName = "findfortunatemap" }
-            const event = require(`./Interactions/SlashCommands/${cmd}`)
-            if (event){
-                event.execute(interaction)
+        if (interaction.commandName.includes("summary") && interaction.commandName != "rotationsummary" && interaction.commandName != "rankedsummary") {
+            const summarize = require(`./Interactions/SlashCommands/summarize`);
+            summarize.execute(interaction);
+        }
+        else {
+            for (const cmd of slashCommands){
+                if (interaction.commandName == "map") { interaction.commandName = "findmap" }
+                if (interaction.commandName == "fm") { interaction.commandName = "findfortunatemap" }
+                const event = require(`./Interactions/SlashCommands/${cmd}`)
+                if (event){
+                    event.execute(interaction)
+                }
             }
         }
     }
@@ -60,9 +66,14 @@ client.on('interactionCreate', async interaction => {
         }
         // We run through slashCommands again because certain functions can be hit by buttons or slashCommands
         // findmap, removemap, updatemap
-        for (const cmd of slashCommands){
-            const event = require(`./Interactions/SlashCommands/${cmd}`)
-            event.execute(interaction);
+        if (interaction.customId.includes("findmap") || 
+            interaction.customId.includes("findfortunatemap") || 
+            interaction.customId.includes("removemap") || 
+            interaction.customId.includes("updatemap")){
+            for (const cmd of slashCommands){
+                const event = require(`./Interactions/SlashCommands/${cmd}`)
+                event.execute(interaction);
+            }
         }
     }
     if (interaction.isStringSelectMenu()){
@@ -262,7 +273,11 @@ async function main() {
             name: 'rankedsummary',
             description: 'Get a quick look at all the Ranked Rotation selection rates'
         },
-        // TO DO: ADD /CLASSICSUMMARY AND /ROTATION THAT LISTS ALL MAPS WITH WEIGHT > 0
+        {
+            name: 'classicsummary',
+            description: 'Get a quick look at all the Ranked Rotation selection rates'
+        },
+        // TO DO: ADD /ROTATION THAT LISTS ALL MAPS WITH WEIGHT > 0
             // WOULD BE GOOD TO CONDITIONALLY DISPLAY SCORES IF CALLER HAS MTC ROLE
         // TO DO: ALSO NEED TO ADD /QUICKSUMMARY EVENTUALLY IF WE'RE DOING THAT
         {

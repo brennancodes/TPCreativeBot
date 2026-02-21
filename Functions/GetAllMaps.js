@@ -18,6 +18,7 @@ module.exports = async () => {
                     author: x.author,
                     score: x.score,
                     votes: x.totalUsers,
+                    plays: x.totalPlays,
                     key: x.key,
                     weight: x.weight,
                     category: x.category.charAt(0).toUpperCase() + x.category.slice(1),

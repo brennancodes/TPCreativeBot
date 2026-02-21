@@ -9,14 +9,11 @@ const FindFortunateMap = require("./findfortunatemap");
 const GetCurrentRating = require("./getcurrentrating");
 const CreativeHelp = require("./creativehelp");
 const PromoteMap = require("./promotemap");
-const TrialSummary = require("./trialsummary");
-const ThrowbackSummary = require("./throwbacksummary");
+const Summarize = require("./summarize");
 const MTC = require("./mtc");
 const ResetVotes = require("./resetvotes");
 const RankedMapInfo = require("./rankedmapinfo");
 const RankedSummary = require("./rankedsummary");
-const CasualSummary = require("./casualsummary");
-const QuickSummary = require("./quicksummary");
 
 module.exports = {
     SubmitMap,
@@ -30,12 +27,9 @@ module.exports = {
     GetCurrentRating,
     CreativeHelp,
     PromoteMap,
-    TrialSummary,
-    ThrowbackSummary,
     MTC,
     ResetVotes,
     RankedMapInfo,
     RankedSummary,
-    CasualSummary,
-    QuickSummary
+    Summarize
 }

@@ -4,9 +4,10 @@ const cron = require("cron");
 module.exports = async (client) => {
   let job = new cron.CronJob(config.mtcSettings.pingDateTime, ping)
   job.start();
-  process.stdout.write("Reached Ping MTC function\n");
   //setTimeout(() => {ping(true);}, 3000);
-  await ping(true);
+  
+  //This line runs the function as a log on startup, it does not actually write to the channel.
+  //await ping(true);
 
   async function ping(logOnly = false) {
     const guild = await client.guilds.fetch(config.guildId);

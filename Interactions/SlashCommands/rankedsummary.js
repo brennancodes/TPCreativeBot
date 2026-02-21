@@ -47,7 +47,7 @@ module.exports.execute = async (interaction) => {
     )
 
     const embed = new EmbedBuilder()
-        .setColor('#CDDC39')
+        .setColor('#186360')
         .setTitle('Ranked Rotation Map Selection Statistics')
         .setDescription(description)
         .setFooter({ text: `Total ranked maps: ${maps.length} | Data from MTC API` })

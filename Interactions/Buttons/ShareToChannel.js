@@ -36,6 +36,16 @@ module.exports.execute = async (interaction) => {
             interaction.update({content:"Content shared!"})
             RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
         }
+        else if (interaction.customId.includes("lsummary")){
+            interaction.channel.send({
+                content:`${interaction.user} shared the classic rotation summary.`,
+                embeds: [embeds[0]],
+                allowedMentions: {"users":[]},
+                fetchReply: true
+            });
+            interaction.update({content:"Content shared!"})
+            RemoveButtonsFromOriginal(interaction, true, "Summary shared!")
+        }
         else if (interaction.customId.includes("ksummary")){
             interaction.channel.send({
                 content:`${interaction.user} shared the ranked rotation summary.`,

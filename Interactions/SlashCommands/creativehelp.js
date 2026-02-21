@@ -19,13 +19,13 @@ module.exports.execute = async (interaction) => {
                 roles: "any"
             },
             {
-                commandName: "findmap",
+                commandName: "findmap (or /map)",
                 parameters: "Map Name",
-                description: "Search for a map currently in the Rotation, Trial, Classic, Retired, or Groups playlists",
+                description: "Search for a map currently in the Ranked or Casual Rotation, Trial, Classic, Retired, or Groups playlists",
                 roles: "any"
             },
             {
-                commandName: "findfortunatemap",
+                commandName: "findfortunatemap (or /fm)",
                 parameters: "Map Name or FM Code",
                 description: "Search for a map on FortunateMaps",
                 roles: "any"
@@ -36,12 +36,12 @@ module.exports.execute = async (interaction) => {
                 description: "Submit a map hosted on https://fortunatemaps.herokuapp.com to the Map Test Committee. Submissions may be added to the base game.",
                 roles: "any"
             },
-            {
-                commandName: "getfeedback",
-                parameters: "FortunateMaps Code",
-                description: "Review feedback from the MTC on a submitted map. You may want to use this input to refine your map and resubmit it.",
-                roles: "any"
-            },
+            // {
+            //     commandName: "getfeedback",
+            //     parameters: "FortunateMaps Code",
+            //     description: "Review feedback from the MTC on a submitted map. You may want to use this input to refine your map and resubmit it.",
+            //     roles: "any"
+            // },
             {
                 commandName: "mtc",
                 parameters: "None",
@@ -61,9 +61,9 @@ module.exports.execute = async (interaction) => {
                 roles: "mtc"
             },
             {
-                commandName: "trialsummary",
+                commandName: "[category]summary",
                 parameters: "None",
-                description: "Quick look at current trial maps, scores, and votes",
+                description: "Replace [category] with Ranked, Casual, Trial, Classic, or Throwback for a quick look at current maps, scores, and votes.",
                 roles: "mtc"
             },
             {
@@ -119,7 +119,7 @@ module.exports.execute = async (interaction) => {
             .setColor('#CDDC39')
             .setAuthor({name: "Commands List", iconURL: iconUrl})
             .setDescription(`${descriptionString}\n*Developed by Moosen with contributions from DaEvil1, black orchid, and Cheezedoodle. Artwork by [Pepi.](https://reddit.com/u/PepiHopi)\nContact <@${config.users.botOwner}> for assistance.*`)
-            .setFooter({ text: `CreativeBot v2.2.1`});
+            .setFooter({ text: `CreativeBot v2.3.1`});
         interaction.editReply({embeds:[embed],flags:MessageFlags.Ephemeral})
     }
     catch (err) {
