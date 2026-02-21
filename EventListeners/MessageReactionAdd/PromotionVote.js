@@ -66,10 +66,13 @@ module.exports.execute = async (reaction, user) => {
 
             async function Respond(){
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'
-                const mapByAuthor = reaction.message.embeds[0].data.description.split("Current Score:")[0];
-                const score = reaction.message.embeds[0].data.description.split(mapByAuthor)[1].split("Map ID:")[0];
-                const mapId = reaction.message.embeds[0].data.description.split("Map ID: ")[1];
-                const RaR = `Current Rating: ${score.split("Current Score:")[1]}`
+                const mapByAuthor = reaction.message.embeds[0].data.description.split("\n")[0];
+                const score = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[0];
+                const votes = reaction.message.embeds[0].data.description.split("\n")[1].split(" (")[1]?.split(" votes")[0];
+                const mapIdString = reaction.message.embeds[0].data.description.split("\n")[2];
+                const mapId = mapIdString.split("Map ID: ")[1];
+                const rawRatingwPercent = score.split("Current Score: ")[1]
+                const RaR = `Current Rating: ${rawRatingwPercent}`
 
                 if (decision === "Refresh"){
                     await reaction.users.remove(user.id);
@@ -121,7 +124,7 @@ module.exports.execute = async (reaction, user) => {
                     const imageUrl = `${reaction.message.embeds[0].data.image.url}`
                     const embed = new EmbedBuilder().setColor(decision === 'Added' ? '#7bcf5c' : '#ffca3a')
                         .setAuthor({name:header,iconURL:iconUrl})
-                        .setDescription(`${mapByAuthor}${RaR}\n${approvalString}\n${delayString}`)
+                        .setDescription(`${mapByAuthor}\n${RaR} (${votes} votes)\n\n${approvalString}\n${delayString}`)
                         .setThumbnail(imageUrl).setTimestamp()
 
                     reaction.message.reactions.removeAll();
@@ -141,7 +144,7 @@ module.exports.execute = async (reaction, user) => {
                                         if (resp.data && (resp.data.includes("Updated map"))){
                                             console.info("Successful request. Response: ", resp.data)
                                             mtcAdminChannel.send({embeds:[embed],content:`${mapByAuthor} has been promoted to full rotation`,allowedMentions: {"users":[]}})
-                                            embed.setDescription(`${mapByAuthor}${RaR}`);
+                                            embed.setDescription(`${mapByAuthor}\n${RaR}`);
                                             embed.setThumbnail(null);
                                             embed.setImage(imageUrl)
                                             mtcAnnouncementChannel.send({embeds:[embed],content:`<@&${config.roles.mapUpdates}> ${header}\n${mapByAuthor}`})
