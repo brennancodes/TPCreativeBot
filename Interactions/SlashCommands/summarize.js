@@ -87,49 +87,58 @@ module.exports.execute = async (interaction) => {
     // Sort maps by selection rate descending
     selectedMaps.sort((a, b) => b.score - a.score);
 
-    let description = '```';
+    let description = "```";
+    let namePad = summaryType == "Trial" ? 13 : 23
+    // ----- HEADER -----
+    let header =
+        "Rk.".padEnd(3) + " " +
+        "Name".padEnd(namePad) + " " +
+        "Score".padStart(6) + " " +
+        "Vts".padStart(3) + " ";
+        summaryType == "Trial" ? header +=
+        "Gms".padStart(3) + " " +
+        "VPP".padStart(5) : header += "";
 
-description +=
-" Rk. " +
-" Name                 " +
-"  Score " +
-"  Vts "; 
-summaryType == "Trial" ? description += "  Plays     VPP  \n" : description += "\n";
+    description += header + "\n";
 
-selectedMaps.forEach((map, index) => {
+    // ----- ROWS -----
+    selectedMaps.forEach((map, index) => {
 
-    // --- RANK (3 chars including period) ---
-    const rank = `${String(index + 1).padStart(2, ' ')}.`; // " 1."
+        // Rk. (3 chars, right aligned like " 1.")
+        const rank = `${index + 1}.`.padStart(3);
 
-    // --- NAME (20 chars exactly) ---
-    const name = map.name
-        .substring(0, 20)
-        .padEnd(20, ' ');
+        // Name (namePad chars, left aligned)
+        const name = (map.name ?? "")
+            .substring(0, namePad)
+            .padEnd(namePad);
 
-    // --- SCORE (###.#%) exactly 6 chars, right aligned ---
-    const scoreValue = Number.isFinite(map.score) ? map.score : 0;
-    const score = `${scoreValue.toFixed(1)}%`.padStart(6, ' ');
+        // Score (5 chars like "99.9%")
+        const scoreValue = Number.isFinite(map.score) ? map.score : 0;
+        const score = `${scoreValue.toFixed(1)}%`.padStart(6);
 
-    // --- VOTES (3 chars, right aligned) ---
-    const votes = String(map.votes ?? 0).padStart(4, ' ');
+        // Votes (3 chars)
+        const votes = String(map.votes ?? 0).padStart(3);
 
-    // --- PLAYS (5 chars, right aligned) ---
-    const plays = String(map.plays ?? 0).padStart(6, ' ');
+        // Games (3 chars)
+        const games = String(map.plays ?? 0).padStart(3);
 
-    // --- VPP (#.###) exactly 5 chars, right aligned ---
-    const vppValue = Number.isFinite(parseFloat(map.vpp))
-        ? parseFloat(map.vpp)
-        : 0;
-    const vpp = vppValue.toFixed(3).padStart(6, ' ');
+        // VPP (5 chars like "1.234")
+        const vppValue = Number.isFinite(parseFloat(map.vpp))
+            ? parseFloat(map.vpp)
+            : 0;
+        const vpp = vppValue.toFixed(3).padStart(5);
 
-    description +=
-        ` ${rank} ` +
-        ` ${name} ` +
-        ` ${score} ` +
-        ` ${votes} `; 
-    summaryType == "Trial" ? description +=` ${plays}  ${vpp} \n` : description += "\n";
-});
-    description += '```';
+        description +=
+            rank + " " +
+            name + " " +
+            score + " " +
+            votes + " ";
+            summaryType == "Trial" ? description +=
+            games + " " +
+            vpp + "\n" : description += "\n"
+    });
+
+    description += "```";
 
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId(`ShareToChannel---${summaryTypeAbbreviation}summary`).setStyle(ButtonStyle.Danger).setLabel('Share 📢'),
