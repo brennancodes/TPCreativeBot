@@ -20,11 +20,11 @@ module.exports.execute = async (interaction) => {
     // Sort maps by selection rate descending
     maps.sort((a, b) => b.selectionRate - a.selectionRate);
 
-    let description = '**Ranked Rotation - Selection Rates**\n```';
+    let description = '**Ranked Rotation - Selection Rates**\n```Rk. Name           Score  Votes\n';
     
     maps.forEach((map, index) => {
         const rank = String(index + 1).padStart(2, ' ');
-        const name = map.name.substring(0, 20).padEnd(20, ' ');
+        const name = map.name.substring(0, 13).padEnd(13, ' ');
         const rate = (map.selectionRate * 100).toFixed(1).padStart(5, ' ');
         const times = String(map.timesPresented || 0);
         description += `${rank}. ${name} ${rate}% (${times.padStart(3, ' ')}x)\n`;

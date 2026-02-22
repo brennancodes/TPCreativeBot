@@ -88,7 +88,7 @@ module.exports.execute = async (interaction) => {
     selectedMaps.sort((a, b) => b.score - a.score);
 
     let description = "```";
-    let namePad = summaryType == "Trial" ? 13 : 23
+    let namePad = summaryType == "Trial" ? 9 : 19
     // ----- HEADER -----
     let header =
         "Rk.".padEnd(3) + " " +
