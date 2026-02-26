@@ -42,7 +42,7 @@ module.exports.execute = async (interaction) => {
 
             interaction.editReply({content:"Promotion vote posted in MTC channel!",flags:MessageFlags.Ephemeral})
             mtcChannel.send(msg).then(sent => {sent.react("✅").then(()=>{sent.react("⏳")}).then(()=>sent.pin())
-                .then(() => { sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"});
+                .then(async () => { await sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"});
                     let sentMessageUrl = sent.url;
                     if (config.mtcSettings.useDiscussionChannel){
                         const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);

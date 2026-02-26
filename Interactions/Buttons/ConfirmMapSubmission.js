@@ -40,7 +40,7 @@ module.exports.execute = async (interaction) => {
 
                 mtcChannel.send({content:newContent,embeds:[newEmbed],allowedMentions:{users:[],roles:[]}}).then(sent => {
                     sent.react("✅").then(()=>sent.react("❌")).then(()=>sent.react("🔬")).then(()=>sent.pin())
-                    .then(()=>sent.startThread({name:`${mapName} ${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))
+                    .then(async ()=> await sent.startThread({name:`${mapName} ${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))
                 })
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
@@ -54,8 +54,8 @@ module.exports.execute = async (interaction) => {
                     // delete msg.embeds[0].data.image;
                     // delete msg.embeds[0].data.footer;
                     // delete msg.embeds[0].data.author;
-                    discussionChannel.send({content:newContent,embeds:[discEmbed],components:[],allowedMentions:{users:[],roles:[]}}).then(sent => {
-                        sent.startThread({name:`${mapName} ${mapId} Discussion - Private discussion, speak your mind`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
+                    discussionChannel.send({content:newContent,embeds:[discEmbed],components:[],allowedMentions:{users:[],roles:[]}}).then(async sent => {
+                        await sent.startThread({name:`${mapName} ${mapId} Discussion - Private discussion, speak your mind`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
                     })
                 }
             }

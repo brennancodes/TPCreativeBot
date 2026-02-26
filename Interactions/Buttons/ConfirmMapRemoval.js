@@ -44,7 +44,7 @@ module.exports.execute = async (interaction) => {
 
             interaction.editReply({content:"Removal vote posted in MTC channel!",flags:MessageFlags.Ephemeral})
             mtcChannel.send(msg).then(sent => {sent.react("✅").then(() => sent.react("❌")).then(() => sent.pin())
-            .then(() => {sent.startThread({name:`${map.name} Removal Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss removal"});
+            .then(async () => { await sent.startThread({name:`${map.name} Removal Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss removal"});
                             let sentMessageUrl = sent.url;
                             if (config.mtcSettings.useDiscussionChannel){
                                 const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
