@@ -38,10 +38,28 @@ module.exports.execute = async (interaction) => {
                 let newContent = `**ATTENTION <@&${config.roles.mtc}>:** ${submissionType} [FM ID: \`${mapId}\`] received from <@${interaction.user.id}>.`
                 if (isUpdate) { newContent += `\nAdvancing this map will overwrite the PNG and JSON files of the existing map with this name in the game. It will not overwrite votes.` }
 
-                mtcChannel.send({content:newContent,embeds:[newEmbed],allowedMentions:{users:[],roles:[]}}).then(sent => {
-                    sent.react("✅").then(()=>sent.react("❌")).then(()=>sent.react("🔬")).then(()=>sent.pin())
-                    .then(async ()=> await sent.startThread({name:`${mapName} ${mapId} Feedback - Visible to Mapmaker`,autoArchiveDuration:4320,reason:"Provide public feedback for the submission"}))
-                })
+                const sent = await mtcChannel.send({
+                    content: newContent,
+                    embeds: [newEmbed],
+                    allowedMentions: { users: [], roles: [] }
+                });
+                
+                try {
+                    await sent.react("✅");
+                    await sent.react("❌");
+                    await sent.react("🔬");
+                    await sent.pin();
+                
+                    await sent.startThread({
+                        name: `${mapName} ${mapId} Feedback - Visible to Mapmaker`,
+                        autoArchiveDuration: 4320,
+                        reason: "Provide public feedback for the submission"
+                    });
+                
+                } catch (err) {
+                    console.error("Error during MTC reaction/thread creation:", err);
+                }
+
                 if (config.mtcSettings.useDiscussionChannel){
                     const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
 
@@ -54,9 +72,23 @@ module.exports.execute = async (interaction) => {
                     // delete msg.embeds[0].data.image;
                     // delete msg.embeds[0].data.footer;
                     // delete msg.embeds[0].data.author;
-                    discussionChannel.send({content:newContent,embeds:[discEmbed],components:[],allowedMentions:{users:[],roles:[]}}).then(async sent => {
-                        await sent.startThread({name:`${mapName} ${mapId} Discussion - Private discussion, speak your mind`,autoArchiveDuration:4320,reason:"Private opportunity to discuss the submission"})
-                    })
+                    try {
+                        const discussionSent = await discussionChannel.send({
+                            content: newContent,
+                            embeds: [discEmbed],
+                            components: [],
+                            allowedMentions: { users: [], roles: [] }
+                        });
+
+                        await discussionSent.startThread({
+                            name: `${mapName} ${mapId} Discussion - Private discussion, speak your mind`,
+                            autoArchiveDuration: 4320,
+                            reason: "Private opportunity to discuss the submission"
+                        });
+
+                    } catch (err) {
+                        console.error("Error during discussion thread creation:", err);
+                    }
                 }
             }
         }

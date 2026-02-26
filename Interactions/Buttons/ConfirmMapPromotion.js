@@ -41,18 +41,33 @@ module.exports.execute = async (interaction) => {
             }
 
             interaction.editReply({content:"Promotion vote posted in MTC channel!",flags:MessageFlags.Ephemeral})
-            mtcChannel.send(msg).then(sent => {sent.react("✅").then(()=>{sent.react("⏳")}).then(()=>sent.pin())
-                .then(async () => { await sent.startThread({name:`${map.name} Promotion Discussion`,autoArchiveDuration:4320,reason:"Private opportunity to discuss potential promotion"});
-                    let sentMessageUrl = sent.url;
-                    if (config.mtcSettings.useDiscussionChannel){
-                        const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
-                        discussionChannel.send({
-                            content:`**ATTENTION <@&${config.roles.mtc}>:** ${map.name} by ${map.author} has been nominated for 👔 **promotion** 👔 by <@${interaction.user.id}>.\n${sentMessageUrl}`,
-                            allowedMentions:{"users":[],"roles":[]}
-                        })
-                    }
-                })
-            })
+            try {
+                const sent = await mtcChannel.send(msg);
+            
+                await sent.react("✅");
+                await sent.react("⏳");
+                await sent.pin();
+            
+                await sent.startThread({
+                    name: `${map.name} Promotion Discussion`,
+                    autoArchiveDuration: 4320,
+                    reason: "Private opportunity to discuss potential promotion"
+                });
+            
+                const sentMessageUrl = sent.url;
+            
+                if (config.mtcSettings.useDiscussionChannel) {
+                    const discussionChannel = interaction.client.channels.cache.get(config.channels.mtcDiscussion);
+            
+                    await discussionChannel.send({
+                        content: `**ATTENTION <@&${config.roles.mtc}>:** ${map.name} by ${map.author} has been nominated for 👔 **promotion** 👔 by <@${interaction.user.id}>.\n${sentMessageUrl}`,
+                        allowedMentions: { "users": [], "roles": [] }
+                    });
+                }
+            
+            } catch (err) {
+                console.error("Error during promotion reaction/thread creation:", err);
+            }
             RemoveButtonsFromOriginal(interaction);
         }
     }
