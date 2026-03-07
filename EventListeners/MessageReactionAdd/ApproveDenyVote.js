@@ -242,8 +242,8 @@ module.exports.execute = async (reaction, user) => {
                             else {
                                 contentString = "Sorry, your map was not selected this time."
                             }
-                            for (var i = 0; i < feedbackArray.length; i++){
-                                feedbackString += feedbackArray[i] + "\n\n"
+                            for (var i = feedbackArray.length - 1; i >= 0; i--){
+                                feedbackString += "➢ " +  feedbackArray[i] + "\n\n"
                             }
                             feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
                             embed.data.description = `${embed.data.description.split("Yes votes:")[0]} ${feedbackString}`;
