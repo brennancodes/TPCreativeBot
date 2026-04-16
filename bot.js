@@ -69,7 +69,8 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId.includes("findmap") || 
             interaction.customId.includes("findfortunatemap") || 
             interaction.customId.includes("removemap") || 
-            interaction.customId.includes("updatemap")){
+            interaction.customId.includes("updatemap") ||
+            interaction.customId.includes("resetvotes")){
             for (const cmd of slashCommands){
                 const event = require(`./Interactions/SlashCommands/${cmd}`)
                 event.execute(interaction);
