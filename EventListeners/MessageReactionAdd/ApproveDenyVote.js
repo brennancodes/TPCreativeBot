@@ -271,7 +271,7 @@ module.exports.execute = async (reaction, user) => {
                             const approveCount = Math.max((appr?.count ?? 0) - 1, 0);
                             const denyCount = Math.max((deny?.count ?? 0) - 1, 0);
                             const votingResults = `\n\n**Voting Results**\n:white_check_mark: ${approveCount} - ${denyCount} :x:`
-                            const cmdReminder = `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
+                            const cmdReminder = `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review the comments.`
                             const fileNotice = files.length > 0
                                 ? "\n\n📎 Images/files from the feedback are attached below."
                                 : "";
