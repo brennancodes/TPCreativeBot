@@ -44,12 +44,18 @@ module.exports.execute = async (reaction, user) => {
                 return b.archiveTimestamp - a.archiveTimestamp;
             })
             const feedbackArray = [];
+            const feedbackAuthors = new Set();
+            let feedbackOverride = false;
             const threads = Array.from(feedbackThreads.keys());
             if (feedbackThreads.find(x=>x.id == threads[0]) != null){
                 const msgs = await feedbackThreads.find(x=>x.id == threads[0]).messages.fetch();
-                msgs.map(z=>{
-                    if (z.content.length > 1){
-                        feedbackArray.push(z.content)
+                msgs.forEach(z=>{
+                    if (z.content.length > 1 || z.attachments.size > 0){
+                        feedbackArray.push(z)
+                        feedbackAuthors.add(z.author.id);
+                    }
+                    if (z.content == "Feedback Override" || reaction.message.content.includes("UPDATED map submission")){
+                        feedbackOverride = true;
                     }
                 })
             }
@@ -92,7 +98,7 @@ module.exports.execute = async (reaction, user) => {
                 let nVotes = reaction.message.reactions.cache.get('❌');
                 if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
                     if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){
-                        if (feedbackArray.length < config.mtcSettings.feedbackThreshold){
+                        if (feedbackAuthors.size < config.mtcSettings.feedbackThreshold && !feedbackOverride){
                             decision = "Pending Feedback";
                         }
                         else if (yVotes.count > nVotes.count){
@@ -144,6 +150,7 @@ module.exports.execute = async (reaction, user) => {
                     const embed = new EmbedBuilder().setColor('#ffca3a').setAuthor({name:"Pending verbal feedback from MTC",iconURL:iconUrl})
                     .setDescription(`${mapByAuthorLinks}\n\nThe feedback thread has not met the required minimum of ${config.mtcSettings.feedbackThreshold} comment${config.mtcSettings.feedbackThreshold>1?"s.":"."}\nPlease ensure that enough feedback is given to continue.`)
                     .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`)
+                    .setFooter({text:`Alert triggered by ${user.displayName}`})
                     reaction.message.reply({content:`**PENDING FEEDBACK** \n${mapByAuthor}`,embeds:[embed]})
                     return;
                 }
@@ -155,6 +162,7 @@ module.exports.execute = async (reaction, user) => {
                     .setDescription(`${mapByAuthorLinks}\n\nPlease click the message this is replying to and perform a manual test of the map to ensure everything is wired properly 
                         and nothing is broken.\n\nIf everything looks good, click the 🔬 reaction then re-cast your ✅ reaction so this map may advance.`)
                     .setThumbnail(`${rootUrl}preview/${descSplit[3]}.jpeg`)
+                    .setFooter({text:`Alert triggered by ${user.displayName}`})
                     reaction.message.reply({content:`**NO QUALITY CONTROL INDICATED** \n${mapByAuthor}`,embeds:[embed]})
                     return;
                 }
@@ -233,24 +241,70 @@ module.exports.execute = async (reaction, user) => {
                             }
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
-                        }).then(()=>{
-                            let feedbackString = "**Feedback:**\n\n";
-                            let contentString = "";
+                        }).then(async ()=>{
+                            let decisionText = "";
                             if (decision == "Approved"){
-                                contentString = "Congratulations!! Your map has been selected to enter the map rotation on a trial basis."
+                                if (reaction.message.content.includes("UPDATED map submission")){
+                                    decisionText = `Nice, ${user.displayName}! Your updated submission has been approved.`
+                                }
+                                else {
+                                    decisionText = `Congratulations ${user.displayName}!! Your map has been selected to enter the map rotation on a trial basis.`;
+                                }
                             }
                             else {
-                                contentString = "Sorry, your map was not selected this time."
+                                decisionText = `Sorry ${user.displayName}, your map was not selected this time.`;
                             }
-                            for (var i = feedbackArray.length - 1; i >= 0; i--){
-                                feedbackString += "➢ " +  feedbackArray[i] + "\n\n"
+
+                            let feedback = "**Feedback:**\n";
+                            let files = [];
+
+                            for (let i = feedbackArray.length - 1; i >= 0; i--) {
+                                const message = feedbackArray[i];
+                                if (message.content) {
+                                    feedback += "➢ " + message.content + "\n";
+                                }
+                                message.attachments.forEach(attachment => {
+                                    files.push(attachment.url);
+                                });
                             }
-                            feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
-                            embed.data.description = `${embed.data.description.split("Yes votes:")[0]} ${feedbackString}`;
-                            reaction.client.users.cache.get(`${submitterId}`).send({
-                                content: contentString,
-                                embeds:[embed]
-                            })
+
+                            const approveCount = Math.max((appr?.count ?? 0) - 1, 0);
+                            const denyCount = Math.max((deny?.count ?? 0) - 1, 0);
+                            const votingResults = `\n\n**Voting Results**\n:white_check_mark: ${approveCount} - ${denyCount} :x:`
+                            const cmdReminder = `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
+                            const fileNotice = files.length > 0
+                                ? "\n\n📎 Images/files from the feedback are attached below."
+                                : "";
+                            // Discord allows max 10 attachments per message.
+                            // Send the textual feedback + first batch of attachments together.
+                            await reaction.client.users.cache.get(`${submitterId}`).send({
+                                content: `${decisionText}${votingResults}\n\n${feedback}${cmdReminder}${fileNotice}`,
+                                files: files.slice(0, 10)
+                            });
+
+                            // Send any remaining attachments in additional DMs
+                            for (let i = 10; i < files.length; i += 10) {
+                                await reaction.client.users.cache.get(`${submitterId}`).send({
+                                    files: files.slice(i, i + 10)
+                                });
+                            }                            
+                            // let feedbackString = "**Feedback:**\n\n";
+                            // let contentString = "";
+                            // if (decision == "Approved"){
+                            //     contentString = "Congratulations!! Your map has been selected to enter the map rotation on a trial basis."
+                            // }
+                            // else {
+                            //     contentString = "Sorry, your map was not selected this time."
+                            // }
+                            // for (var i = feedbackArray.length - 1; i >= 0; i--){
+                            //     feedbackString += "➢ " +  feedbackArray[i] + "\n\n"
+                            // }
+                            // feedbackString += `\nUse command **/getfeedback ${descSplit[3]}** any time in the official TagPro discord to review this.`
+                            // embed.data.description = `${embed.data.description.split("Yes votes:")[0]} ${feedbackString}`;
+                            // reaction.client.users.cache.get(`${submitterId}`).send({
+                            //     content: contentString,
+                            //     embeds:[embed]
+                            // })
                         })
 
                 }
