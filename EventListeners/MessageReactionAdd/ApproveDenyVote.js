@@ -242,17 +242,23 @@ module.exports.execute = async (reaction, user) => {
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         }).then(async ()=>{
+                            try {
+                                const submitter = await interaction.guild.members.fetch(submitterId)
+                            } catch (error){
+                                console.error('Member not found in this server', error);
+                            }
+                            let submitterAddress = submitter.displayName != null ? ", " + submitter.DisplayName : "";
                             let decisionText = "";
                             if (decision == "Approved"){
                                 if (reaction.message.content.includes("UPDATED map submission")){
-                                    decisionText = `Nice, ${user.displayName}! Your updated submission has been approved.`
+                                    decisionText = `Nice${submitterAddress}! Your updated submission has been approved.`
                                 }
                                 else {
-                                    decisionText = `Congratulations ${user.displayName}!! Your map has been selected to enter the map rotation on a trial basis.`;
+                                    decisionText = `Congratulations${submitterAddress}!! Your map has been selected to enter the map rotation on a trial basis.`;
                                 }
                             }
                             else {
-                                decisionText = `Sorry ${user.displayName}, your map was not selected this time.`;
+                                decisionText = `Sorry${submitterAddress}, your map was not selected this time.`;
                             }
 
                             let feedback = "**Feedback:**\n";
