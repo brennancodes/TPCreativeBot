@@ -60,10 +60,12 @@ module.exports.execute = async (reaction, user) => {
                 })
             }
             // extract userTag from message content
-            let msgCont = reaction.message.content;
-            const submitterTag = msgCont.substring(msgCont.lastIndexOf('<'), msgCont.lastIndexOf('>')+1);
+            const msgCont = await reaction.message.content;
+            const submitterTag = await msgCont.substring(msgCont.lastIndexOf('<'), msgCont.lastIndexOf('>')+1);
             // parse out the ID from the userTag
-            const submitterId = submitterTag.slice(2,submitterTag.length-1)
+            const submitterId = await submitterTag.slice(2,submitterTag.length-1)
+            console.log(submitterId)
+
             if (config.mtcSettings.blockSelfVoting){
                 if (reaction.message.content.includes(user.id) && reaction._emoji.name !== '❌'){
                     await reaction.users.remove(user.id)
@@ -90,6 +92,7 @@ module.exports.execute = async (reaction, user) => {
             })
 
             async function getDecision(){
+                
                 if (reaction._emoji.name === '🔄'){
                     decision = "Refresh"
                     return;
@@ -242,12 +245,14 @@ module.exports.execute = async (reaction, user) => {
                         }).then(()=>{
                             reaction.message.suppressEmbeds(true);
                         }).then(async ()=>{
+                            let submitter = null;
                             try {
-                                const submitter = await interaction.guild.members.fetch(submitterId)
+                                submitter = await reaction.client.users.cache.get(`${submitterId}`)
+                                console.log(submitter);
                             } catch (error){
                                 console.error('Member not found in this server', error);
                             }
-                            let submitterAddress = submitter.displayName != null ? ", " + submitter.DisplayName : "";
+                            let submitterAddress = submitter?.displayName != null ? ", " + submitter.displayName : "";
                             let decisionText = "";
                             if (decision == "Approved"){
                                 if (reaction.message.content.includes("UPDATED map submission")){
