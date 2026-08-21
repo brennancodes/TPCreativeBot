@@ -31,36 +31,51 @@ module.exports.execute = async (reaction, user) => {
                     return;
                 }
             }
-
-            function getDecision(){
-                if (reaction._emoji.name === '🔄'){
-                    decision = "Refresh"
+            async function getDecision() {
+                if (reaction._emoji.name === '🔄') {
+                    decision = "Refresh";
                     return;
                 }
-                let yVotes = reaction.message.reactions.cache.get('✅');
-                let nVotes = reaction.message.reactions.cache.get('❌');
-                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
-                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){
-                        if (yVotes.count > nVotes.count){
-                            decision = "Removed";
-                        }
-                        else if (nVotes.count > yVotes.count){
-                            decision = "Kept"
-                        }
-                        else {
-                            // Tie
-                            decision = "No Decision";
-                        }
-                    }
-                    else {
-                        // Not enough votes
-                        decision = "No Decision";
-                    }
+
+                const yVotes = reaction.message.reactions.cache.get('✅');
+                const nVotes = reaction.message.reactions.cache.get('❌');
+
+                // Remove the bot's initial pre-vote from each reaction.
+                const approveVotes = Math.max((yVotes?.count ?? 0) - 1, 0);
+                const denyVotes = Math.max((nVotes?.count ?? 0) - 1, 0);
+
+                const hoursElapsed =
+                    (new Date() - reaction.message.createdTimestamp) / 3600000;
+
+                const majorityReached =
+                    approveVotes >= mtcMajority ||
+                    denyVotes >= mtcMajority;
+
+                const timeoutThresholdReached =
+                    approveVotes >= config.mtcSettings.approveDenyThreshold ||
+                    denyVotes >= config.mtcSettings.approveDenyThreshold;
+
+                // Before 24 hours, require a mathematical majority.
+                // After 24 hours, require the configured vote threshold.
+                if (
+                    (hoursElapsed < config.mtcSettings.minimumVoteTime && !majorityReached) ||
+                    (hoursElapsed >= config.mtcSettings.minimumVoteTime && !timeoutThresholdReached)
+                ) {
+                    decision = "No Decision";
+                    return;
+                }
+
+                // At this point, one side has reached the required threshold.
+                if (approveVotes > denyVotes) {
+                    decision = "Removed";
+                }
+                else if (denyVotes > approveVotes) {
+                    decision = "Kept";
                 }
                 else {
-                    decision = "Stop Clicking Weird Shit"
+                    decision = "No Decision";
                 }
-            }
+            } 
 
             async function Respond(){
                 const iconUrl = 'https://cdn.discordapp.com/icons/368194770553667584/9bbd5590bfdaebdeb34af78e9261f0fe.webp?size=96'

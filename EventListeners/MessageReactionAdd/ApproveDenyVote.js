@@ -14,16 +14,8 @@ module.exports.execute = async (reaction, user) => {
             const mtcMajority = Math.ceil(mtcRole.members.size/2) + 1
 
             //Make sure we're counting all reactions even if the bot restarts
-            reaction.message.fetch();
-
-            if (
-                (((currentDate - reaction.message.createdTimestamp)/3600000).toFixed(2) < config.mtcSettings.minimumVoteTime || config.mtcSettings.minimumVoteTime == 0) && 
-                reaction._emoji.name !== '🔄' &&
-                (reaction.count < mtcMajority || reaction.count == 1)
-            ){
-                // It is too early to worry about taking any action.
-                return;
-            }
+            await reaction.message.fetch();
+            
             if (reaction.partial){
                 try{
                     await reaction.fetch();
@@ -73,69 +65,76 @@ module.exports.execute = async (reaction, user) => {
                 }
             }
 
+            await reaction.message.fetch();
+            
             let decision;
-            let wired;
-            const isWired = new Promise((resolve,reject)=>{
-                async function wireFunc(){
-                    var wire = reaction.message.reactions.cache.get('🔬');
-                    if (wire != null){
-                        var u = await wire.users.fetch()
-                        wired = u.size >= config.mtcSettings.qualityControlThreshold;
-                        resolve();
-                    }
-                    else {
-                        wired = false;
-                        resolve();
-                    }
-                }
-                wireFunc();
-            })
+            let wired = false;
 
-            async function getDecision(){
-                
-                if (reaction._emoji.name === '🔄'){
-                    decision = "Refresh"
-                    return;
-                }
-                let yVotes = reaction.message.reactions.cache.get('✅');
-                let nVotes = reaction.message.reactions.cache.get('❌');
-                if ((reaction._emoji.name === '✅' || reaction._emoji.name === '❌')){
-                    if (yVotes.count >= config.mtcSettings.approveDenyThreshold || nVotes.count >= config.mtcSettings.approveDenyThreshold){
-                        if (feedbackAuthors.size < config.mtcSettings.feedbackThreshold && !feedbackOverride){
-                            decision = "Pending Feedback";
-                        }
-                        else if (yVotes.count > nVotes.count){
-                            if (!wired){
-                                decision = "Pending Manual Test"
-                            }
-                            else {
-                                decision = "Approved";
-                            }
-                        }
-                        else if (nVotes.count > yVotes.count){
-                            decision = "Denied"
-                        }
-                        else {
-                            // Tie
-                            decision = "No Decision";
-                        }
-                    }
-                    else {
-                        // Not enough votes
-                        decision = "No Decision";
-                    }
-                }
-                else {
-                    decision = "Stop Clicking Weird Shit"
-                }
+            const wire = reaction.message.reactions.cache.get('🔬');
+
+            if (wire != null) {
+                const users = await wire.users.fetch();
+                const wireVotes = Math.max(users.size - 1, 0);
+
+                wired = wireVotes >= config.mtcSettings.qualityControlThreshold;
             }
 
-            isWired.then(async ()=>{
-                await reaction.message.fetch();
+            await getDecision();
+            Respond();
 
-                await getDecision();
-                Respond();
-            })
+            async function getDecision() {
+                if (reaction._emoji.name === '🔄') {
+                    decision = "Refresh";
+                    return;
+                }
+
+                const yVotes = reaction.message.reactions.cache.get('✅');
+                const nVotes = reaction.message.reactions.cache.get('❌');
+
+                // Remove the bot's initial pre-vote from each reaction.
+                const approveVotes = Math.max((yVotes?.count ?? 0) - 1, 0);
+                const denyVotes = Math.max((nVotes?.count ?? 0) - 1, 0);
+
+                const hoursElapsed =
+                    (new Date() - reaction.message.createdTimestamp) / 3600000;
+
+                const majorityReached =
+                    approveVotes >= mtcMajority ||
+                    denyVotes >= mtcMajority;
+
+                const timeoutThresholdReached =
+                    approveVotes >= config.mtcSettings.approveDenyThreshold ||
+                    denyVotes >= config.mtcSettings.approveDenyThreshold;
+
+                // Before 24 hours, require a mathematical majority.
+                // After 24 hours, require the configured vote threshold.
+                if (
+                    (hoursElapsed < config.mtcSettings.minimumVoteTime && !majorityReached) ||
+                    (hoursElapsed >= config.mtcSettings.minimumVoteTime && !timeoutThresholdReached)
+                ) {
+                    decision = "No Decision";
+                    return;
+                }
+
+                // At this point, one side has reached the required threshold.
+                if (feedbackAuthors.size < config.mtcSettings.feedbackThreshold && !feedbackOverride) {
+                    decision = "Pending Feedback";
+                }
+                else if (approveVotes > denyVotes) {
+                    if (!wired) {
+                        decision = "Pending Manual Test";
+                    }
+                    else {
+                        decision = "Approved";
+                    }
+                }
+                else if (denyVotes > approveVotes) {
+                    decision = "Denied";
+                }
+                else {
+                    decision = "No Decision";
+                }
+            }
 
             async function Respond(){
                 const rootUrl = GetFMRoot();
